@@ -7,24 +7,80 @@ class ToDoListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         slivers: <Widget>[
         SliverPersistentHeader(
           delegate: _SliverAppBarDelegate(),
           pinned: true,
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return ListTile(
-                tileColor: (index%2) == 0 ? const Color.fromARGB(255, 211, 102, 94) : const Color.fromARGB(255, 116, 199, 119),
-                title: Text('Item #$index'),
-              );
-            },
-            childCount: 20,
-          ),
-        ),
+        const TasksListWidget(),
       ],
     ),
+    );
+  }
+}
+
+class TasksListWidget extends StatefulWidget {
+  const TasksListWidget({
+    super.key,
+  });
+
+  @override
+  State<TasksListWidget> createState() => _TasksListWidgetState();
+}
+
+class _TasksListWidgetState extends State<TasksListWidget> {
+  List<String> items = List.generate(6, (index) => 'DEMENTIAPP $index');
+  bool isChecked = false;
+
+   @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+            boxShadow: [
+              BoxShadow(
+                offset: items.isNotEmpty ? const Offset(0, 2) : const Offset(0, 0),
+                color: Colors.black12,
+                blurRadius: 3,
+                spreadRadius: 1
+              )
+          ]
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Column(
+            children:[ 
+              if(items.isNotEmpty)
+              ...List.generate(items.length, (index){
+                return Dismissible(
+                  movementDuration: const Duration(milliseconds: 500),
+                  key: UniqueKey(),
+                  background: const ColoredBox(color: Colors.red),
+                  secondaryBackground: const ColoredBox(color: Colors.green),
+                  child: ListTile(
+                    leading: const Icon(Icons.add_box_outlined),
+                    trailing: const Icon(Icons.info_outline),
+                    title: Text(items[index]),
+                  ),
+                );
+              }),
+              
+              InkWell(
+                onTap: (){},
+                child: const Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text('Добавить'),
+                ),
+              ),
+            ]
+          ),
+        ),
+      ),
     );
   }
 }
