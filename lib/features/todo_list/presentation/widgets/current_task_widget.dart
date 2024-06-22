@@ -20,7 +20,7 @@ class CurrentTask extends StatelessWidget {
   void _showTaskInfo(
     BuildContext context,
   ) async {
-    await context.push('/add_new', extra: task);
+    await context.push('/add_new');
     DementiappLogger.infoLog('Navigating to /add_new');
   }
 
@@ -107,7 +107,7 @@ class CurrentTask extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () => _showTaskInfo,
+              onPressed: () => context.push('/add_new'),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               icon: const SVG(

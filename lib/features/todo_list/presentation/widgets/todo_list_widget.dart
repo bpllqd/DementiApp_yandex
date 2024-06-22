@@ -114,6 +114,9 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     double topTitlePadding = interpolate(100, 37, progress);
     double leftTitlePadding = interpolate(40, 20, progress);
     double topPositionSubtitle = interpolate(155, 37, progress);
+    double containerShadowOffset = interpolate(-5, 4, progress);
+    double containerBlurRadius = interpolate(4, 0, progress);
+    double containerSpreadRadius = interpolate(2, 0, progress);
     double subOpacity = interpolate(1, 0, progress);
 
     if (subOpacity <= 0) subOpacity = 0;
@@ -123,7 +126,17 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       builder: (context, state) {
         if (state is TodoListSuccessState) {
           return Container(
-            color: Colors.white,
+            decoration: BoxDecoration(
+              color: const Color(lightColorWhite),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black45,
+                  blurRadius: containerBlurRadius,
+                  spreadRadius: containerSpreadRadius,
+                  offset: Offset(0, containerShadowOffset)
+                )
+              ]
+            ),
             child: Center(
               child: Stack(
                 children: [
