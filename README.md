@@ -1,16 +1,17 @@
-# demetiapp
+# DementiApp - приложение ToDO-like для тех, кто вечно забывает таски
 
-A new Flutter project.
+#### Ссылка на загрузку (Android):  
 
-## Getting Started
+## Features:
+#### Экран "Мои дела"
 
-This project is a starting point for a Flutter application.
+<img src="/assets/app_samples/todo_list_sample.png" alt="ToDo list" width="500"/> 
+<br>
 
-A few resources to get you started if this is your first Flutter project:
+Данный экран предоставляет информацию о списке дел: выполненных/невыполненных, срочных/несрочных. Экран начинается с SliverPersistanceHeader, который дает title, количество выполненных дел а также кнопку-фильтр для показа/скрытия выполненных дел. Далее идет список задач, реализованный через SliverList и Dismissible. Есть возможность отмечать дело выполненным через чекбокс или по свайпу вправо, свайпом влево можно удалить таску из списка. В самом конце списка присутствует кнопка "Новое", навигирующая пользователя на экран "Добавления дел". Также присутствует FloatingActionButton, навигирующая на экран "Добавления дел".
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+#### Экран "Добавления/Редактирования дела"
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img src="/assets/app_samples/todo_create_sample.png" alt="ToDo create" width="200"/>  
+
+Данный экран предоставляет интерфейс для добавления/редактирования дел. Он состоит из MaterialTextField, куда пользователь вносит описание дела, выпадающее меню с выбором приоритета для дела, свитч даты дедлайна с календарем, а также кнопки удаления дела. В шапке присутсвуют элементы для выхода из экрана и для сохранения и выхода из экрана.

@@ -90,7 +90,6 @@ class ToDoListWidget extends StatelessWidget {
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  
   @override
   double get minExtent => 90;
 
@@ -122,68 +121,67 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
     return BlocBuilder<ToDoListBloc, ToDoListState>(
       builder: (context, state) {
-        if(state is TodoListSuccessState){
+        if (state is TodoListSuccessState) {
           return Container(
-          color: Colors.white,
-          child: Center(
-            child: Stack(
-              children: [
-                Positioned(
-                  top: topPositionSubtitle,
-                  left: leftTitlePadding,
-                  right: 20,
-                  child: Row(
-                    children: [
-                      Opacity(
-                        opacity: subOpacity,
-                        child: Text(
-                          'Выполнено - ${state.completedTasks}',
-                          style: TextStyle(
-                            fontSize: subtitleSize,
+            color: Colors.white,
+            child: Center(
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: topPositionSubtitle,
+                    left: leftTitlePadding,
+                    right: 20,
+                    child: Row(
+                      children: [
+                        Opacity(
+                          opacity: subOpacity,
+                          child: Text(
+                            'Выполнено - ${state.completedTasks}',
+                            style: TextStyle(
+                              fontSize: subtitleSize,
+                            ),
                           ),
                         ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: () {
-                            bloc.add(ChangeFilterEvent(
-                              state.filter == TaskFilter.showAll
-                                ? TaskFilter.showOnly
-                                : TaskFilter.showAll
-                            ));
-                            DementiappLogger.infoLog('Added ChangeFilterEvent 1');
-                          },
-                          icon: state.filter == TaskFilter.showOnly
-                          ? const Icon(
-                            Icons.visibility,
-                            size: 30,
-                            color: Color(lightColorGrayLight),
-                            )
-                          : const Icon(
-                              Icons.visibility_off,
-                              size: 30,
-                              color: Color(lightColorRed),
-                            )
-                      )
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: topTitlePadding,
-                  left: leftTitlePadding,
-                  child: Text(
-                    'Мои дела',
-                    style: TextStyle(
-                      fontSize: titleSize,
-                      fontWeight: FontWeight.bold,
+                        const Spacer(),
+                        IconButton(
+                            onPressed: () {
+                              bloc.add(ChangeFilterEvent(
+                                  state.filter == TaskFilter.showAll
+                                      ? TaskFilter.showOnly
+                                      : TaskFilter.showAll));
+                              DementiappLogger.infoLog(
+                                  'Added ChangeFilterEvent 1');
+                            },
+                            icon: state.filter == TaskFilter.showOnly
+                                ? const Icon(
+                                    Icons.visibility,
+                                    size: 30,
+                                    color: Color(lightColorGrayLight),
+                                  )
+                                : const Icon(
+                                    Icons.visibility_off,
+                                    size: 30,
+                                    color: Color(lightColorRed),
+                                  ))
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  Positioned(
+                    top: topTitlePadding,
+                    left: leftTitlePadding,
+                    child: Text(
+                      'Мои дела',
+                      style: TextStyle(
+                        fontSize: titleSize,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-        } else{
+          );
+        } else {
           return const CircularProgressIndicator();
         }
       },

@@ -2,10 +2,9 @@ part of 'todo_create_bloc.dart';
 
 abstract class ToDoCreateEvent extends Equatable {}
 
-class ToDoCreateInitEvent extends ToDoCreateEvent{
+class ToDoCreateInitEvent extends ToDoCreateEvent {
   @override
   List<Object?> get props => [];
-
 }
 
 class ToDoCreateNewEvent extends ToDoCreateEvent {

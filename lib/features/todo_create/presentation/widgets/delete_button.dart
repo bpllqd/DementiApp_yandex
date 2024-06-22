@@ -10,7 +10,8 @@ class DeleteButton extends StatelessWidget {
   const DeleteButton({
     super.key,
     required this.icon,
-    required this.textColor, required this.onTap,
+    required this.textColor,
+    required this.onTap,
   });
 
   @override
@@ -19,13 +20,16 @@ class DeleteButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 5.0),
         child: InkWell(
-          onTap: (){
+          onTap: () {
             DementiappLogger.infoLog('Delet button has been pressed');
           },
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.delete, color: Color(lightColorRed),),
+              Icon(
+                Icons.delete,
+                color: Color(lightColorRed),
+              ),
               SizedBox(width: 12.0),
               Text(
                 'Удалить',

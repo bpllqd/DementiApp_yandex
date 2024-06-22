@@ -32,210 +32,203 @@ class ToDoCreateWidget extends StatelessWidget {
 
     return BlocListener<ToDoCreateBloc, ToDoCreateState>(
       listener: (context, state) {
-        
-        if(state is ToDoCreateSuccessState){
+        if (state is ToDoCreateSuccessState) {
           context.pop();
           DementiappLogger.infoLog('Navigating back');
         }
-
       },
-      
       child: Scaffold(
         backgroundColor: const Color(lightColorWhite),
         appBar: BarWidget(
           bloc: bloc,
           task: task,
-          textController:
-          textController,
+          textController: textController,
           priority: priority,
-          isSwitchEnabled:
-          isSwitchEnabled,
+          isSwitchEnabled: isSwitchEnabled,
           pickedDate: pickedDate,
         ),
         body: BlocBuilder<ToDoCreateBloc, ToDoCreateState>(
           builder: (context, state) {
-
-            if(state is ToDoCreateLoadingState){
+            if (state is ToDoCreateLoadingState) {
               return const CircularProgressIndicator();
-            } 
-            
-            else{
-            return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 8.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: MaterialTextfield(textController: textController),
-                  ),
-                  const SizedBox(height: 12.0),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0, right: 100),
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          value: priority,
-                          onChanged: (newPriority) {
-                            if (newPriority != Priority.no) {
-                              priority = newPriority;
-                            } else {
-                              priority = null;
-                            }
-                          },
-                          style: const TextStyle(
-                            fontSize: buttonFontSize,
-                            height: buttonFontHeight,
-                            color: Color(lightLabelTertiary),
-                          ),
-                          decoration: const InputDecoration(
-                            enabled: false,
-                            disabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(lightSupportSeparator),
-                                width: 0.5,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
-                            contentPadding:
-                                EdgeInsets.only(bottom: 16.0, top: 16.0),
-                            labelText: 'Важность',
-                            labelStyle: TextStyle(
-                              fontSize: 22.0,
-                              color: Color(lightLabelPrimary),
-                            ),
-                          ),
-                          iconSize: 0,
-                          hint: const Text(
-                            'Нет',
-                            style: TextStyle(
+            } else {
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: MaterialTextfield(textController: textController),
+                    ),
+                    const SizedBox(height: 12.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 100),
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButtonFormField(
+                            value: priority,
+                            onChanged: (newPriority) {
+                              if (newPriority != Priority.no) {
+                                priority = newPriority;
+                              } else {
+                                priority = null;
+                              }
+                            },
+                            style: const TextStyle(
                               fontSize: buttonFontSize,
                               height: buttonFontHeight,
                               color: Color(lightLabelTertiary),
                             ),
+                            decoration: const InputDecoration(
+                              enabled: false,
+                              disabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(lightSupportSeparator),
+                                  width: 0.5,
+                                  style: BorderStyle.solid,
+                                ),
+                              ),
+                              contentPadding:
+                                  EdgeInsets.only(bottom: 16.0, top: 16.0),
+                              labelText: 'Важность',
+                              labelStyle: TextStyle(
+                                fontSize: 22.0,
+                                color: Color(lightLabelPrimary),
+                              ),
+                            ),
+                            iconSize: 0,
+                            hint: const Text(
+                              'Нет',
+                              style: TextStyle(
+                                fontSize: buttonFontSize,
+                                height: buttonFontHeight,
+                                color: Color(lightLabelTertiary),
+                              ),
+                            ),
+                            items: const <DropdownMenuItem>[
+                              DropdownMenuItem(
+                                value: Priority.no,
+                                child: Text(
+                                  'Нет',
+                                  style: TextStyle(
+                                    fontSize: bodyFontSize,
+                                    color: Color(lightLabelPrimary),
+                                  ),
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: Priority.low,
+                                child: Text(
+                                  'Низкий',
+                                  style: TextStyle(
+                                    fontSize: bodyFontSize,
+                                    color: Color(lightLabelPrimary),
+                                  ),
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: Priority.high,
+                                child: Text(
+                                  '!! Высокий',
+                                  style: TextStyle(
+                                    fontSize: bodyFontSize,
+                                    color: Color(lightColorRed),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          items: const <DropdownMenuItem>[
-                            DropdownMenuItem(
-                              value: Priority.no,
-                              child: Text(
-                                'Нет',
-                                style: TextStyle(
-                                  fontSize: bodyFontSize,
-                                  color: Color(lightLabelPrimary),
-                                ),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: Priority.low,
-                              child: Text(
-                                'Низкий',
-                                style: TextStyle(
-                                  fontSize: bodyFontSize,
-                                  color: Color(lightLabelPrimary),
-                                ),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: Priority.high,
-                              child: Text(
-                                '!! Высокий',
-                                style: TextStyle(
-                                  fontSize: bodyFontSize,
-                                  color: Color(lightColorRed),
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Divider(
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Divider(
+                        height: 0,
+                        thickness: 0.5,
+                        color: Color(lightSupportSeparator),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Сделать до',
+                                style: TextStyle(
+                                  fontSize: bodyFontSize,
+                                  height: bodyFontHeight,
+                                  color: Color(lightLabelPrimary),
+                                ),
+                              ),
+                              Visibility(
+                                visible: isSwitchEnabled != false,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Text(
+                                    pickedDate != null
+                                        ? FormatDate.toDmmmmyyyy(pickedDate!)
+                                        : '',
+                                    style: const TextStyle(
+                                      fontSize: buttonFontSize,
+                                      color: Color(lightColorBlue),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Switch(
+                            value: isSwitchEnabled != false,
+                            onChanged: (bool value) async {
+                              isSwitchEnabled != false
+                                  ? null
+                                  : pickedDate = await pickDate(context);
+                              if (pickedDate != null) {
+                                isSwitchEnabled = !isSwitchEnabled;
+                                bloc.add(ToDoCreateSwitchDateEvent(task));
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24.0),
+                    const Divider(
                       height: 0,
                       thickness: 0.5,
                       color: Color(lightSupportSeparator),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Сделать до',
-                              style: TextStyle(
-                                fontSize: bodyFontSize,
-                                height: bodyFontHeight,
-                                color: Color(lightLabelPrimary),
-                              ),
+                    const SizedBox(height: 8.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: task != null
+                          ? DeleteButton(
+                              icon: delete,
+                              textColor: lightColorRed,
+                              onTap: () {
+                                bloc.add(ToDoCreateDeleteEvent(task!));
+                                Navigator.pop(context);
+                              },
+                            )
+                          : DeleteButton(
+                              icon: deleteDisabled,
+                              textColor: lightLabelDisable,
+                              onTap: () {},
                             ),
-                            Visibility(
-                              visible: isSwitchEnabled != false,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 4.0),
-                                child: Text(
-                                  pickedDate != null
-                                      ? FormatDate.toDmmmmyyyy(pickedDate!)
-                                      : '',
-                                  style: const TextStyle(
-                                    fontSize: buttonFontSize,
-                                    color: Color(lightColorBlue),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Switch(
-                          value: isSwitchEnabled != false,
-                          onChanged: (bool value) async {
-                            isSwitchEnabled != false
-                                ? null
-                                : pickedDate = await pickDate(context);
-                            if (pickedDate != null) {
-                              isSwitchEnabled = !isSwitchEnabled;
-                              bloc.add(ToDoCreateSwitchDateEvent(task));
-                            }
-                          },
-                        )
-                      ],
                     ),
-                  ),
-                  const SizedBox(height: 24.0),
-                  const Divider(
-                    height: 0,
-                    thickness: 0.5,
-                    color: Color(lightSupportSeparator),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: task != null
-                        ? DeleteButton(
-                            icon: delete,
-                            textColor: lightColorRed,
-                            onTap: () {
-                              bloc.add(ToDoCreateDeleteEvent(task!));
-                              Navigator.pop(context);
-                            },
-                          )
-                        : DeleteButton(
-                            icon: deleteDisabled,
-                            textColor: lightLabelDisable,
-                            onTap: (){},
-                          ),
-                  ),
-                  const SizedBox(height: 12.0),
-                ],
-              ),
-            );}
+                    const SizedBox(height: 12.0),
+                  ],
+                ),
+              );
+            }
           },
         ),
       ),

@@ -6,7 +6,7 @@ import 'package:demetiapp/features/todo_list/domain/entities/task_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class BarWidget extends StatelessWidget implements PreferredSizeWidget{
+class BarWidget extends StatelessWidget implements PreferredSizeWidget {
   const BarWidget({
     super.key,
     required this.bloc,
@@ -77,7 +77,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget{
       ],
     );
   }
-  
+
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

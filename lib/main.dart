@@ -7,7 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ru_RU', null);
   runApp(const MyApp());
@@ -18,17 +18,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => ToDoListBloc()..add(const GetTasksEvent()),
-        ),
-        BlocProvider(
-          create: (context) => ToDoCreateBloc()..add(ToDoCreateInitEvent()),
-        )
-      ],
-      child: RoutingWrapper()
-    );
+    return MultiBlocProvider(providers: [
+      BlocProvider(
+        create: (context) => ToDoListBloc()..add(const GetTasksEvent()),
+      ),
+      BlocProvider(
+        create: (context) => ToDoCreateBloc()..add(ToDoCreateInitEvent()),
+      )
+    ], child: RoutingWrapper());
   }
 }
 
@@ -36,12 +33,11 @@ class RoutingWrapper extends StatelessWidget {
   RoutingWrapper({super.key});
 
   final GoRouter _router = GoRouter(
-    routes: dementiappRoutes,
-    initialLocation: '/',
-    redirect: (BuildContext context, GoRouterState state){
-      return null;
-    }
-  );
+      routes: dementiappRoutes,
+      initialLocation: '/',
+      redirect: (BuildContext context, GoRouterState state) {
+        return null;
+      });
 
   @override
   Widget build(BuildContext context) {

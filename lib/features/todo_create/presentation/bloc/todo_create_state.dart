@@ -1,36 +1,31 @@
 part of 'todo_create_bloc.dart';
 
-abstract class ToDoCreateState extends Equatable{}
+abstract class ToDoCreateState extends Equatable {}
 
-class ToDoCreateInitState extends ToDoCreateState{
+class ToDoCreateInitState extends ToDoCreateState {
   @override
   List<Object?> get props => [];
 }
 
-class ToDoCreateLoadingState extends ToDoCreateState{
+class ToDoCreateLoadingState extends ToDoCreateState {
   @override
   List<Object?> get props => [];
-
 }
 
-class ToDoCreateSuccessState extends ToDoCreateState{
+class ToDoCreateSuccessState extends ToDoCreateState {
   final TaskEntity? task;
   final bool hasDate;
 
   ToDoCreateSuccessState({this.task, this.hasDate = false});
 
   @override
-  List<Object?> get props => [
-    task,
-    hasDate
-  ];
+  List<Object?> get props => [task, hasDate];
 }
 
-class ToDoCreateErrorState extends ToDoCreateState{
+class ToDoCreateErrorState extends ToDoCreateState {
   final String errorDescription;
 
   ToDoCreateErrorState({required this.errorDescription});
   @override
   List<Object?> get props => [errorDescription];
-
 }

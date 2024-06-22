@@ -9,12 +9,12 @@ enum Priority { no, low, high }
 class TaskEntity with _$TaskEntity {
   const factory TaskEntity({
     required String taskID,
-    required String title, 
+    required String title,
     required bool done,
     required Priority? priority,
-    final DateTime? date, 
+    final DateTime? date,
   }) = _TaskEntity;
 
-  factory TaskEntity.fromJson(Map<String, Object?> json)
-      => _$TaskEntityFromJson(json);
+  factory TaskEntity.fromJson(Map<String, Object?> json) =>
+      _$TaskEntityFromJson(json);
 }

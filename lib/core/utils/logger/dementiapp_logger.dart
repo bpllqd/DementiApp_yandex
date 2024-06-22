@@ -1,7 +1,6 @@
 import 'package:logger/logger.dart';
 
 class DementiappLogger {
-
   static final logger = Logger(
     printer: PrettyPrinter(
       methodCount: 1,
