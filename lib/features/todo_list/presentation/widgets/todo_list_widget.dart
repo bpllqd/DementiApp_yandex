@@ -1,84 +1,88 @@
+import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
+import 'package:demetiapp/core/utils/utils.dart';
+import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:demetiapp/core/constants/constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import 'add_new_button_widget.dart';
+import 'tasks_list_widget.dart';
 
 class ToDoListWidget extends StatelessWidget {
   const ToDoListWidget({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        slivers: <Widget>[
-        SliverPersistentHeader(
-          delegate: _SliverAppBarDelegate(),
-          pinned: true,
-        ),
-        const TasksListWidget(),
-      ],
-    ),
+  void _addNewTask(
+    ScrollController scrollController,
+    BuildContext context,
+  ) async {
+    await context.push('/add_new');
+    DementiappLogger.infoLog('Navigating to add_new');
+    scrollController.animateTo(
+      0,
+      duration: const Duration(
+        milliseconds: 500,
+      ),
+      curve: Curves.linear,
     );
   }
-}
-
-class TasksListWidget extends StatefulWidget {
-  const TasksListWidget({
-    super.key,
-  });
 
   @override
-  State<TasksListWidget> createState() => _TasksListWidgetState();
-}
-
-class _TasksListWidgetState extends State<TasksListWidget> {
-  List<String> items = List.generate(6, (index) => 'DEMENTIAPP $index');
-  bool isChecked = false;
-
-   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
-            boxShadow: [
-              BoxShadow(
-                offset: items.isNotEmpty ? const Offset(0, 2) : const Offset(0, 0),
-                color: Colors.black12,
-                blurRadius: 3,
-                spreadRadius: 1
-              )
-          ]
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-            children:[ 
-              if(items.isNotEmpty)
-              ...List.generate(items.length, (index){
-                return Dismissible(
-                  movementDuration: const Duration(milliseconds: 500),
-                  key: UniqueKey(),
-                  background: const ColoredBox(color: Colors.red),
-                  secondaryBackground: const ColoredBox(color: Colors.green),
-                  child: ListTile(
-                    leading: const Icon(Icons.add_box_outlined),
-                    trailing: const Icon(Icons.info_outline),
-                    title: Text(items[index]),
-                  ),
-                );
-              }),
-              
-              InkWell(
-                onTap: (){},
-                child: const Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text('Добавить'),
-                ),
-              ),
-            ]
+    ScrollController scrollController = ScrollController();
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        controller: scrollController,
+        slivers: <Widget>[
+          SliverPersistentHeader(
+            delegate: _SliverAppBarDelegate(),
+            pinned: true,
           ),
+          SliverPadding(
+            padding: const EdgeInsets.only(
+              left: 4.0,
+              right: 4.0,
+              bottom: 3.0,
+            ),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return Card(
+                    color: const Color(lightBackSecondary),
+                    semanticContainer: false,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    elevation: 4.0,
+                    child: Column(
+                      children: [
+                        const TasksList(),
+                        AddNewButton(
+                          onTap: () {
+                            _addNewTask(scrollController, context);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                childCount: 1,
+              ),
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _addNewTask(scrollController, context);
+        },
+        elevation: 4,
+        backgroundColor: const Color(lightColorRed),
+        child: const Icon(
+          Icons.add,
+          color: Color(lightColorWhite),
         ),
       ),
     );
@@ -86,7 +90,7 @@ class _TasksListWidgetState extends State<TasksListWidget> {
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-
+  
   @override
   double get minExtent => 90;
 
@@ -95,12 +99,13 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   // функция рассчета текущего размера элемента
   // в зависимости от смещениия скролла
-  double interpolate(double max, double min, double progress){
-    return max-progress*(max-min);
+  double interpolate(double max, double min, double progress) {
+    return max - progress * (max - min);
   }
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     // функция рассчета коэффициента изменения скролла
     double progress = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
@@ -112,51 +117,76 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     double topPositionSubtitle = interpolate(155, 37, progress);
     double subOpacity = interpolate(1, 0, progress);
 
-    if(subOpacity<=0) subOpacity=0;
+    if (subOpacity <= 0) subOpacity = 0;
+    final bloc = context.read<ToDoListBloc>();
 
-    return Container(
-      color: Colors.white,
-      child: Center(
-        child:
-          Stack(
-            children: [
-              Positioned(
-                top: topPositionSubtitle,
-                left: leftTitlePadding,
-                right: 20,
-                child: Row(
-                  children: [
-                    Opacity(
-                      opacity: subOpacity,
-                      child: Text(
-                        'Выполнено - 5',
-                        style: TextStyle(
-                          fontSize: subtitleSize,
+    return BlocBuilder<ToDoListBloc, ToDoListState>(
+      builder: (context, state) {
+        if(state is TodoListSuccessState){
+          return Container(
+          color: Colors.white,
+          child: Center(
+            child: Stack(
+              children: [
+                Positioned(
+                  top: topPositionSubtitle,
+                  left: leftTitlePadding,
+                  right: 20,
+                  child: Row(
+                    children: [
+                      Opacity(
+                        opacity: subOpacity,
+                        child: Text(
+                          'Выполнено - ${state.completedTasks}',
+                          style: TextStyle(
+                            fontSize: subtitleSize,
+                          ),
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: (){},
-                      icon: const Icon(Icons.visibility, size: 30,)
-                    )
-                  ],
-                ),
-              ),
-              Positioned(
-                top: topTitlePadding,
-                left: leftTitlePadding,
-                child: Text(
-                  'Мои дела',
-                  style: TextStyle(
-                    fontSize: titleSize,
-                    fontWeight: FontWeight.bold,
+                      const Spacer(),
+                      IconButton(
+                          onPressed: () {
+                            bloc.add(ChangeFilterEvent(
+                              state.filter == TaskFilter.showAll
+                                ? TaskFilter.showOnly
+                                : TaskFilter.showAll
+                            ));
+                            DementiappLogger.infoLog('Added ChangeFilterEvent 1');
+                          },
+                          icon: state.filter == TaskFilter.showOnly
+                          ? const Icon(
+                            Icons.visibility,
+                            size: 30,
+                            color: Color(lightColorGrayLight),
+                            )
+                          : const Icon(
+                              Icons.visibility_off,
+                              size: 30,
+                              color: Color(lightColorRed),
+                            )
+                      )
+                    ],
                   ),
                 ),
-              ),
-            ],
+                Positioned(
+                  top: topTitlePadding,
+                  left: leftTitlePadding,
+                  child: Text(
+                    'Мои дела',
+                    style: TextStyle(
+                      fontSize: titleSize,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-      ),
+        );
+        } else{
+          return const CircularProgressIndicator();
+        }
+      },
     );
   }
 
