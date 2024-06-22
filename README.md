@@ -1,16 +1,16 @@
-# <img src="/assets/app_icons/light/app_logo_light.png" width=80 alt="logo"> DementiApp - приложение ToDO-like для тех, кто вечно забывает таски
+# <img src="/assets/app_icons/light/app_logo_light.png" width=40 alt="logo"> DementiApp - приложение ToDO-like для тех, кто вечно забывает таски
 
 #### Ссылка на загрузку (Android):  https://disk.yandex.ru/d/bRbkxVdiEAjXaQ
 
 ## Features:
-#### Экран "Мои дела"
+### Экран "Мои дела"
 
 <img src="/assets/app_samples/todo_list_sample.png" alt="ToDo list" width="400"/> 
 <br>
 
 Данный экран предоставляет информацию о списке дел: выполненных/невыполненных, срочных/несрочных. Экран начинается с SliverPersistanceHeader, который дает title, количество выполненных дел а также кнопку-фильтр для показа/скрытия выполненных дел. Далее идет список задач, реализованный через SliverList и Dismissible. Есть возможность отмечать дело выполненным через чекбокс или по свайпу вправо, свайпом влево можно удалить таску из списка. В самом конце списка присутствует кнопка "Новое", навигирующая пользователя на экран "Добавления дел". Также присутствует FloatingActionButton, навигирующая на экран "Добавления дел".
 
-#### Экран "Добавления/Редактирования дела"
+### Экран "Добавления/Редактирования дела"
 
 <img src="/assets/app_samples/todo_create_sample.png" alt="ToDo create" width="400"/>  
 
