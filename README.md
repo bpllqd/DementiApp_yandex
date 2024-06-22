@@ -1,4 +1,4 @@
-# <img src="/assets/app_icons/light/app_logo_light.png" width=40 alt="logo"> DementiApp - приложение ToDO-like для тех, кто вечно забывает таски
+# <img src="/assets/app_icons/light/app_logo_light.png" width=50 alt="logo"> DementiApp - приложение ToDO-like для тех, кто вечно забывает таски
 
 #### Ссылка на загрузку (Android):  https://disk.yandex.ru/d/bRbkxVdiEAjXaQ
 
