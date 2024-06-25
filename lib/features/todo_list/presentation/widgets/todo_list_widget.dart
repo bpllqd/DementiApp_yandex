@@ -1,8 +1,8 @@
+import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:demetiapp/core/constants/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -50,7 +50,7 @@ class ToDoListWidget extends StatelessWidget {
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   return Card(
-                    color: const Color(lightBackSecondary),
+                    color: Theme.of(context).cardColor,
                     semanticContainer: false,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -79,10 +79,10 @@ class ToDoListWidget extends StatelessWidget {
           _addNewTask(scrollController, context);
         },
         elevation: 4,
-        backgroundColor: const Color(lightColorRed),
+        backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
         child: const Icon(
           Icons.add,
-          color: Color(lightColorWhite),
+          color: AppColors.lightColorWhite,
         ),
       ),
     );
@@ -127,7 +127,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
         if (state is TodoListSuccessState) {
           return Container(
             decoration: BoxDecoration(
-              color: const Color(lightColorWhite),
+              color: AppColors.lightColorWhite,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black45,
@@ -169,12 +169,12 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                 ? const Icon(
                                     Icons.visibility,
                                     size: 30,
-                                    color: Color(lightColorGrayLight),
+                                    color: AppColors.lightColorGrayLight,
                                   )
                                 : const Icon(
                                     Icons.visibility_off,
                                     size: 30,
-                                    color: Color(lightColorRed),
+                                    color: AppColors.lightColorRed,
                                   ))
                       ],
                     ),

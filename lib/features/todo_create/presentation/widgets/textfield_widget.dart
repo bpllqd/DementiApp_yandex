@@ -1,4 +1,4 @@
-import 'package:demetiapp/core/constants/constants.dart';
+import 'package:demetiapp/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class MaterialTextfield extends StatelessWidget {
@@ -22,23 +22,15 @@ class MaterialTextfield extends StatelessWidget {
           contentPadding: const EdgeInsets.all(16.0),
           labelText: 'Что надо сделать…',
           alignLabelWithHint: true,
-          labelStyle: const TextStyle(
-            fontSize: bodyFontSize,
-            height: 18.0 / bodyFontSize,
-            color: Color(lightLabelTertiary),
-          ),
+          labelStyle: Theme.of(context).textTheme.bodyMedium,
           filled: true,
-          fillColor: const Color(lightBackSecondary),
+          fillColor: AppColors.lightBackSecondary,
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(8.0),
           ),
         ),
-        style: const TextStyle(
-          fontSize: bodyFontSize,
-          height: 18.0 / bodyFontSize,
-          color: Color(lightLabelPrimary),
-        ),
+        style: Theme.of(context).textTheme.bodyMedium,
         maxLines: null,
         minLines: 5,
       ),

@@ -1,4 +1,4 @@
-import 'package:demetiapp/core/constants/constants.dart';
+import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/features/todo_list/domain/entities/task_entity.dart';
@@ -16,13 +16,6 @@ class CurrentTask extends StatelessWidget {
     super.key,
     required this.task,
   });
-
-  void _showTaskInfo(
-    BuildContext context,
-  ) async {
-    await context.push('/add_new');
-    DementiappLogger.infoLog('Navigating to /add_new');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +61,11 @@ class CurrentTask extends StatelessWidget {
                 child: task.priority == Priority.high
                     ? const SVG(
                         imagePath: priorityHigh,
-                        color: lightColorRed,
+                        color: 0xFFFF3B30,
                       )
                     : const SVG(
                         imagePath: priorityLow,
-                        color: lightColorGray,
+                        color: 0xFF8E8E93,
                       ),
               ),
             ),
@@ -86,9 +79,9 @@ class CurrentTask extends StatelessWidget {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        color: Color(lightLabelTertiary),
+                        color: AppColors.lightLabelTertiary,
                         decoration: TextDecoration.lineThrough,
-                        fontSize: bodyFontSize,
+                        fontSize: AppFontSize.bodyFontSize,
                       ),
                     ),
                   ] else ...[
@@ -97,9 +90,9 @@ class CurrentTask extends StatelessWidget {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        color: Color(lightLabelPrimary),
+                        color: AppColors.lightLabelPrimary,
                         decoration: TextDecoration.none,
-                        fontSize: bodyFontSize,
+                        fontSize: AppFontSize.bodyFontSize,
                       ),
                     ),
                   ],
@@ -110,9 +103,9 @@ class CurrentTask extends StatelessWidget {
               onPressed: () => context.push('/add_new'),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
-              icon: const SVG(
-                imagePath: info,
-                color: lightLabelTertiary,
+              icon: const Icon(
+                Icons.info_outline_rounded,
+                color: AppColors.lightLabelTertiary,
               ),
             )
           ],
@@ -126,8 +119,8 @@ class CurrentTask extends StatelessWidget {
                 Text(
                   FormatDate.toDmmmmyyyy(task.date!),
                   style: const TextStyle(
-                      color: Color(lightLabelTertiary),
-                      fontSize: subheadFontSize),
+                      color: AppColors.lightLabelTertiary,
+                      fontSize: AppFontSize.subheadFontSize),
                 ),
               ],
             ),

@@ -1,6 +1,5 @@
-import 'package:demetiapp/core/constants/constants.dart';
+import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
-import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/features/todo_create/presentation/bloc/todo_create_bloc.dart';
 import 'package:demetiapp/features/todo_list/domain/entities/task_entity.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(lightBackPrimary),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       elevation: 0,
       scrolledUnderElevation: 5.0,
       leading: IconButton(
@@ -36,9 +35,9 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
           context.pop(context);
           DementiappLogger.infoLog('Navigate back');
         },
-        icon: const SVG(
-          imagePath: close,
-          color: lightLabelPrimary,
+        icon: const Icon(
+          Icons.close,
+          color: AppColors.lightLabelPrimary,
         ),
       ),
       actions: [
@@ -63,13 +62,9 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.pop(context, true);
                 DementiappLogger.infoLog('Navigating to ToDo List');
               },
-              child: const Text(
+              child: Text(
                 'СОХРАНИТЬ',
-                style: TextStyle(
-                  fontSize: buttonFontSize,
-                  height: buttonFontHeight,
-                  color: Color(lightColorBlue),
-                ),
+                style: Theme.of(context).textTheme.labelMedium,
               ),
             ),
           ),

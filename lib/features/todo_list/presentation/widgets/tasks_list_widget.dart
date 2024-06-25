@@ -1,4 +1,4 @@
-import 'package:demetiapp/core/constants/constants.dart';
+import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
@@ -42,8 +42,8 @@ class TasksList extends StatelessWidget {
                   background: Container(
                     color: Color(
                       (state.filteredTasks[index].done)
-                          ? lightColorGrayLight
-                          : lightColorGreen,
+                          ? 0xFF8E8E93
+                          : 0xFF34C759,
                     ),
                     child: const Padding(
                       padding: EdgeInsets.only(left: 24.0),
@@ -57,7 +57,7 @@ class TasksList extends StatelessWidget {
                     ),
                   ),
                   secondaryBackground: Container(
-                    color: const Color(lightColorRed),
+                    color: AppColors.lightColorRed,
                     child: const Padding(
                       padding: EdgeInsets.only(right: 24.0),
                       child: Align(

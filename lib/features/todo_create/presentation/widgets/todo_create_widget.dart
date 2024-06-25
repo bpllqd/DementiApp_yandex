@@ -1,4 +1,4 @@
-import 'package:demetiapp/core/constants/constants.dart';
+import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/features/todo_create/presentation/bloc/todo_create_bloc.dart';
@@ -38,7 +38,7 @@ class ToDoCreateWidget extends StatelessWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(lightColorWhite),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: BarWidget(
           bloc: bloc,
           task: task,
@@ -78,15 +78,15 @@ class ToDoCreateWidget extends StatelessWidget {
                               }
                             },
                             style: const TextStyle(
-                              fontSize: buttonFontSize,
-                              height: buttonFontHeight,
-                              color: Color(lightLabelTertiary),
+                              fontSize: AppFontSize.buttonFontSize,
+                              height: 18.0 / AppFontSize.bodyFontSize,
+                              color: AppColors.lightLabelTertiary,
                             ),
                             decoration: const InputDecoration(
                               enabled: false,
                               disabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Color(lightSupportSeparator),
+                                  color: AppColors.lightSupportSeparator,
                                   width: 0.5,
                                   style: BorderStyle.solid,
                                 ),
@@ -96,46 +96,36 @@ class ToDoCreateWidget extends StatelessWidget {
                               labelText: 'Важность',
                               labelStyle: TextStyle(
                                 fontSize: 22.0,
-                                color: Color(lightLabelPrimary),
+                                color: AppColors.lightLabelPrimary,
                               ),
                             ),
                             iconSize: 0,
-                            hint: const Text(
+                            hint: Text(
                               'Нет',
-                              style: TextStyle(
-                                fontSize: buttonFontSize,
-                                height: buttonFontHeight,
-                                color: Color(lightLabelTertiary),
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
-                            items: const <DropdownMenuItem>[
+                            items: <DropdownMenuItem>[
                               DropdownMenuItem(
                                 value: Priority.no,
                                 child: Text(
                                   'Нет',
-                                  style: TextStyle(
-                                    fontSize: bodyFontSize,
-                                    color: Color(lightLabelPrimary),
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
                               DropdownMenuItem(
                                 value: Priority.low,
                                 child: Text(
                                   'Низкий',
-                                  style: TextStyle(
-                                    fontSize: bodyFontSize,
-                                    color: Color(lightLabelPrimary),
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
-                              DropdownMenuItem(
+                              const DropdownMenuItem(
                                 value: Priority.high,
                                 child: Text(
                                   '!! Высокий',
                                   style: TextStyle(
-                                    fontSize: bodyFontSize,
-                                    color: Color(lightColorRed),
+                                    fontSize: AppFontSize.bodyFontSize,
+                                    color: AppColors.lightColorRed,
                                   ),
                                 ),
                               ),
@@ -144,12 +134,12 @@ class ToDoCreateWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Divider(
                         height: 0,
                         thickness: 0.5,
-                        color: Color(lightSupportSeparator),
+                        color: Theme.of(context).dividerTheme.color,
                       ),
                     ),
                     Padding(
@@ -160,13 +150,9 @@ class ToDoCreateWidget extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'Сделать до',
-                                style: TextStyle(
-                                  fontSize: bodyFontSize,
-                                  height: bodyFontHeight,
-                                  color: Color(lightLabelPrimary),
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Visibility(
                                 visible: isSwitchEnabled != false,
@@ -177,8 +163,8 @@ class ToDoCreateWidget extends StatelessWidget {
                                         ? FormatDate.toDmmmmyyyy(pickedDate!)
                                         : '',
                                     style: const TextStyle(
-                                      fontSize: buttonFontSize,
-                                      color: Color(lightColorBlue),
+                                      fontSize: AppFontSize.buttonFontSize,
+                                      color: AppColors.lightColorRed,
                                     ),
                                   ),
                                 ),
@@ -201,26 +187,23 @@ class ToDoCreateWidget extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24.0),
-                    const Divider(
+                    Divider(
                       height: 0,
                       thickness: 0.5,
-                      color: Color(lightSupportSeparator),
+                      color: Theme.of(context).dividerTheme.color,
                     ),
                     const SizedBox(height: 8.0),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0),
                       child: task != null
                           ? DeleteButton(
-                              icon: delete,
-                              textColor: lightColorRed,
                               onTap: () {
                                 bloc.add(ToDoCreateDeleteEvent(task!));
                                 Navigator.pop(context);
+                                DementiappLogger.infoLog('Delet button has been pressed');
                               },
                             )
                           : DeleteButton(
-                              icon: deleteDisabled,
-                              textColor: lightLabelDisable,
                               onTap: () {},
                             ),
                     ),
@@ -240,20 +223,19 @@ Future<DateTime?> pickDate(BuildContext context) {
   return showDatePicker(
     helpText: DateTime.now().year.toString(),
     confirmText: 'ГОТОВО',
-    locale: const Locale('ru'),
     context: context,
     initialDate: DateTime.now(),
-    firstDate: DateTime(1950),
-    lastDate: DateTime(2100),
+    firstDate: DateTime(2024),
+    lastDate: DateTime(2080),
     builder: (context, child) {
       return Theme(
         data: Theme.of(context).copyWith(
           colorScheme: const ColorScheme.light(
-            primary: Color(lightColorBlue),
+            primary: AppColors.lightColorRed,
           ),
           textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(
-              foregroundColor: const Color(lightColorBlue),
+              foregroundColor: AppColors.lightColorRed,
             ),
           ),
         ),

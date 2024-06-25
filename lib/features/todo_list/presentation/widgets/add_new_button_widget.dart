@@ -1,4 +1,4 @@
-import 'package:demetiapp/core/constants/constants.dart';
+import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +28,7 @@ class AddNewButton extends StatelessWidget {
               height: 48.0,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                color: const Color(lightBackSecondary),
+                color: AppColors.lightBackSecondary,
               ),
               child: const Align(
                 alignment: Alignment.centerLeft,
@@ -39,10 +39,8 @@ class AddNewButton extends StatelessWidget {
                       Text(
                         'Новое',
                         style: TextStyle(
-                          fontSize: bodyFontSize,
-                          color: Color(
-                            lightLabelTertiary,
-                          ),
+                          fontSize: AppFontSize.bodyFontSize,
+                          color: AppColors.lightLabelTertiary,
                         ),
                       ),
                     ],

@@ -1,4 +1,5 @@
 import 'package:demetiapp/core/routing/routing.dart';
+import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/features/todo_create/presentation/bloc/todo_create_bloc.dart';
 import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
@@ -47,10 +48,13 @@ class RoutingWrapper extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
+      locale: const Locale('ru'),
       supportedLocales: const [Locale('ru')],
       title: 'DementiApp',
       debugShowCheckedModeBanner: false,
       routerConfig: _router,
+      theme: lightTheme(),
+      darkTheme: darkTheme(),
     );
   }
 }
