@@ -114,9 +114,9 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     double topTitlePadding = interpolate(100, 37, progress);
     double leftTitlePadding = interpolate(40, 20, progress);
     double topPositionSubtitle = interpolate(155, 37, progress);
-    double containerShadowOffset = interpolate(-5, 4, progress);
-    double containerBlurRadius = interpolate(4, 0, progress);
-    double containerSpreadRadius = interpolate(2, 0, progress);
+    double containerShadowOffset = interpolate(-7, 4, progress);
+    double containerBlurRadius = interpolate(0, 17, progress);
+    double containerSpreadRadius = interpolate(4, 0, progress);
     double subOpacity = interpolate(1, 0, progress);
 
     if (subOpacity <= 0) subOpacity = 0;
