@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
-import 'package:demetiapp/features/todo_list/domain/entities/task_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -23,12 +23,7 @@ class ToDoCreateBloc extends Bloc<ToDoCreateEvent, ToDoCreateState> {
     ToDoCreateNewEvent event,
     Emitter<ToDoCreateState> emit,
   ) async {
-    emit(ToDoCreateLoadingState());
-    DementiappLogger.infoLog('Loading...');
-    const Duration(seconds: 2);
-
-    emit(ToDoCreateSuccessState(
-        task: event.task, hasDate: event.task.date != null,),);
+   // TODO
     DementiappLogger.infoLog('Task has been created!');
   }
 
@@ -36,12 +31,7 @@ class ToDoCreateBloc extends Bloc<ToDoCreateEvent, ToDoCreateState> {
     ToDoCreateDeleteEvent event,
     Emitter<ToDoCreateState> emit,
   ) async {
-    emit(ToDoCreateLoadingState());
-    DementiappLogger.infoLog('Loading...');
-    const Duration(seconds: 2);
-
-    emit(ToDoCreateSuccessState(
-        task: event.task, hasDate: event.task.date != null,),);
+    // TODO
     DementiappLogger.infoLog('Task has been deleted!');
   }
 
@@ -49,8 +39,7 @@ class ToDoCreateBloc extends Bloc<ToDoCreateEvent, ToDoCreateState> {
     ToDoCreateSwitchDateEvent event,
     Emitter<ToDoCreateState> emit,
   ) async {
-    emit(ToDoCreateSuccessState(
-        task: event.task, hasDate: event.task!.date == null ? false : true,),);
+    // TODO
     DementiappLogger.infoLog('DatePicker switch has been switched!');
   }
 }

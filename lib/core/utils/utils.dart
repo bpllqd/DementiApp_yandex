@@ -1,4 +1,4 @@
-import 'package:demetiapp/features/todo_list/domain/entities/task_entity.dart';
+import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -37,14 +37,14 @@ class SVG extends StatelessWidget {
   }
 }
 
-enum TaskFilter { showAll, showOnly }
+enum TasksFilter { showAll, showOnly }
 
-extension TasksFilterExtension on TaskFilter {
+extension TasksFilterExtension on TasksFilter {
   bool filterMode(TaskEntity task) {
     switch (this) {
-      case TaskFilter.showAll:
+      case TasksFilter.showAll:
         return true;
-      case TaskFilter.showOnly:
+      case TasksFilter.showOnly:
         return !task.done;
     }
   }

@@ -30,13 +30,13 @@ class TasksList extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 return Dismissible(
                   key: Key(
-                    state.filteredTasks[index].taskID,
+                    state.filteredTasks[index].id,
                   ),
                   confirmDismiss: (direction) =>
                       confirmDismissing(direction, bloc, index, state),
                   onDismissed: (_) => bloc.add(
                     DeleteTaskEvent(
-                      state.filteredTasks[index].taskID,
+                      state.filteredTasks[index].id,
                     ),
                   ),
                   background: Container(
@@ -98,7 +98,7 @@ class TasksList extends StatelessWidget {
     if (direction == DismissDirection.startToEnd) {
       bloc.add(
         CompleteTaskEvent(
-          state.filteredTasks[index],
+          '',
         ),
       );
     }

@@ -1,8 +1,8 @@
+import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/features/todo_create/presentation/bloc/todo_create_bloc.dart';
-import 'package:demetiapp/features/todo_list/domain/entities/task_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -25,10 +25,10 @@ class ToDoCreateWidget extends StatelessWidget {
 
     final TextEditingController textController = TextEditingController();
 
-    textController.text = task?.title ?? '';
-    Priority? priority = task?.priority;
-    DateTime? pickedDate = task?.date;
-    bool isSwitchEnabled = task?.date != null;
+    textController.text = task?.text ?? '';
+    String? priority = task?.importance;
+    DateTime? pickedDate = task?.deadline;
+    bool isSwitchEnabled = task?.deadline != null;
 
     return BlocListener<ToDoCreateBloc, ToDoCreateState>(
       listener: (context, state) {
@@ -71,8 +71,8 @@ class ToDoCreateWidget extends StatelessWidget {
                           child: DropdownButtonFormField(
                             value: priority,
                             onChanged: (newPriority) {
-                              if (newPriority != Priority.no) {
-                                priority = newPriority as Priority;
+                              if (newPriority != 'base') {
+                                priority = newPriority;
                               } else {
                                 priority = null;
                               }
@@ -104,23 +104,23 @@ class ToDoCreateWidget extends StatelessWidget {
                               'Нет',
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
-                            items: <DropdownMenuItem<Priority>>[
+                            items: <DropdownMenuItem<String>>[
                               DropdownMenuItem(
-                                value: Priority.no,
+                                value: 'base',
                                 child: Text(
                                   'Нет',
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
                               DropdownMenuItem(
-                                value: Priority.low,
+                                value: 'low',
                                 child: Text(
                                   'Низкий',
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
                               const DropdownMenuItem(
-                                value: Priority.high,
+                                value: 'high',
                                 child: Text(
                                   '!! Высокий',
                                   style: TextStyle(

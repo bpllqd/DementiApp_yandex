@@ -1,7 +1,7 @@
+import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/features/todo_create/presentation/bloc/todo_create_bloc.dart';
-import 'package:demetiapp/features/todo_list/domain/entities/task_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,7 +19,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
   final ToDoCreateBloc bloc;
   final TaskEntity? task;
   final TextEditingController textController;
-  final Priority? priority;
+  final String? priority;
   final bool isSwitchEnabled;
   final DateTime? pickedDate;
 
@@ -49,13 +49,13 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
                 bloc.add(
                   ToDoCreateNewEvent(
                     TaskEntity(
-                      taskID: task?.taskID ?? '',
-                      title: textController.text.isNotEmpty
+                      id: task?.id ?? '',
+                      text: textController.text.isNotEmpty
                           ? textController.text
                           : 'Что надо сделать...',
                       done: false,
-                      priority: priority,
-                      date: isSwitchEnabled ? pickedDate : null,
+                      importance: 'base',
+                      deadline: isSwitchEnabled ? pickedDate : null,
                     ),
                   ),
                 );

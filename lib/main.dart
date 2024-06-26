@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
       BlocProvider(
-        create: (context) => ToDoListBloc()..add(const GetTasksEvent()),
+        create: (context) => ToDoListBloc()..add(GetTasksEvent()),
       ),
       BlocProvider(
         create: (context) => ToDoCreateBloc()..add(ToDoCreateInitEvent()),

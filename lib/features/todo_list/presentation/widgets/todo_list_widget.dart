@@ -168,13 +168,14 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                             IconButton(
                                 onPressed: () {
                                   bloc.add(ChangeFilterEvent(
-                                      state.filter == TaskFilter.showAll
-                                          ? TaskFilter.showOnly
-                                          : TaskFilter.showAll,),);
+                                    filter: 
+                                      state.filter == TasksFilter.showAll
+                                          ? TasksFilter.showOnly
+                                          : TasksFilter.showAll,),);
                                   DementiappLogger.infoLog(
                                       'Added ChangeFilterEvent 1',);
                                 },
-                                icon: state.filter == TaskFilter.showOnly
+                                icon: state.filter == TasksFilter.showOnly
                                     ? const Icon(
                                         Icons.visibility,
                                         size: 30,

@@ -1,47 +1,59 @@
 part of 'todo_list_bloc.dart';
 
-abstract class ToDoListEvent extends Equatable {
-  const ToDoListEvent();
+abstract class ToDoListEvent extends Equatable {}
 
+class GetTasksEvent extends ToDoListEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class AddNewTaskEvent extends ToDoListEvent {
   @override
   List<Object> get props => [];
 }
 
-class GetTasksEvent extends ToDoListEvent {
-  const GetTasksEvent();
-}
+class EditTaskEvent extends ToDoListEvent{
+  final String taskID;
 
-class QuickAddNewTaskEvent extends ToDoListEvent {
-  final TaskEntity task;
-
-  const QuickAddNewTaskEvent(this.task);
+  EditTaskEvent({required this.taskID});
 
   @override
-  List<Object> get props => [task];
+  List<Object?> get props => [taskID];
+
 }
 
 class DeleteTaskEvent extends ToDoListEvent {
-  final String uuid;
+  final String taskID;
 
-  const DeleteTaskEvent(this.uuid);
+  DeleteTaskEvent(this.taskID);
 
   @override
-  List<Object> get props => [uuid];
+  List<Object> get props => [taskID];
 }
 
 class CompleteTaskEvent extends ToDoListEvent {
-  final TaskEntity task;
+  final String taskID;
 
-  const CompleteTaskEvent(this.task);
+  CompleteTaskEvent(this.taskID);
 
   @override
-  List<Object> get props => [task];
+  List<Object> get props => [taskID];
+}
+
+class UnCompleteTaskEvent extends ToDoListEvent{
+  final String taskID;
+
+  UnCompleteTaskEvent({required this.taskID});
+
+  @override
+  List<Object?> get props => [taskID];
+
 }
 
 class ChangeFilterEvent extends ToDoListEvent {
-  final TaskFilter filter;
+  final TasksFilter filter;
 
-  const ChangeFilterEvent(this.filter);
+  ChangeFilterEvent({required this.filter});
 
   @override
   List<Object> get props => [filter];
