@@ -50,7 +50,7 @@ class CurrentTask extends StatelessWidget {
                     DementiappLogger.infoLog('Added CompleteTaskEvent 3');
                   },
                 ),
-              ]
+              ],
             ],
             Visibility(
               visible: !(task.done) &&
@@ -107,7 +107,7 @@ class CurrentTask extends StatelessWidget {
                 Icons.info_outline_rounded,
                 color: AppColors.lightLabelTertiary,
               ),
-            )
+            ),
           ],
         ),
         if (task.date != null && task.done == false)
@@ -120,11 +120,11 @@ class CurrentTask extends StatelessWidget {
                   FormatDate.toDmmmmyyyy(task.date!),
                   style: const TextStyle(
                       color: AppColors.lightLabelTertiary,
-                      fontSize: AppFontSize.subheadFontSize),
+                      fontSize: AppFontSize.subheadFontSize,),
                 ),
               ],
             ),
-          )
+          ),
       ],
     );
   }

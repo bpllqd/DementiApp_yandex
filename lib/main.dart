@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
       ),
       BlocProvider(
         create: (context) => ToDoCreateBloc()..add(ToDoCreateInitEvent()),
-      )
-    ], child: RoutingWrapper());
+      ),
+    ], child: RoutingWrapper(),);
   }
 }
 
@@ -38,7 +38,7 @@ class RoutingWrapper extends StatelessWidget {
       initialLocation: '/',
       redirect: (BuildContext context, GoRouterState state) {
         return null;
-      });
+      },);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class RoutingWrapper extends StatelessWidget {
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate
+        GlobalCupertinoLocalizations.delegate,
       ],
       locale: const Locale('ru'),
       supportedLocales: const [Locale('ru')],

@@ -105,7 +105,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+      BuildContext context, double shrinkOffset, bool overlapsContent,) {
     // функция рассчета коэффициента изменения скролла
     double progress = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
@@ -142,8 +142,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                     color: Colors.black45,
                     blurRadius: containerBlurRadius,
                     spreadRadius: containerSpreadRadius,
-                    offset: Offset(0, containerShadowOffset))
-              ]),
+                    offset: Offset(0, containerShadowOffset),),
+              ],),
               child: Center(
                 child: SizedBox(
                   height: containerHeight,
@@ -170,9 +170,9 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                   bloc.add(ChangeFilterEvent(
                                       state.filter == TaskFilter.showAll
                                           ? TaskFilter.showOnly
-                                          : TaskFilter.showAll));
+                                          : TaskFilter.showAll,),);
                                   DementiappLogger.infoLog(
-                                      'Added ChangeFilterEvent 1');
+                                      'Added ChangeFilterEvent 1',);
                                 },
                                 icon: state.filter == TaskFilter.showOnly
                                     ? const Icon(
@@ -184,7 +184,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                         Icons.visibility_off,
                                         size: 30,
                                         color: AppColors.lightColorRed,
-                                      ))
+                                      ),),
                           ],
                         ),
                       ),

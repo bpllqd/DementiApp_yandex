@@ -23,55 +23,55 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
         title:
             'Пресс качат, и еще качат, и еще качат, и тренироват, и мотивацию паднят, и пресс качат долго качат',
         done: false,
-        priority: Priority.high),
+        priority: Priority.high,),
     TaskEntity(
         taskID: '2',
         title: 'Бегит',
         done: true,
         priority: Priority.no,
-        date: DateTime.now()),
+        date: DateTime.now(),),
     const TaskEntity(
-        taskID: '3', title: 'Туриник', done: false, priority: Priority.low),
+        taskID: '3', title: 'Туриник', done: false, priority: Priority.low,),
     TaskEntity(
         taskID: '4',
         title: 'Анжумания',
         done: false,
         priority: Priority.high,
-        date: DateTime.now()),
+        date: DateTime.now(),),
     const TaskEntity(
         taskID: '5',
         title: 'Пресс качат',
         done: false,
-        priority: Priority.high),
+        priority: Priority.high,),
     const TaskEntity(
-        taskID: '6', title: 'Бегит', done: true, priority: Priority.no),
+        taskID: '6', title: 'Бегит', done: true, priority: Priority.no,),
     TaskEntity(
         taskID: '7',
         title: 'Туриник',
         done: false,
         priority: Priority.low,
-        date: DateTime.now()),
+        date: DateTime.now(),),
     const TaskEntity(
-        taskID: '8', title: 'Анжумания', done: false, priority: Priority.high),
+        taskID: '8', title: 'Анжумания', done: false, priority: Priority.high,),
     const TaskEntity(
         taskID: '9',
         title: 'Пресс качат',
         done: false,
-        priority: Priority.high),
+        priority: Priority.high,),
     const TaskEntity(
-        taskID: '10', title: 'Бегит', done: true, priority: Priority.no),
+        taskID: '10', title: 'Бегит', done: true, priority: Priority.no,),
     TaskEntity(
         taskID: '11',
         title: 'Туриник',
         done: false,
         priority: Priority.low,
-        date: DateTime.now()),
+        date: DateTime.now(),),
     const TaskEntity(
-        taskID: '12', title: 'Анжумания', done: false, priority: Priority.high),
+        taskID: '12', title: 'Анжумания', done: false, priority: Priority.high,),
   ];
 
   Future<void> _getTasks(
-      GetTasksEvent event, Emitter<ToDoListState> emit) async {
+      GetTasksEvent event, Emitter<ToDoListState> emit,) async {
     emit(ToDoListLoadingState());
     DementiappLogger.infoLog('Loading...');
 
@@ -87,7 +87,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     emit(TodoListSuccessState(
       tasks: tasksFromRepo,
       completedTasks: ctr,
-    ));
+    ),);
     DementiappLogger.infoLog('Got tasks!');
   }
 
@@ -148,7 +148,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     }
 
     emit(TodoListSuccessState(
-        tasks: tasksFromRepo, completedTasks: ctr, filter: event.filter));
+        tasks: tasksFromRepo, completedTasks: ctr, filter: event.filter,),);
     DementiappLogger.infoLog('Filter has been changed!');
   }
 }

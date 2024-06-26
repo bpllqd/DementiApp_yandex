@@ -23,7 +23,7 @@ class TodoListSuccessState extends ToDoListState {
   const TodoListSuccessState(
       {required this.tasks,
       required this.completedTasks,
-      this.filter = TaskFilter.showAll});
+      this.filter = TaskFilter.showAll,});
 
   @override
   List<Object?> get props => [tasks ?? '', completedTasks ?? 0, filter];

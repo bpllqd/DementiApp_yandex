@@ -15,6 +15,6 @@ List<RouteBase> dementiappRoutes = <RouteBase>[
             builder: (BuildContext context, GoRouterState state) {
               final TaskEntity? task = state.extra as TaskEntity?;
               return ToDoCreateScreen(task: task);
-            })
-      ])
+            },),
+      ],),
 ];

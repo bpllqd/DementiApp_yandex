@@ -28,7 +28,7 @@ class ToDoCreateBloc extends Bloc<ToDoCreateEvent, ToDoCreateState> {
     const Duration(seconds: 2);
 
     emit(ToDoCreateSuccessState(
-        task: event.task, hasDate: event.task.date != null));
+        task: event.task, hasDate: event.task.date != null,),);
     DementiappLogger.infoLog('Task has been created!');
   }
 
@@ -41,7 +41,7 @@ class ToDoCreateBloc extends Bloc<ToDoCreateEvent, ToDoCreateState> {
     const Duration(seconds: 2);
 
     emit(ToDoCreateSuccessState(
-        task: event.task, hasDate: event.task.date != null));
+        task: event.task, hasDate: event.task.date != null,),);
     DementiappLogger.infoLog('Task has been deleted!');
   }
 
@@ -50,7 +50,7 @@ class ToDoCreateBloc extends Bloc<ToDoCreateEvent, ToDoCreateState> {
     Emitter<ToDoCreateState> emit,
   ) async {
     emit(ToDoCreateSuccessState(
-        task: event.task, hasDate: event.task!.date == null ? false : true));
+        task: event.task, hasDate: event.task!.date == null ? false : true,),);
     DementiappLogger.infoLog('DatePicker switch has been switched!');
   }
 }

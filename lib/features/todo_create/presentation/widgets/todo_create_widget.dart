@@ -182,7 +182,7 @@ class ToDoCreateWidget extends StatelessWidget {
                                 bloc.add(ToDoCreateSwitchDateEvent(task));
                               }
                             },
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -201,7 +201,7 @@ class ToDoCreateWidget extends StatelessWidget {
                                 bloc.add(ToDoCreateDeleteEvent(task!));
                                 Navigator.pop(context);
                                 DementiappLogger.infoLog(
-                                    'Delet button has been pressed');
+                                    'Delet button has been pressed',);
                               },
                             )
                           : DeleteButton(
