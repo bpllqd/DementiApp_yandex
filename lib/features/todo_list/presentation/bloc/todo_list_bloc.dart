@@ -20,7 +20,8 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
   List<TaskEntity> tasksFromRepo = [
     const TaskEntity(
         taskID: '1',
-        title: 'Пресс качат, и еще качат, и еще качат, и тренироват, и мотивацию паднят, и пресс качат долго качат',
+        title:
+            'Пресс качат, и еще качат, и еще качат, и тренироват, и мотивацию паднят, и пресс качат долго качат',
         done: false,
         priority: Priority.high),
     TaskEntity(

@@ -79,7 +79,8 @@ class ToDoListWidget extends StatelessWidget {
           _addNewTask(scrollController, context);
         },
         elevation: 4,
-        backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+        backgroundColor:
+            Theme.of(context).floatingActionButtonTheme.backgroundColor,
         child: const Icon(
           Icons.add,
           color: AppColors.lightColorWhite,
@@ -135,17 +136,14 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
           if (state is TodoListSuccessState) {
             return Container(
               height: containerHeight,
-              decoration: BoxDecoration(
-                color: AppColors.lightColorWhite,
-                boxShadow: [
-                  BoxShadow(
+              decoration:
+                  BoxDecoration(color: AppColors.lightColorWhite, boxShadow: [
+                BoxShadow(
                     color: Colors.black45,
                     blurRadius: containerBlurRadius,
                     spreadRadius: containerSpreadRadius,
-                    offset: Offset(0, containerShadowOffset)
-                  )
-                ]
-              ),
+                    offset: Offset(0, containerShadowOffset))
+              ]),
               child: Center(
                 child: SizedBox(
                   height: containerHeight,

@@ -72,7 +72,7 @@ class ToDoCreateWidget extends StatelessWidget {
                             value: priority,
                             onChanged: (newPriority) {
                               if (newPriority != Priority.no) {
-                                priority = newPriority;
+                                priority = newPriority as Priority;
                               } else {
                                 priority = null;
                               }
@@ -104,7 +104,7 @@ class ToDoCreateWidget extends StatelessWidget {
                               'Нет',
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
-                            items: <DropdownMenuItem>[
+                            items: <DropdownMenuItem<Priority>>[
                               DropdownMenuItem(
                                 value: Priority.no,
                                 child: Text(
@@ -200,7 +200,8 @@ class ToDoCreateWidget extends StatelessWidget {
                               onTap: () {
                                 bloc.add(ToDoCreateDeleteEvent(task!));
                                 Navigator.pop(context);
-                                DementiappLogger.infoLog('Delet button has been pressed');
+                                DementiappLogger.infoLog(
+                                    'Delet button has been pressed');
                               },
                             )
                           : DeleteButton(

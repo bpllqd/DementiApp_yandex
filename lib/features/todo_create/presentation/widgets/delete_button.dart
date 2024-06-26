@@ -2,7 +2,6 @@ import 'package:demetiapp/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class DeleteButton extends StatelessWidget {
-
   final VoidCallback onTap;
 
   const DeleteButton({
