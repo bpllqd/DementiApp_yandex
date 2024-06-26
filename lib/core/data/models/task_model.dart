@@ -1,10 +1,14 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 
+class TaskModel extends TaskEntity {
+  const TaskModel(
+      {required super.id,
+      required super.text,
+      required super.importance,
+      required super.done,
+      super.deadline,});
 
-class TaskModel extends TaskEntity{
-  const TaskModel({required super.id, required super.text, required super.importance, required super.done, super.deadline});
-
-  factory TaskModel.fromJson(Map<String, dynamic> json){
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
       id: json['id'] as String,
       text: json['text'] as String,
@@ -14,13 +18,13 @@ class TaskModel extends TaskEntity{
     );
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'text': text,
       'importance': importance,
-      'done':done,
-      'deadline':deadline==null ? '' : deadline!.toUtc(), //спорный момент
+      'done': done,
+      'deadline': deadline == null ? '' : deadline!.toUtc(), //спорный момент
     };
   }
 }

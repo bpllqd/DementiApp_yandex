@@ -18,10 +18,11 @@ class TodoListSuccessState extends ToDoListState {
   final TasksFilter filter;
   List<TaskEntity> get filteredTasks => filter.applyFilter(tasks);
 
-  TodoListSuccessState(
-      {required this.tasks,
-      required this.completedTasks,
-      this.filter = TasksFilter.showAll,});
+  TodoListSuccessState({
+    required this.tasks,
+    required this.completedTasks,
+    this.filter = TasksFilter.showAll,
+  });
 
   @override
   List<Object?> get props => [tasks, completedTasks, filter];

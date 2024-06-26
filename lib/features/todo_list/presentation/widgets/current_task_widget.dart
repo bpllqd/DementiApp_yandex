@@ -54,8 +54,7 @@ class CurrentTask extends StatelessWidget {
             ],
             Visibility(
               visible: !(task.done) &&
-                  (task.importance == 'high' ||
-                      task.importance == 'low'),
+                  (task.importance == 'high' || task.importance == 'low'),
               child: Padding(
                 padding: const EdgeInsets.only(right: 3.0),
                 child: task.importance == 'high'
@@ -119,8 +118,9 @@ class CurrentTask extends StatelessWidget {
                 Text(
                   FormatDate.toDmmmmyyyy(task.deadline!),
                   style: const TextStyle(
-                      color: AppColors.lightLabelTertiary,
-                      fontSize: AppFontSize.subheadFontSize,),
+                    color: AppColors.lightLabelTertiary,
+                    fontSize: AppFontSize.subheadFontSize,
+                  ),
                 ),
               ],
             ),

@@ -19,14 +19,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider(
-        create: (context) => ToDoListBloc()..add(GetTasksEvent()),
-      ),
-      BlocProvider(
-        create: (context) => ToDoCreateBloc()..add(ToDoCreateInitEvent()),
-      ),
-    ], child: RoutingWrapper(),);
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ToDoListBloc()..add(GetTasksEvent()),
+        ),
+        BlocProvider(
+          create: (context) => ToDoCreateBloc()..add(ToDoCreateInitEvent()),
+        ),
+      ],
+      child: RoutingWrapper(),
+    );
   }
 }
 
@@ -34,11 +37,12 @@ class RoutingWrapper extends StatelessWidget {
   RoutingWrapper({super.key});
 
   final GoRouter _router = GoRouter(
-      routes: dementiappRoutes,
-      initialLocation: '/',
-      redirect: (BuildContext context, GoRouterState state) {
-        return null;
-      },);
+    routes: dementiappRoutes,
+    initialLocation: '/',
+    redirect: (BuildContext context, GoRouterState state) {
+      return null;
+    },
+  );
 
   @override
   Widget build(BuildContext context) {

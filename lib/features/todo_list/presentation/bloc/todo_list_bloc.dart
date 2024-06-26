@@ -18,10 +18,12 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
   }
 
   Future<void> _getTasks(
-      GetTasksEvent event, Emitter<ToDoListState> emit,) async {
-        //TODO
+    GetTasksEvent event,
+    Emitter<ToDoListState> emit,
+  ) async {
+    //TODO
 
-      DementiappLogger.infoLog('GetTasksEvent done with state: ');
+    DementiappLogger.infoLog('GetTasksEvent done with state: ');
   }
 
   Future<void> _deleteTask(

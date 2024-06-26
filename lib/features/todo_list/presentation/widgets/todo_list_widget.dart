@@ -105,7 +105,10 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent,) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     // функция рассчета коэффициента изменения скролла
     double progress = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
@@ -136,14 +139,17 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
           if (state is TodoListSuccessState) {
             return Container(
               height: containerHeight,
-              decoration:
-                  BoxDecoration(color: AppColors.lightColorWhite, boxShadow: [
-                BoxShadow(
+              decoration: BoxDecoration(
+                color: AppColors.lightColorWhite,
+                boxShadow: [
+                  BoxShadow(
                     color: Colors.black45,
                     blurRadius: containerBlurRadius,
                     spreadRadius: containerSpreadRadius,
-                    offset: Offset(0, containerShadowOffset),),
-              ],),
+                    offset: Offset(0, containerShadowOffset),
+                  ),
+                ],
+              ),
               child: Center(
                 child: SizedBox(
                   height: containerHeight,
@@ -166,26 +172,30 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                             ),
                             const Spacer(),
                             IconButton(
-                                onPressed: () {
-                                  bloc.add(ChangeFilterEvent(
-                                    filter: 
-                                      state.filter == TasksFilter.showAll
-                                          ? TasksFilter.showOnly
-                                          : TasksFilter.showAll,),);
-                                  DementiappLogger.infoLog(
-                                      'Added ChangeFilterEvent 1',);
-                                },
-                                icon: state.filter == TasksFilter.showOnly
-                                    ? const Icon(
-                                        Icons.visibility,
-                                        size: 30,
-                                        color: AppColors.lightColorGrayLight,
-                                      )
-                                    : const Icon(
-                                        Icons.visibility_off,
-                                        size: 30,
-                                        color: AppColors.lightColorRed,
-                                      ),),
+                              onPressed: () {
+                                bloc.add(
+                                  ChangeFilterEvent(
+                                    filter: state.filter == TasksFilter.showAll
+                                        ? TasksFilter.showOnly
+                                        : TasksFilter.showAll,
+                                  ),
+                                );
+                                DementiappLogger.infoLog(
+                                  'Added ChangeFilterEvent 1',
+                                );
+                              },
+                              icon: state.filter == TasksFilter.showOnly
+                                  ? const Icon(
+                                      Icons.visibility,
+                                      size: 30,
+                                      color: AppColors.lightColorGrayLight,
+                                    )
+                                  : const Icon(
+                                      Icons.visibility_off,
+                                      size: 30,
+                                      color: AppColors.lightColorRed,
+                                    ),
+                            ),
                           ],
                         ),
                       ),

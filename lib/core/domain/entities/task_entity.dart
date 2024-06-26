@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class TaskEntity extends Equatable{
+class TaskEntity extends Equatable {
   final String id; //TODO: завести Uuid?
   final String text;
   final String importance;
@@ -13,10 +13,10 @@ class TaskEntity extends Equatable{
     required this.importance,
     this.deadline,
     required this.done,
-    });
-    
-      @override
-      List<Object?> get props => [
+  });
+
+  @override
+  List<Object?> get props => [
         id,
         text,
         importance,

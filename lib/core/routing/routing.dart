@@ -6,15 +6,17 @@ import 'package:go_router/go_router.dart';
 
 List<RouteBase> dementiappRoutes = <RouteBase>[
   GoRoute(
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) =>
-          const ToDoListScreen(),
-      routes: <RouteBase>[
-        GoRoute(
-            path: 'add_new',
-            builder: (BuildContext context, GoRouterState state) {
-              final TaskEntity? task = state.extra as TaskEntity?;
-              return ToDoCreateScreen(task: task);
-            },),
-      ],),
+    path: '/',
+    builder: (BuildContext context, GoRouterState state) =>
+        const ToDoListScreen(),
+    routes: <RouteBase>[
+      GoRoute(
+        path: 'add_new',
+        builder: (BuildContext context, GoRouterState state) {
+          final TaskEntity? task = state.extra as TaskEntity?;
+          return ToDoCreateScreen(task: task);
+        },
+      ),
+    ],
+  ),
 ];

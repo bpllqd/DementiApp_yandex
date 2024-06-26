@@ -12,14 +12,13 @@ class AddNewTaskEvent extends ToDoListEvent {
   List<Object> get props => [];
 }
 
-class EditTaskEvent extends ToDoListEvent{
+class EditTaskEvent extends ToDoListEvent {
   final String taskID;
 
   EditTaskEvent({required this.taskID});
 
   @override
   List<Object?> get props => [taskID];
-
 }
 
 class DeleteTaskEvent extends ToDoListEvent {
@@ -40,14 +39,13 @@ class CompleteTaskEvent extends ToDoListEvent {
   List<Object> get props => [taskID];
 }
 
-class UnCompleteTaskEvent extends ToDoListEvent{
+class UnCompleteTaskEvent extends ToDoListEvent {
   final String taskID;
 
   UnCompleteTaskEvent({required this.taskID});
 
   @override
   List<Object?> get props => [taskID];
-
 }
 
 class ChangeFilterEvent extends ToDoListEvent {
