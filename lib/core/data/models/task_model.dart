@@ -1,12 +1,13 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 
 class TaskModel extends TaskEntity {
-  const TaskModel(
-      {required super.id,
-      required super.text,
-      required super.importance,
-      required super.done,
-      super.deadline,});
+  const TaskModel({
+    required super.id,
+    required super.text,
+    required super.importance,
+    required super.done,
+    super.deadline,
+  });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(

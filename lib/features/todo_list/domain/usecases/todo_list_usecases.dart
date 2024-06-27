@@ -1,52 +1,54 @@
+import 'package:dartz/dartz.dart';
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/domain/repository/todo_list_repository.dart';
+import 'package:demetiapp/core/error/failure.dart';
 
 class GetAllTasks {
   final ToDoListRepository toDoListrepository;
 
   GetAllTasks({required this.toDoListrepository});
 
-  Future<List<TaskEntity>> call() async{
+  Future<Either<Failure, List<TaskEntity>>> call() async {
     return await toDoListrepository.getAllTasks();
   }
 }
 
-class UpdateAllTasks{
+class UpdateAllTasks {
   final ToDoListRepository toDoListrepository;
 
   UpdateAllTasks({required this.toDoListrepository});
 
-  Future<> call(int revision) async{
+  Future<Either<Failure, void>> call(int revision) async {
     return await toDoListrepository.updateAllTasks(revision);
   }
 }
 
-class DeleteTask{
+class DeleteTask {
   final ToDoListRepository toDoListrepository;
 
   DeleteTask({required this.toDoListrepository});
 
-  Future<> call(String id) async{
+  Future<Either<Failure, void>> call(String id) async {
     return await toDoListrepository.deleteTask(id);
   }
 }
 
-class GetExactTask{
+class GetExactTask {
   final ToDoListRepository toDoListrepository;
 
   GetExactTask({required this.toDoListrepository});
 
-  Future<TaskEntity> call(String id) async{
+  Future<Either<Failure, TaskEntity>> call(String id) async {
     return await toDoListrepository.getExactTask(id);
   }
 }
 
-class DeleteExactTask{
+class DeleteExactTask {
   final ToDoListRepository toDoListrepository;
 
   DeleteExactTask({required this.toDoListrepository});
 
-  Future<> call(String id) async{
+  Future<Either<Failure, void>> call(String id) async {
     return await toDoListrepository.deleteExactTask(id);
   }
 }
