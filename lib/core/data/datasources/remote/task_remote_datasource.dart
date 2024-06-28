@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:demetiapp/core/data/models/task_model.dart';
+import 'package:demetiapp/core/data/models/task_api_model.dart';
 import 'package:demetiapp/core/error/exception.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:dio/dio.dart';
@@ -9,36 +9,37 @@ abstract class TaskRemoteDataSource {
   /// Calls the https://beta.mrdekk.ru/todo/list endpoint
   ///
   /// Throws the [ServerException] for all error codes.
-  Future<List<TaskModel>> getAllTasks();
+  Future<List<TaskApiModel>> getAllTasks();
 
   /// Calls the https://beta.mrdekk.ru/todo/list endpoint
   ///
   /// Throws the [ServerException] for all error codes
-  Future<void> updateAllTasks(List<TaskModel> newTaskList);
+  Future<void> updateAllTasks(List<TaskApiModel> newTaskList);
 
   /// Calls the https://beta.mrdekk.ru/todo/list/<id> endpoint
   ///
   /// Throws the [ServerException] for all error codes
-  Future<TaskModel> getExactTask(TaskModel task);
+  Future<TaskApiModel> getExactTask(TaskApiModel task);
 
   /// Calls the https://beta.mrdekk.ru/todo/list/<id> endpoint
   ///
   /// Throws the [ServerException] for all error codes
-  Future<void> deleteExactTask(TaskModel task);
+  Future<void> deleteExactTask(TaskApiModel task);
 
   /// Calls the https://beta.mrdekk.ru/todo/list/<id> endpoint
   ///
   /// Throws the [ServerException] for all error codes
-  Future<void> createTask(TaskModel task, int revision);
+  Future<void> createTask(TaskApiModel task);
 
   /// Calls the https://beta.mrdekk.ru/todo/list<id> endpoint
   ///
   /// Throws the [ServerException] for all error codes
-  Future<void> editTask(TaskModel oldTask, TaskModel editedTask);
+  Future<void> editTask(TaskApiModel oldTask, TaskApiModel editedTask);
 }
 
 /// TODO: Dont forget to pass base options in dio
 class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
+
   int? revision;
   final String baseUrl = 'https://beta.mrdekk.ru/todo';
   final Dio dio;
@@ -52,7 +53,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     return;
   }
 
-  Future<void> syncData(List<TaskModel> tasks, int? revision) async {
+  Future<void> syncData(List<TaskApiModel> tasks, int? revision) async {
     getRevision();
     List<Map<String, dynamic>> tasksFromApi = [];
     for (var element in tasks) {
@@ -77,7 +78,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<void> createTask(TaskModel task, int revision) async {
+  Future<void> createTask(TaskApiModel task) async {
     Response<Map<String, dynamic>> response = await dio.post(
       '$baseUrl/list',
       options: Options(
@@ -102,7 +103,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<void> deleteExactTask(TaskModel task) async {
+  Future<void> deleteExactTask(TaskApiModel task) async {
     await getRevision();
     Response<Map<String, dynamic>> response = await dio.delete(
       '$baseUrl/list/${task.id}',
@@ -127,7 +128,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<void> editTask(TaskModel oldTask, TaskModel editedTask) async {
+  Future<void> editTask(TaskApiModel oldTask, TaskApiModel editedTask) async {
     await getRevision();
     Response<Map<String, dynamic>> response = await dio.patch(
       '$baseUrl/list/${oldTask.id}',
@@ -151,7 +152,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<List<TaskModel>> getAllTasks() async {
+  Future<List<TaskApiModel>> getAllTasks() async {
     Response<Map<String, dynamic>> response = await dio.get(
       '$baseUrl/list',
     );
@@ -160,7 +161,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
       final tasksFromApi = json.decode(response.data.toString());
       DementiappLogger.infoLog('Tasks loaded with MEGAHOROSH');
       return (tasksFromApi['list'] as List)
-          .map((task) => TaskModel.fromJson(task as Map<String, dynamic>))
+          .map((task) => TaskApiModel.fromJson(task as Map<String, dynamic>))
           .toList();
     } else {
       DementiappLogger.errorLog(
@@ -171,7 +172,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<TaskModel> getExactTask(TaskModel task) async {
+  Future<TaskApiModel> getExactTask(TaskApiModel task) async {
     await getRevision();
     Response<Map<String, dynamic>> response = await dio.get(
       '$baseUrl/list/${task.id}',
@@ -186,7 +187,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     if (response.statusCode == 200) {
       DementiappLogger.infoLog('Task ${task.id} loaded with MEGAHOROSH');
       final taskFromApi = json.decode(response.data.toString());
-      return TaskModel.fromJson(taskFromApi as Map<String, dynamic>);
+      return TaskApiModel.fromJson(taskFromApi as Map<String, dynamic>);
     } else {
       DementiappLogger.errorLog(
         'Bad status from Api, code: ${response.statusCode}',
@@ -196,7 +197,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<void> updateAllTasks(List<TaskModel> newTaskList) async {
+  Future<void> updateAllTasks(List<TaskApiModel> newTaskList) async {
     getRevision();
 
     List<Map<String, dynamic>> jsonTasks =

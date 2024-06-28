@@ -56,6 +56,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
                       done: false,
                       importance: 'base',
                       deadline: isSwitchEnabled ? pickedDate : null,
+                      lastUpdatedBy: 'user',
                     ),
                   ),
                 );

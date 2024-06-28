@@ -5,29 +5,22 @@ import 'package:demetiapp/core/error/failure.dart';
 abstract class ToDoListRepository {
   Future<Either<Failure, List<TaskEntity>>> getAllTasks(); //GET $BASEURL/list
 
-  Future<Either<Failure, void>> updateAllTasks(
-    int revision,
-  ); //PATCH $BASEURL/list
+  Future<Either<Failure, void>> updateAllTasks(); //PATCH $BASEURL/list
 
   Future<Either<Failure, void>> deleteTask(
-    String id,
+    TaskEntity task,
   ); // DELETE $BASEURL/list/<id>
 
   Future<Either<Failure, TaskEntity>> getExactTask(
-    String id,
+    TaskEntity task,
   ); //GET $BASEURL/list/<id>
-
-  Future<Either<Failure, void>> deleteExactTask(
-    String id,
-  ); //DELETE $BASEURL/list/<id>
 
   Future<Either<Failure, void>> createTask(
     TaskEntity task,
-    int revision,
   ); //DELETE $BASEURL/list/<id>
 
   Future<Either<Failure, void>> editTask(
-    String id,
+    TaskEntity oldTask,
     TaskEntity editedTask,
   ); // PUT $BASEURL/list/<id>
 }

@@ -19,7 +19,7 @@ class UpdateAllTasks {
   UpdateAllTasks({required this.toDoListrepository});
 
   Future<Either<Failure, void>> call(int revision) async {
-    return await toDoListrepository.updateAllTasks(revision);
+    return await toDoListrepository.updateAllTasks();
   }
 }
 
