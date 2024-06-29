@@ -18,6 +18,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository{
 
   ToDoListRepositoryImpl({required TaskLocalDataSource db, required TaskRemoteDataSource api}) : _db = db, _api = api;
 
+    /// Получает user's id
     static Future<void> getId() async {
     var deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
@@ -34,8 +35,13 @@ class ToDoListRepositoryImpl implements ToDoListRepository{
   Future<Either<Failure, void>> createTask(TaskEntity task) async{
     task = task.copyWith(lastUpdatedBy: _id);
     try{
-      await _db.createTaskToCache(TaskLocalModel.fromEntity(task));
-      _api.createTask(TaskApiModel.fromEntity(task));
+      final TaskLocalModel taskToLocal = TaskLocalModel.fromEntity(task);
+      final TaskApiModel taskToApi = TaskApiModel.fromEntity(task);
+
+      final TaskLocalModelWithRevision resultLocal = await _db.createTaskToCache(taskToLocal);
+      final int localRevision = resultLocal.localRevision;
+      await _api.createTask(taskToApi, localRevision);
+
       return const Right(null);
     } on CacheException catch (e){
       return Left(CacheFailure(e.toString()));
@@ -49,8 +55,12 @@ class ToDoListRepositoryImpl implements ToDoListRepository{
   @override
   Future<Either<Failure, void>> deleteTask(TaskEntity task) async{
     try{
-      await _db.deleteExactTaskFromCache(TaskLocalModel.fromEntity(task));
-      _api.deleteExactTask(TaskApiModel.fromEntity(task));
+      final TaskLocalModel taskToLocal = TaskLocalModel.fromEntity(task);
+      final TaskApiModel taskToApi = TaskApiModel.fromEntity(task);
+
+      await _db.deleteExactTaskFromCache(taskToLocal);
+      await _api.deleteExactTask(taskToApi);
+      
       return const Right(null);
     } on CacheException catch(e){
       return Left(CacheFailure(e.toString()));
@@ -65,7 +75,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository{
   Future<Either<Failure, void>> editTask(TaskEntity oldTask, TaskEntity editedTask) async{
     try{
       await _db.editTaskToCache(TaskLocalModel.fromEntity(oldTask), TaskLocalModel.fromEntity(editedTask));
-      _api.editTask(TaskApiModel.fromEntity(oldTask), TaskApiModel.fromEntity(editedTask));
+      await _api.editTask(TaskApiModel.fromEntity(oldTask), TaskApiModel.fromEntity(editedTask));
       return const Right(null);
     } on CacheException catch(e){
       return Left(CacheFailure(e.toString()));
@@ -79,14 +89,21 @@ class ToDoListRepositoryImpl implements ToDoListRepository{
   @override
   Future<Either<Failure, List<TaskEntity>>> getAllTasks() async {
     try{
-      List<TaskLocalModel> cacheResult = await _db.getAllTasksFromCache();
-      List<TaskEntity> tasksFromCache = cacheResult.map((localTask) => TaskEntity.fromLocalModel(localTask)).toList();
+      final TaskApiModelWithRevision apiResult = await _api.getAllTasks();
+      final TaskLocalModelWithRevision localResult = await _db.getAllTasksFromCache();
+      final List<TaskApiModel> apiTasks = apiResult.listTasks!;
+      final List<TaskLocalModel> localTasks = localResult.listTasks!;
 
-      List<TaskApiModel> apiResult =await _api.getAllTasks();
-      List<TaskEntity> tasksFromApi = apiResult.map((remoteTask) => TaskEntity.fromApiModel(remoteTask)).toList();
-      //TODO: sync
+      List<TaskEntity> entity = apiTasks.map((task) => TaskEntity.fromApiModel(task)).toList();
+      List<TaskLocalModel> toLocal = entity.map((task) => TaskLocalModel.fromEntity(task)).toList();
 
-      return Right(tasksFromCache);
+      if(apiResult.apiRevision > localResult.localRevision){
+        final TaskLocalModelWithRevision localResult = await _db.updateAllTasksToCache(toLocal, apiResult.apiRevision);
+        final List<TaskEntity> tasksList = localResult.listTasks!.map((task) => TaskEntity.fromLocalModel(task)).toList();
+        return Right(tasksList);
+      }
+
+      return Right(localTasks.map((task) => TaskEntity.fromLocalModel(task)).toList());
     } on CacheException catch(e){
       return Left(CacheFailure(e.toString()));
     } on ServerException catch(e){
@@ -99,7 +116,13 @@ class ToDoListRepositoryImpl implements ToDoListRepository{
   @override
   Future<Either<Failure, TaskEntity>> getExactTask(TaskEntity task) async{
     try{
+      final TaskLocalModel taskToLocal = TaskLocalModel.fromEntity(task);
+      final TaskApiModel taskToApi = TaskApiModel.fromEntity(task);
 
+      final TaskLocalModelWithRevision resultLocal = await _db.getExactTaskFromCache(taskToLocal);
+      await _api.getExactTask(taskToApi);
+
+      return Right(TaskEntity.fromLocalModel(resultLocal.oneTask!));
     } on CacheException catch(e){
       return Left(CacheFailure(e.toString()));
     } on ServerException catch(e){
@@ -110,9 +133,15 @@ class ToDoListRepositoryImpl implements ToDoListRepository{
   }
 
   @override
-  Future<Either<Failure, void>> updateAllTasks() async {
+  Future<Either<Failure, void>> updateAllTasks(List<TaskEntity> tasks, int revision) async {
     try{
+      final List<TaskLocalModel> tasksToLocal = tasks.map((task)=>TaskLocalModel.fromEntity(task)).toList();
+      final List<TaskApiModel> tasksToApi = tasks.map((task)=>TaskApiModel.fromEntity(task)).toList();
 
+      final TaskApiModelWithRevision resultApi = await _api.updateAllTasks(tasksToApi, revision);
+      await _db.updateAllTasksToCache(tasksToLocal, resultApi.apiRevision);
+
+      return const Right(null);
     } on CacheException catch(e){
       return Left(CacheFailure(e.toString()));
     } on ServerException catch(e){

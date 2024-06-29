@@ -51,3 +51,11 @@ class TaskLocalModel extends TaskEntity {
     );
   }
 }
+
+class TaskLocalModelWithRevision{
+  final List<TaskLocalModel>? listTasks;
+  final TaskLocalModel? oneTask;
+  final int localRevision;
+
+  TaskLocalModelWithRevision({this.listTasks, this.oneTask, required this.localRevision});
+}

@@ -8,8 +8,8 @@ class CreateTask {
 
   CreateTask({required this.toDoListrepository});
 
-  Future<Either<Failure, void>> call(TaskEntity task, int revision) async {
-    return await toDoListrepository.createTask(task, revision);
+  Future<Either<Failure, void>> call(TaskEntity task) async {
+    return await toDoListrepository.createTask(task);
   }
 }
 
@@ -18,7 +18,7 @@ class EditTask {
 
   EditTask({required this.toDoListrepository});
 
-  Future<Either<Failure, void>> call(String id, TaskEntity editedTask) async {
-    return await toDoListrepository.editTask(id, editedTask);
+  Future<Either<Failure, void>> call(TaskEntity oldTask, TaskEntity editedTask) async {
+    return await toDoListrepository.editTask(oldTask, editedTask);
   }
 }

@@ -28,5 +28,16 @@ class DatabaseHelper {
     await db.execute(
       'CREATE TABLE tasks(id INTEGER PRIMARY KEY, text TEXT, importance TEXT, done BOOL, deadline TEXT)',
     );
+
+    await db.execute(
+    '''
+    CREATE TABLE metadata (
+      id INTEGER PRIMARY KEY,
+      revision INTEGER
+    )
+    ''',
+    );
+
+    await db.insert('metadata', {'id': 1, 'revision': 0});
   }
 }

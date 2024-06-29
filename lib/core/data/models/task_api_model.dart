@@ -51,3 +51,11 @@ class TaskApiModel extends TaskEntity {
     );
   }
 }
+
+class TaskApiModelWithRevision{
+  final List<TaskApiModel>? listTasks;
+  final TaskApiModel? oneTask;
+  final int apiRevision;
+
+  TaskApiModelWithRevision({this.listTasks, this.oneTask, required this.apiRevision});
+}

@@ -18,8 +18,8 @@ class UpdateAllTasks {
 
   UpdateAllTasks({required this.toDoListrepository});
 
-  Future<Either<Failure, void>> call(int revision) async {
-    return await toDoListrepository.updateAllTasks();
+  Future<Either<Failure, void>> call(List<TaskEntity> tasks, int revision) async {
+    return await toDoListrepository.updateAllTasks(tasks, revision);
   }
 }
 
@@ -28,8 +28,8 @@ class DeleteTask {
 
   DeleteTask({required this.toDoListrepository});
 
-  Future<Either<Failure, void>> call(String id) async {
-    return await toDoListrepository.deleteTask(id);
+  Future<Either<Failure, void>> call(TaskEntity task) async {
+    return await toDoListrepository.deleteTask(task);
   }
 }
 
@@ -38,8 +38,8 @@ class GetExactTask {
 
   GetExactTask({required this.toDoListrepository});
 
-  Future<Either<Failure, TaskEntity>> call(String id) async {
-    return await toDoListrepository.getExactTask(id);
+  Future<Either<Failure, TaskEntity>> call(TaskEntity task) async {
+    return await toDoListrepository.getExactTask(task);
   }
 }
 
@@ -48,7 +48,7 @@ class DeleteExactTask {
 
   DeleteExactTask({required this.toDoListrepository});
 
-  Future<Either<Failure, void>> call(String id) async {
-    return await toDoListrepository.deleteExactTask(id);
+  Future<Either<Failure, void>> call(TaskEntity task) async {
+    return await toDoListrepository.deleteTask(task);
   }
 }
