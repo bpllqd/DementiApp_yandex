@@ -1,11 +1,11 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
+import 'package:demetiapp/core/utils/text_constants.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import 'check_box_button_widget.dart';
 
@@ -29,16 +29,16 @@ class CurrentTask extends StatelessWidget {
               CheckBoxButton(
                 imagePath: checkboxChecked,
                 onTap: () {
-                  bloc.add(CompleteTaskEvent(task.id));
+                  bloc.add(CompleteTaskEvent(task));
                   DementiappLogger.infoLog('Added CompleteTaskEvent 1');
                 },
               ),
             ] else ...[
-              if (task.importance == 'high') ...[
+              if (task.importance == TextConstants.importanceImportant()) ...[
                 CheckBoxButton(
                   imagePath: checkboxHigh,
                   onTap: () {
-                    bloc.add(CompleteTaskEvent(task.id));
+                    bloc.add(CompleteTaskEvent(task));
                     DementiappLogger.infoLog('Added CompleteTaskEvent 2');
                   },
                 ),
@@ -46,7 +46,7 @@ class CurrentTask extends StatelessWidget {
                 CheckBoxButton(
                   imagePath: checkboxNo,
                   onTap: () {
-                    bloc.add(CompleteTaskEvent(task.id));
+                    bloc.add(CompleteTaskEvent(task));
                     DementiappLogger.infoLog('Added CompleteTaskEvent 3');
                   },
                 ),
@@ -54,10 +54,11 @@ class CurrentTask extends StatelessWidget {
             ],
             Visibility(
               visible: !(task.done) &&
-                  (task.importance == 'high' || task.importance == 'low'),
+                  (task.importance == TextConstants.importanceImportant() ||
+                      task.importance == TextConstants.importanceLow()),
               child: Padding(
                 padding: const EdgeInsets.only(right: 3.0),
-                child: task.importance == 'high'
+                child: task.importance == TextConstants.importanceImportant()
                     ? const SVG(
                         imagePath: priorityHigh,
                         color: 0xFFFF3B30,
@@ -99,7 +100,7 @@ class CurrentTask extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () => context.push('/add_new'),
+              onPressed: () => bloc.add(EditNavigateTaskEvent(task)),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               icon: const Icon(
@@ -110,19 +111,22 @@ class CurrentTask extends StatelessWidget {
           ],
         ),
         if (task.deadline != null && task.done == false)
-          Padding(
-            padding: const EdgeInsets.only(left: 62),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  FormatDate.toDmmmmyyyy(task.deadline!),
-                  style: const TextStyle(
-                    color: AppColors.lightLabelTertiary,
-                    fontSize: AppFontSize.subheadFontSize,
+          Visibility(
+            visible: task.deadline != null,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 62),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    FormatDate.toDmmmmyyyy(task.deadline!),
+                    style: const TextStyle(
+                      color: AppColors.lightLabelTertiary,
+                      fontSize: AppFontSize.subheadFontSize,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
       ],

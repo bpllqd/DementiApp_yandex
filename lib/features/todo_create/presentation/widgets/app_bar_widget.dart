@@ -1,9 +1,11 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
-import 'package:demetiapp/features/todo_create/presentation/bloc/todo_create_bloc.dart';
+import 'package:demetiapp/core/utils/text_constants.dart';
+import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 class BarWidget extends StatelessWidget implements PreferredSizeWidget {
   const BarWidget({
@@ -11,17 +13,18 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
     required this.bloc,
     required this.task,
     required this.textController,
-    required this.priority,
     required this.isSwitchEnabled,
     required this.pickedDate,
+    required this.importance,
   });
 
-  final ToDoCreateBloc bloc;
+  final Uuid uuid = const Uuid();
+  final ToDoListBloc bloc;
   final TaskEntity? task;
   final TextEditingController textController;
-  final String? priority;
   final bool isSwitchEnabled;
   final DateTime? pickedDate;
+  final String? importance;
 
   @override
   Widget build(BuildContext context) {
@@ -49,22 +52,20 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
                 bloc.add(
                   ToDoCreateNewEvent(
                     TaskEntity(
-                      id: task?.id ?? '',
+                      id: task?.id ?? uuid.v1(),
                       text: textController.text.isNotEmpty
                           ? textController.text
-                          : 'Что надо сделать...',
-                      done: false,
-                      importance: 'base',
-                      deadline: isSwitchEnabled ? pickedDate : null,
-                      lastUpdatedBy: 'user',
+                          : TextConstants.chtoTo(),
+                      importance: TextConstants.importanceBasicValue(),
+                      deadline: pickedDate,
                     ),
                   ),
                 );
-                Navigator.pop(context, true);
+                Navigator.pop(context);
                 DementiappLogger.infoLog('Navigating to ToDo List');
               },
               child: Text(
-                'СОХРАНИТЬ',
+                TextConstants.createSave(),
                 style: Theme.of(context).textTheme.labelMedium,
               ),
             ),

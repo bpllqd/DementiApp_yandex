@@ -13,13 +13,8 @@ class ToDoCreateLoadingState extends ToDoCreateState {
 }
 
 class ToDoCreateSuccessState extends ToDoCreateState {
-  final TaskEntity? task;
-  final bool hasDate;
-
-  ToDoCreateSuccessState({this.task, this.hasDate = false});
-
   @override
-  List<Object?> get props => [task, hasDate];
+  List<Object?> get props => [];
 }
 
 class ToDoCreateErrorState extends ToDoCreateState {

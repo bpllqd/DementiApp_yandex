@@ -7,49 +7,67 @@ class GetTasksEvent extends ToDoListEvent {
   List<Object?> get props => [];
 }
 
-class AddNewTaskEvent extends ToDoListEvent {
+class CreateNavigateTaskEvent extends ToDoListEvent {
   @override
-  List<Object> get props => [];
-}
-
-class EditTaskEvent extends ToDoListEvent {
-  final String taskID;
-
-  EditTaskEvent({required this.taskID});
-
-  @override
-  List<Object?> get props => [taskID];
+  List<Object?> get props => [];
 }
 
 class DeleteTaskEvent extends ToDoListEvent {
-  final String taskID;
+  final TaskEntity task;
 
-  DeleteTaskEvent(this.taskID);
+  DeleteTaskEvent(this.task);
 
   @override
-  List<Object> get props => [taskID];
+  List<Object> get props => [task];
 }
 
 class CompleteTaskEvent extends ToDoListEvent {
-  final String taskID;
+  final TaskEntity task;
 
-  CompleteTaskEvent(this.taskID);
+  CompleteTaskEvent(this.task);
 
   @override
-  List<Object> get props => [taskID];
+  List<Object> get props => [task];
+}
+
+class EditNavigateTaskEvent extends ToDoListEvent {
+  final TaskEntity task;
+
+  EditNavigateTaskEvent(this.task);
+
+  @override
+  List<Object> get props => [task];
+}
+
+class ToDoCreateNewEvent extends ToDoListEvent {
+  final TaskEntity task;
+
+  ToDoCreateNewEvent(this.task);
+
+  @override
+  List<Object> get props => [task];
+}
+
+class ToDoCreateEditEvent extends ToDoListEvent {
+  final TaskEntity task;
+
+  ToDoCreateEditEvent({required this.task});
+
+  @override
+  List<Object?> get props => [task];
 }
 
 class UnCompleteTaskEvent extends ToDoListEvent {
-  final String taskID;
+  final TaskEntity task;
 
-  UnCompleteTaskEvent({required this.taskID});
+  UnCompleteTaskEvent({required this.task});
 
   @override
-  List<Object?> get props => [taskID];
+  List<Object?> get props => [task];
 }
 
 class ChangeFilterEvent extends ToDoListEvent {
-  final TasksFilter filter;
+  final bool filter;
 
   ChangeFilterEvent({required this.filter});
 

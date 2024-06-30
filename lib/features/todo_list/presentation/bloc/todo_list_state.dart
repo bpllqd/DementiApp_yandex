@@ -12,6 +12,19 @@ class ToDoListLoadingState extends ToDoListState {
   List<Object?> get props => [];
 }
 
+class ToDoListCreateTaskState extends ToDoListState {
+  @override
+  List<Object?> get props => [];
+}
+
+class ToDoListEditTaskState extends ToDoListState {
+  final TaskEntity task;
+
+  ToDoListEditTaskState({required this.task});
+  @override
+  List<Object?> get props => [task];
+}
+
 class TodoListSuccessState extends ToDoListState {
   final List<TaskEntity> tasks;
   final int completedTasks;
@@ -33,6 +46,24 @@ class ToDoListErrorState extends ToDoListState {
 
   ToDoListErrorState({required this.errorDescription});
 
+  @override
+  List<Object?> get props => [errorDescription];
+}
+
+class ToDoCreateSuccessState extends ToDoListState {
+  @override
+  List<Object?> get props => [];
+}
+
+class ToDoEditSuccessState extends ToDoListState {
+  @override
+  List<Object?> get props => [];
+}
+
+class ToDoCreateErrorState extends ToDoListState {
+  final String errorDescription;
+
+  ToDoCreateErrorState({required this.errorDescription});
   @override
   List<Object?> get props => [errorDescription];
 }

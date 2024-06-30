@@ -21,7 +21,7 @@ class TaskLocalModel extends TaskEntity {
       deadline: DateTime.parse(json['deadline'] as String),
       lastUpdatedBy: json['last_updated_by'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
-      changedAt: DateTime.parse(json['changed_at'] as String), 
+      changedAt: DateTime.parse(json['changed_at'] as String),
     );
   }
 
@@ -32,9 +32,9 @@ class TaskLocalModel extends TaskEntity {
       'importance': importance,
       'done': done,
       'deadline': deadline?.toIso8601String(),
-      'changed_at': changedAt?.toIso8601String(),
-      'created_at' : createdAt?.toIso8601String(),
-      'last_updated_by' : lastUpdatedBy,
+      'changedAt': changedAt?.toIso8601String(),
+      'createdAt': createdAt?.toIso8601String(),
+      'lastUpdatedBy': lastUpdatedBy,
     };
   }
 
@@ -52,10 +52,11 @@ class TaskLocalModel extends TaskEntity {
   }
 }
 
-class TaskLocalModelWithRevision{
+class TaskLocalModelWithRevision {
   final List<TaskLocalModel>? listTasks;
   final TaskLocalModel? oneTask;
   final int localRevision;
 
-  TaskLocalModelWithRevision({this.listTasks, this.oneTask, required this.localRevision});
+  TaskLocalModelWithRevision(
+      {this.listTasks, this.oneTask, required this.localRevision,});
 }

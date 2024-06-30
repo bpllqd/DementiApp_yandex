@@ -7,10 +7,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'dart:io';
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ru_RU', null);
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -25,7 +36,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ToDoListBloc()..add(GetTasksEvent()),
         ),
         BlocProvider(
-          create: (context) => ToDoCreateBloc()..add(ToDoCreateInitEvent()),
+          create: (context) => ToDoCreateBloc(),
         ),
       ],
       child: RoutingWrapper(),
@@ -53,7 +64,7 @@ class RoutingWrapper extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       locale: const Locale('ru'),
-      supportedLocales: const [Locale('ru')],
+      supportedLocales: const [Locale('ru', 'RU'), Locale('en, US')],
       title: 'DementiApp',
       debugShowCheckedModeBanner: false,
       routerConfig: _router,

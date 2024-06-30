@@ -1,8 +1,9 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
+import 'package:demetiapp/core/utils/text_constants.dart';
 import 'package:demetiapp/core/utils/utils.dart';
-import 'package:demetiapp/features/todo_create/presentation/bloc/todo_create_bloc.dart';
+import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -21,20 +22,23 @@ class ToDoCreateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<ToDoCreateBloc>();
+    final bloc = context.read<ToDoListBloc>();
 
     final TextEditingController textController = TextEditingController();
 
     textController.text = task?.text ?? '';
-    String? priority = task?.importance;
+    String? importance = task?.importance;
     DateTime? pickedDate = task?.deadline;
     bool isSwitchEnabled = task?.deadline != null;
 
-    return BlocListener<ToDoCreateBloc, ToDoCreateState>(
+    return BlocListener<ToDoListBloc, ToDoListState>(
       listener: (context, state) {
         if (state is ToDoCreateSuccessState) {
+          bloc.add(GetTasksEvent());
           context.pop();
-          DementiappLogger.infoLog('Navigating back');
+          DementiappLogger.infoLog(
+            'Navigating back',
+          );
         }
       },
       child: Scaffold(
@@ -43,14 +47,14 @@ class ToDoCreateWidget extends StatelessWidget {
           bloc: bloc,
           task: task,
           textController: textController,
-          priority: priority,
+          importance: importance,
           isSwitchEnabled: isSwitchEnabled,
           pickedDate: pickedDate,
         ),
-        body: BlocBuilder<ToDoCreateBloc, ToDoCreateState>(
+        body: BlocBuilder<ToDoListBloc, ToDoListState>(
           builder: (context, state) {
-            if (state is ToDoCreateLoadingState) {
-              return const CircularProgressIndicator();
+            if (state is ToDoListLoadingState) {
+              return const Center(child: CircularProgressIndicator());
             } else {
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -60,7 +64,9 @@ class ToDoCreateWidget extends StatelessWidget {
                     const SizedBox(height: 8.0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: MaterialTextfield(textController: textController),
+                      child: MaterialTextfield(
+                        textController: textController,
+                      ),
                     ),
                     const SizedBox(height: 12.0),
                     Padding(
@@ -69,61 +75,57 @@ class ToDoCreateWidget extends StatelessWidget {
                         alignedDropdown: true,
                         child: DropdownButtonHideUnderline(
                           child: DropdownButtonFormField(
-                            value: priority,
+                            value: importance,
                             onChanged: (newPriority) {
-                              if (newPriority != 'base') {
-                                priority = newPriority;
-                              } else {
-                                priority = null;
-                              }
+                              importance = newPriority;
                             },
                             style: const TextStyle(
                               fontSize: AppFontSize.buttonFontSize,
                               height: 18.0 / AppFontSize.bodyFontSize,
                               color: AppColors.lightLabelTertiary,
                             ),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               enabled: false,
-                              disabledBorder: UnderlineInputBorder(
+                              disabledBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: AppColors.lightSupportSeparator,
                                   width: 0.5,
                                   style: BorderStyle.solid,
                                 ),
                               ),
-                              contentPadding:
-                                  EdgeInsets.only(bottom: 16.0, top: 16.0),
-                              labelText: 'Важность',
-                              labelStyle: TextStyle(
+                              contentPadding: const EdgeInsets.only(
+                                  bottom: 16.0, top: 16.0,),
+                              labelText: TextConstants.importance(),
+                              labelStyle: const TextStyle(
                                 fontSize: 22.0,
                                 color: AppColors.lightLabelPrimary,
                               ),
                             ),
                             iconSize: 0,
                             hint: Text(
-                              'Нет',
+                              TextConstants.importanceBasicValue(),
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             items: <DropdownMenuItem<String>>[
                               DropdownMenuItem(
-                                value: 'base',
+                                value: TextConstants.importanceBasicValue(),
                                 child: Text(
-                                  'Нет',
+                                  TextConstants.importanceLow(),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
                               DropdownMenuItem(
-                                value: 'low',
+                                value: TextConstants.importanceLow(),
                                 child: Text(
-                                  'Низкий',
+                                  TextConstants.importanceLow(),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
-                              const DropdownMenuItem(
-                                value: 'high',
+                              DropdownMenuItem(
+                                value: TextConstants.importanceImportant(),
                                 child: Text(
-                                  '!! Высокий',
-                                  style: TextStyle(
+                                  TextConstants.importanceImportant(),
+                                  style: const TextStyle(
                                     fontSize: AppFontSize.bodyFontSize,
                                     color: AppColors.lightColorRed,
                                   ),
@@ -151,7 +153,7 @@ class ToDoCreateWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Сделать до',
+                                TextConstants.sdelatD0(),
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Visibility(
@@ -179,7 +181,6 @@ class ToDoCreateWidget extends StatelessWidget {
                                   : pickedDate = await pickDate(context);
                               if (pickedDate != null) {
                                 isSwitchEnabled = !isSwitchEnabled;
-                                bloc.add(ToDoCreateSwitchDateEvent(task));
                               }
                             },
                           ),
@@ -197,16 +198,17 @@ class ToDoCreateWidget extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 16.0),
                       child: task != null
                           ? DeleteButton(
+                              isActive: true,
                               onTap: () {
-                                bloc.add(ToDoCreateDeleteEvent(task!));
+                                bloc.add(DeleteTaskEvent(task!));
                                 Navigator.pop(context);
                                 DementiappLogger.infoLog(
-                                  'Delet button has been pressed',
+                                  'Delete button has been pressed',
                                 );
                               },
                             )
-                          : DeleteButton(
-                              onTap: () {},
+                          : const DeleteButton(
+                              isActive: false,
                             ),
                     ),
                     const SizedBox(height: 12.0),
@@ -224,7 +226,7 @@ class ToDoCreateWidget extends StatelessWidget {
 Future<DateTime?> pickDate(BuildContext context) {
   return showDatePicker(
     helpText: DateTime.now().year.toString(),
-    confirmText: 'ГОТОВО',
+    confirmText: TextConstants.ready(),
     context: context,
     initialDate: DateTime.now(),
     firstDate: DateTime(2024),

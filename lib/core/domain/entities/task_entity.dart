@@ -5,22 +5,22 @@ import 'package:equatable/equatable.dart';
 class TaskEntity extends Equatable {
   final String id;
   final String text;
-  final String importance;
+  final String? importance;
   final DateTime? deadline;
   final bool done;
   final DateTime? createdAt;
   final DateTime? changedAt;
-  final String lastUpdatedBy;
+  final String? lastUpdatedBy;
 
   const TaskEntity({
     required this.id,
     required this.text,
-    required this.importance,
+    this.importance = 'basic',
     this.deadline,
-    required this.done,
+    this.done = false,
     this.createdAt,
     this.changedAt,
-    required this.lastUpdatedBy,
+    this.lastUpdatedBy,
   });
 
   @override
@@ -33,7 +33,7 @@ class TaskEntity extends Equatable {
         createdAt,
         changedAt,
         lastUpdatedBy,
-  ];
+      ];
 
   TaskEntity copyWith({
     String? id,

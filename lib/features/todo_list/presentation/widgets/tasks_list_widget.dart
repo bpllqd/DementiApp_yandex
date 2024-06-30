@@ -36,7 +36,7 @@ class TasksList extends StatelessWidget {
                       confirmDismissing(direction, bloc, index, state),
                   onDismissed: (_) => bloc.add(
                     DeleteTaskEvent(
-                      state.filteredTasks[index].id,
+                      state.filteredTasks[index],
                     ),
                   ),
                   background: Container(
@@ -82,6 +82,14 @@ class TasksList extends StatelessWidget {
               },
             ),
           );
+        } else if (state is ToDoListErrorState) {
+          return Center(
+            child: Text(
+              state.errorDescription,
+              style: const TextStyle(color: Colors.red, fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+          );
         } else {
           return const CircularProgressIndicator();
         }
@@ -98,7 +106,7 @@ class TasksList extends StatelessWidget {
     if (direction == DismissDirection.startToEnd) {
       bloc.add(
         CompleteTaskEvent(
-          '',
+          state.filteredTasks[index],
         ),
       );
     }

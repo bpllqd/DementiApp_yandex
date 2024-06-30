@@ -5,7 +5,8 @@ import 'package:demetiapp/core/error/failure.dart';
 abstract class ToDoListRepository {
   Future<Either<Failure, List<TaskEntity>>> getAllTasks(); //GET $BASEURL/list
 
-  Future<Either<Failure, void>> updateAllTasks(List<TaskEntity> tasks, int revision); //PATCH $BASEURL/list
+  Future<Either<Failure, void>> updateAllTasks(
+      List<TaskEntity> tasks, int revision,); //PATCH $BASEURL/list
 
   Future<Either<Failure, void>> deleteTask(
     TaskEntity task,
@@ -22,5 +23,5 @@ abstract class ToDoListRepository {
   Future<Either<Failure, void>> editTask(
     TaskEntity oldTask,
     TaskEntity editedTask,
-  ); 
+  );
 }

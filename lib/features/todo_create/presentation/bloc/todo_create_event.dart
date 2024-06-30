@@ -25,6 +25,15 @@ class ToDoCreateDeleteEvent extends ToDoCreateEvent {
   List<Object> get props => [task];
 }
 
+class ToDoCreateEditEvent extends ToDoCreateEvent {
+  final TaskEntity task;
+
+  ToDoCreateEditEvent({required this.task});
+
+  @override
+  List<Object?> get props => [task];
+}
+
 class ToDoCreateSwitchDateEvent extends ToDoCreateEvent {
   final TaskEntity? task;
 

@@ -4,51 +4,52 @@ import 'package:demetiapp/core/domain/repository/todo_list_repository.dart';
 import 'package:demetiapp/core/error/failure.dart';
 
 class GetAllTasks {
-  final ToDoListRepository toDoListrepository;
+  final ToDoListRepository toDoListRepository;
 
-  GetAllTasks({required this.toDoListrepository});
+  GetAllTasks({required this.toDoListRepository});
 
   Future<Either<Failure, List<TaskEntity>>> call() async {
-    return await toDoListrepository.getAllTasks();
+    return await toDoListRepository.getAllTasks();
   }
 }
 
 class UpdateAllTasks {
-  final ToDoListRepository toDoListrepository;
+  final ToDoListRepository toDoListRepository;
 
-  UpdateAllTasks({required this.toDoListrepository});
+  UpdateAllTasks({required this.toDoListRepository});
 
-  Future<Either<Failure, void>> call(List<TaskEntity> tasks, int revision) async {
-    return await toDoListrepository.updateAllTasks(tasks, revision);
+  Future<Either<Failure, void>> call(
+      List<TaskEntity> tasks, int revision,) async {
+    return await toDoListRepository.updateAllTasks(tasks, revision);
   }
 }
 
 class DeleteTask {
-  final ToDoListRepository toDoListrepository;
+  final ToDoListRepository toDoListRepository;
 
-  DeleteTask({required this.toDoListrepository});
+  DeleteTask({required this.toDoListRepository});
 
   Future<Either<Failure, void>> call(TaskEntity task) async {
-    return await toDoListrepository.deleteTask(task);
+    return await toDoListRepository.deleteTask(task);
   }
 }
 
 class GetExactTask {
-  final ToDoListRepository toDoListrepository;
+  final ToDoListRepository toDoListRepository;
 
-  GetExactTask({required this.toDoListrepository});
+  GetExactTask({required this.toDoListRepository});
 
   Future<Either<Failure, TaskEntity>> call(TaskEntity task) async {
-    return await toDoListrepository.getExactTask(task);
+    return await toDoListRepository.getExactTask(task);
   }
 }
 
 class DeleteExactTask {
-  final ToDoListRepository toDoListrepository;
+  final ToDoListRepository toDoListRepository;
 
-  DeleteExactTask({required this.toDoListrepository});
+  DeleteExactTask({required this.toDoListRepository});
 
   Future<Either<Failure, void>> call(TaskEntity task) async {
-    return await toDoListrepository.deleteTask(task);
+    return await toDoListRepository.deleteTask(task);
   }
 }

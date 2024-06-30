@@ -21,7 +21,7 @@ class TaskApiModel extends TaskEntity {
       deadline: DateTime.parse(json['deadline'] as String),
       lastUpdatedBy: json['last_updated_by'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
-      changedAt: DateTime.parse(json['changed_at'] as String), 
+      changedAt: DateTime.parse(json['changed_at'] as String),
     );
   }
 
@@ -33,8 +33,8 @@ class TaskApiModel extends TaskEntity {
       'done': done,
       'deadline': deadline?.toIso8601String(),
       'changed_at': changedAt?.toIso8601String(),
-      'created_at' : createdAt?.toIso8601String(),
-      'last_updated_by' : lastUpdatedBy,
+      'created_at': createdAt?.toIso8601String(),
+      'last_updated_by': lastUpdatedBy,
     };
   }
 
@@ -52,10 +52,11 @@ class TaskApiModel extends TaskEntity {
   }
 }
 
-class TaskApiModelWithRevision{
+class TaskApiModelWithRevision {
   final List<TaskApiModel>? listTasks;
   final TaskApiModel? oneTask;
   final int apiRevision;
 
-  TaskApiModelWithRevision({this.listTasks, this.oneTask, required this.apiRevision});
+  TaskApiModelWithRevision(
+      {this.listTasks, this.oneTask, required this.apiRevision,});
 }

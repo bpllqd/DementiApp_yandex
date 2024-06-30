@@ -1,5 +1,6 @@
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
+import 'package:demetiapp/core/utils/text_constants.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class ToDoListWidget extends StatelessWidget {
     ScrollController scrollController,
     BuildContext context,
   ) async {
-    await context.push('/add_new');
+    BlocProvider.of<ToDoListBloc>(context).add(CreateNavigateTaskEvent());
     DementiappLogger.infoLog('Navigating to add_new');
     scrollController.animateTo(
       0,
@@ -30,61 +31,85 @@ class ToDoListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        controller: scrollController,
-        slivers: <Widget>[
-          SliverPersistentHeader(
-            delegate: _SliverAppBarDelegate(),
-            pinned: true,
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.only(
-              left: 4.0,
-              right: 4.0,
-              bottom: 3.0,
-            ),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Card(
-                    color: Theme.of(context).cardColor,
-                    semanticContainer: false,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+
+    return BlocListener<ToDoListBloc, ToDoListState>(
+      listener: (context, state) {
+        print('$state');
+        if (state is ToDoListEditTaskState) {
+          context.push('/add_new', extra: state.task);
+        } else if (state is ToDoListCreateTaskState) {
+          context.push('/add_new');
+        }
+      },
+      child: BlocBuilder<ToDoListBloc, ToDoListState>(
+        builder: (context, state) {
+          if (state is ToDoCreateSuccessState ||
+              state is ToDoEditSuccessState ||
+              state is TodoListSuccessState) {
+            return Scaffold(
+              backgroundColor: Colors.white,
+              body: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                controller: scrollController,
+                slivers: <Widget>[
+                  SliverPersistentHeader(
+                    delegate: _SliverAppBarDelegate(),
+                    pinned: true,
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.only(
+                      left: 4.0,
+                      right: 4.0,
+                      bottom: 3.0,
                     ),
-                    elevation: 4.0,
-                    child: Column(
-                      children: [
-                        const TasksList(),
-                        AddNewButton(
-                          onTap: () {
-                            _addNewTask(scrollController, context);
-                          },
-                        ),
-                      ],
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return Card(
+                            color: Theme.of(context).cardColor,
+                            semanticContainer: false,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                            ),
+                            elevation: 4.0,
+                            child: Column(
+                              children: [
+                                const TasksList(),
+                                AddNewButton(
+                                  onTap: () {
+                                    _addNewTask(scrollController, context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        childCount: 1,
+                      ),
                     ),
-                  );
-                },
-                childCount: 1,
+                  ),
+                ],
               ),
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _addNewTask(scrollController, context);
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  _addNewTask(scrollController, context);
+                },
+                elevation: 4,
+                backgroundColor:
+                    Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                child: const Icon(
+                  Icons.add,
+                  color: AppColors.lightColorWhite,
+                ),
+              ),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
         },
-        elevation: 4,
-        backgroundColor:
-            Theme.of(context).floatingActionButtonTheme.backgroundColor,
-        child: const Icon(
-          Icons.add,
-          color: AppColors.lightColorWhite,
-        ),
       ),
     );
   }
@@ -164,7 +189,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                             Opacity(
                               opacity: subOpacity,
                               child: Text(
-                                'Выполнено - ${state.completedTasks}',
+                                '${TextConstants.done()}${state.completedTasks}',
                                 style: TextStyle(
                                   fontSize: subtitleSize,
                                 ),
@@ -176,8 +201,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                 bloc.add(
                                   ChangeFilterEvent(
                                     filter: state.filter == TasksFilter.showAll
-                                        ? TasksFilter.showOnly
-                                        : TasksFilter.showAll,
+                                        ? true
+                                        : false,
                                   ),
                                 );
                                 DementiappLogger.infoLog(
@@ -203,7 +228,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                         top: topTitlePadding,
                         left: leftTitlePadding,
                         child: Text(
-                          'Мои дела',
+                          TextConstants.mainTitle(),
                           style: TextStyle(
                             fontSize: titleSize,
                             fontWeight: FontWeight.bold,
@@ -213,6 +238,14 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                     ],
                   ),
                 ),
+              ),
+            );
+          } else if (state is ToDoListErrorState) {
+            return Center(
+              child: Text(
+                state.errorDescription,
+                style: const TextStyle(color: Colors.red, fontSize: 18),
+                textAlign: TextAlign.center,
               ),
             );
           } else {
