@@ -1,3 +1,4 @@
+import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/text_constants.dart';
@@ -11,21 +12,33 @@ import 'app_bar_widget.dart';
 import 'delete_button.dart';
 import 'textfield_widget.dart';
 
-class ToDoCreateWidget extends StatelessWidget {
+class ToDoCreateWidget extends StatefulWidget {
   const ToDoCreateWidget({
     super.key,
   });
 
   @override
+  State<ToDoCreateWidget> createState() => _ToDoCreateWidgetState();
+}
+
+class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
+  final TextEditingController textController = TextEditingController();
+
+  DateTime? deadline;
+  bool isSwitchDisabled = false;
+  String? importance;
+  bool isCreatingTask = true;
+  TaskEntity? taskToDelete;
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final bloc = context.read<ToDoListBloc>();
-
-    final TextEditingController textController = TextEditingController();
-
-    textController.text = task?.text ?? '';
-    String? importance = task?.importance;
-    DateTime? pickedDate = task?.deadline;
-    bool isSwitchEnabled = task?.deadline != null;
 
     return BlocListener<ToDoListBloc, ToDoListState>(
       listener: (context, state) {
@@ -36,15 +49,21 @@ class ToDoCreateWidget extends StatelessWidget {
       },
       child: BlocBuilder<ToDoListBloc, ToDoListState>(
         builder: (context, state) {
+          if (state is EditInProgressState) {
+            textController.text = state.task.text;
+            deadline = state.task.deadline;
+            importance = state.task.importance;
+            isSwitchDisabled = state.task.deadline != null ? true : false;
+            isCreatingTask = false;
+            taskToDelete = state.task;
+          }
           return Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: BarWidget(
               bloc: bloc,
-              task: task,
               textController: textController,
+              deadline: deadline,
               importance: importance,
-              isSwitchEnabled: isSwitchEnabled,
-              pickedDate: pickedDate,
             ),
             body: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -149,12 +168,12 @@ class ToDoCreateWidget extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             Visibility(
-                              visible: isSwitchEnabled != false,
+                              visible: isSwitchDisabled != true,
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 4.0),
                                 child: Text(
-                                  pickedDate != null
-                                      ? FormatDate.toDmmmmyyyy(pickedDate)
+                                  deadline != null
+                                      ? FormatDate.toDmmmmyyyy(deadline!)
                                       : '',
                                   style: const TextStyle(
                                     fontSize: AppFontSize.buttonFontSize,
@@ -166,13 +185,13 @@ class ToDoCreateWidget extends StatelessWidget {
                           ],
                         ),
                         Switch(
-                          value: isSwitchEnabled != false,
+                          value: isSwitchDisabled != true,
                           onChanged: (bool value) async {
-                            isSwitchEnabled != false
+                            isSwitchDisabled != false
                                 ? null
-                                : pickedDate = await pickDate(context);
-                            if (pickedDate != null) {
-                              isSwitchEnabled = !isSwitchEnabled;
+                                : deadline = await pickDate(context);
+                            if (deadline != null) {
+                              isSwitchDisabled = !isSwitchDisabled;
                             }
                           },
                         ),
@@ -188,20 +207,18 @@ class ToDoCreateWidget extends StatelessWidget {
                   const SizedBox(height: 8.0),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
-                    child: task != null
-                        ? DeleteButton(
-                            isActive: true,
-                            onTap: () {
-                              bloc.add(DeleteTaskEvent(task!));
+                    child: DeleteButton(
+                      isActive: !isCreatingTask,
+                      onTap: isCreatingTask
+                          ? null
+                          : () {
+                              bloc.add(TaskDeleteEvent(task: taskToDelete!));
                               Navigator.pop(context);
                               DementiappLogger.infoLog(
                                 'Delete button has been pressed',
                               );
                             },
-                          )
-                        : const DeleteButton(
-                            isActive: false,
-                          ),
+                    ),
                   ),
                   const SizedBox(height: 12.0),
                 ],

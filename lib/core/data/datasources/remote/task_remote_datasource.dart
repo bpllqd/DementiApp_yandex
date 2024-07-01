@@ -40,7 +40,6 @@ abstract class TaskRemoteDataSource {
   Future<void> editTask(TaskApiModel oldTask, TaskApiModel editedTask);
 }
 
-/// TODO: Dont forget to pass base options in dio
 class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   final Dio dio;
 
@@ -113,18 +112,26 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     Response<Map<String, dynamic>> response = await dio.get(
       '/list',
     );
+    DementiappLogger.infoLog('Got result API getAll: $response');
+    DementiappLogger.infoLog('${response.data}');
+
     if (response.statusCode == 200) {
-      final List<TaskApiModel> tasksFromApi = (response.data!['list'] as List)
+      final int revisionFromApi = response.data!['revision'] as int;
+      if(response.data != null){
+        final List<TaskApiModel> tasksFromApi = (response.data!['list'] as List)
           .map((task) => TaskApiModel.fromJson(task as Map<String, dynamic>))
           .toList();
-      debugPrint('$tasksFromApi');
-      final int revisionFromApi = response.data!['revision'] as int;
-      debugPrint('$revisionFromApi');
-
-      return TaskApiModelWithRevision(
-        apiRevision: revisionFromApi,
-        listTasks: tasksFromApi,
-      );
+        DementiappLogger.infoLog('Got not empty tasks API: $tasksFromApi');
+        return TaskApiModelWithRevision(
+          apiRevision: revisionFromApi,
+          listTasks: tasksFromApi,
+        );
+      } else{
+        final List<TaskApiModel> tasksFromApi = [];
+        DementiappLogger.infoLog('Got not tasks: $tasksFromApi');
+        return TaskApiModelWithRevision(apiRevision: revisionFromApi, listTasks: tasksFromApi);
+      }
+      
     } else {
       DementiappLogger.errorLog(
         'Bad status from Api, code: ${response.statusCode}',

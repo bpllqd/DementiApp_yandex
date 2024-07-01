@@ -1,9 +1,9 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
-import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/text_constants.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,19 +11,15 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
   const BarWidget({
     super.key,
     required this.bloc,
-    required this.task,
     required this.textController,
-    required this.isSwitchEnabled,
-    required this.pickedDate,
+    required this.deadline,
     required this.importance,
   });
 
-  final Uuid uuid = const Uuid();
   final ToDoListBloc bloc;
-  final TaskEntity? task;
+  final Uuid uuid = const Uuid();
   final TextEditingController textController;
-  final bool isSwitchEnabled;
-  final DateTime? pickedDate;
+  final DateTime? deadline;
   final String? importance;
 
   @override
@@ -35,8 +31,8 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         splashRadius: 24.0,
         onPressed: () {
+          bloc.add(GetAllEvent());
           context.pop(context);
-          DementiappLogger.infoLog('Navigate back');
         },
         icon: const Icon(
           Icons.close,
@@ -47,27 +43,63 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: Center(
-            child: TextButton(
-              onPressed: () {
-                bloc.add(
-                  ToDoCreateNewEvent(
-                    TaskEntity(
-                      id: task?.id ?? uuid.v1(),
-                      text: textController.text.isNotEmpty
-                          ? textController.text
-                          : TextConstants.chtoTo(),
-                      importance: TextConstants.importanceBasicValue(),
-                      deadline: pickedDate,
+            child: BlocBuilder<ToDoListBloc, ToDoListState>(
+              builder: (context, state) {
+                if (state is CreateInProgressState) {
+                  return TextButton(
+                    onPressed: () {
+                      bloc.add(
+                        TaskCreatedSaveEvent(
+                          task: TaskEntity(
+                            id: uuid.v1(),
+                            text: textController.text,
+                            importance: importance ?? 'basic',
+                            deadline: deadline,
+                            createdAt: DateTime.now(),
+                            changedAt: DateTime.now(),
+                          ),
+                        ),
+                      );
+                      context.pop();
+                    },
+                    child: Text(
+                      TextConstants.createSave(),
+                      style: Theme.of(context).textTheme.labelMedium,
                     ),
-                  ),
-                );
-                Navigator.pop(context);
-                DementiappLogger.infoLog('Navigating to ToDo List');
+                  );
+                } else if (state is EditInProgressState) {
+                  return TextButton(
+                    onPressed: () {
+                      bloc.add(
+                        TaskEditedSaveEvent(
+                          oldTask: state.task,
+                          newTask: TaskEntity(
+                            id: state.task.id,
+                            text: textController.text,
+                            importance: importance ?? 'basic',
+                            deadline: deadline,
+                            createdAt: state.task.createdAt,
+                            changedAt: DateTime.now(),
+                          ),
+                        ),
+                      );
+                      context.pop();
+                    },
+                    child: Text(
+                      TextConstants.createSave(),
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  );
+                } else {
+                  return TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      'null',
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  );
+                }
               },
-              child: Text(
-                TextConstants.createSave(),
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
             ),
           ),
         ),

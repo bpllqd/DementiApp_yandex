@@ -7,7 +7,7 @@ import 'package:demetiapp/core/error/exception.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:sqflite/sqflite.dart';
-import 'dart:io' show File, Platform;
+import 'dart:io' show Platform;
 
 abstract class TaskLocalDataSource {
   Future<int> getRevision(Database db);
@@ -45,7 +45,7 @@ abstract class TaskLocalDataSource {
   /// no internet connection.
   ///
   /// Throws [CacheException] if the errors occured.
-  Future<TaskLocalModelWithRevision> createTaskToCache(TaskLocalModel task);
+  Future<TaskLocalModelWithRevision> createTaskToCache(TaskLocalModel task, int revision);
 
   /// Edits the local [TaskApiModel] task if there is
   /// no internet connection.
@@ -94,19 +94,28 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   @override
   Future<TaskLocalModelWithRevision> createTaskToCache(
     TaskLocalModel task,
+    int revision,
   ) async {
     final db = await _databaseHelper.database;
-    DementiappLogger.infoLog('Подклюились к БД через _createTask: $db');
-    DementiappLogger.infoLog('Таблицы бд: ${_databaseHelper.getTableNames()}');
 
     TaskEntity entity = TaskEntity.fromLocalModel(task);
     entity = entity.copyWith(lastUpdatedBy: await getId());
     task = TaskLocalModel.fromEntity(entity);
-    DementiappLogger.infoLog('Будем записывать: $task');
+    DementiappLogger.infoLog('Будем записывать LOCAL createTask: $task');
+
+    await db.update(
+      'metadata',
+      {'revision': revision},
+      where: 'id = ?',
+      whereArgs: [1],
+    );    
+
     final int loading = await db.insert(
       'tasks',
       DBMapConverter.convertTaskForDB(task.toJson()),
     );
+
+
 
     if (loading == 0) {
       DementiappLogger.errorLog(
@@ -183,6 +192,7 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   @override
   Future<TaskLocalModelWithRevision> getAllTasksFromCache() async {
     final db = await _databaseHelper.database;
+
     final List<Map<String, dynamic>> maps = await db.query('tasks');
     final int localRevision = await getRevision(db);
     final List<TaskLocalModel> tasks = List.generate(maps.length, (i) {

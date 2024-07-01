@@ -16,7 +16,7 @@ part 'todo_list_state.dart';
 part 'todo_list_event.dart';
 
 class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
-  ToDoListBloc() : super(LoadingState()) {
+  ToDoListBloc() : super(ToDoListInitState()) {
     on<GetTasksEvent>(_getTasks);
     on<TaskCompleteEvent>(_completeTask);
     on<TaskDeleteEvent>(_deleteTask);
@@ -44,14 +44,17 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     Emitter<ToDoListState> emit,
   ) async {
     emit(LoadingState());
+
     DementiappLogger.infoLog('Loading in _getTasks');
+
     final GetAllTasks getTasks =
         GetAllTasks(toDoListRepository: toDoListRepository);
     final Either<Failure, List<TaskEntity>> result = await getTasks.call();
 
     result.fold((failure) {
       emit(ErrorState(errorDescription: failure.message));
-      DementiappLogger.errorLog('Got error ${failure.message} in _getTasks!');
+
+      DementiappLogger.errorLog('Got error in BLoC _getTasks ${failure.message}');
     }, (value) {
       emit(
         SuccessState(
@@ -59,7 +62,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
           completedTasks: value.where((task) => task.done).length,
         ),
       );
-      DementiappLogger.infoLog('Got all tasks from _getTasks!');
+      DementiappLogger.infoLog('Got all tasks from BLoC _getTasks!');
     });
   }
 
@@ -83,7 +86,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     result.fold((failure) {
       emit(ErrorState(errorDescription: failure.message));
       DementiappLogger.errorLog(
-        'Got ${failure.message} from _completeTask - first failure',
+        'Got error BLoC _completeTask - first failure ${failure.message}',
       );
     }, (value) async {
       final Either<Failure, List<TaskEntity>> resultAll =
@@ -91,7 +94,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
       resultAll.fold((failure) {
         emit(ErrorState(errorDescription: failure.message));
         DementiappLogger.errorLog(
-          'Got error ${failure.message} from _completeTask - second failure',
+          'Got error in BLoC _completeTask - second failure ${failure.message}',
         );
       }, (valueGood) {
         emit(
@@ -101,7 +104,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
           ),
         );
       });
-      DementiappLogger.infoLog('Completing task ended with MEGAHOROSH!');
+      DementiappLogger.infoLog('Completing task in BLoC _completeTask ended with MEGAHOROSH!');
     });
   }
 
@@ -122,7 +125,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     result.fold((failure) {
       emit(ErrorState(errorDescription: failure.message));
       DementiappLogger.errorLog(
-        'Got error ${failure.message} from _deleteTask - failure 1',
+        'Got error in BLoC _deleteTask - failure 1 ${failure.message}',
       );
     }, (value) async {
       final Either<Failure, List<TaskEntity>> resultAll =
@@ -130,7 +133,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
       resultAll.fold((failure) {
         emit(ErrorState(errorDescription: failure.message));
         DementiappLogger.errorLog(
-          'Got error ${failure.message} from _deleteTask - failure 2',
+          'Got error in BLoC _deleteTask - failure 2 ${failure.message}',
         );
       }, (valueGood) {
         emit(
@@ -140,7 +143,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
           ),
         );
         DementiappLogger.infoLog(
-          'Got new tasks. _deleteTask completed with MEGAHOROSH',
+          'BLoC _deleteTask completed with MEGAHOROSH',
         );
       });
     });
@@ -195,11 +198,11 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
 
     result.fold((failure) {
       DementiappLogger.errorLog(
-        'Got error ${failure.message} in _changeFilter 1',
+        'Got error in BLoC _changeFilter 1 ${failure.message}',
       );
       emit(ErrorState(errorDescription: failure.message));
     }, (value) {
-      DementiappLogger.infoLog('Edinig ended with MEGAHOROSH!');
+      DementiappLogger.infoLog('Editing in BLoC saveEditedTask ended with MEGAHOROSH!');
       emit(EditingSuccessState());
     });
   }
@@ -218,11 +221,11 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
 
     result.fold((failure) {
       DementiappLogger.errorLog(
-        'Got error ${failure.message} in _saveCreatedTask 1',
+        'Got error in BLoC _saveCreatedTask 1 ${failure.message}',
       );
       emit(ErrorState(errorDescription: failure.message));
     }, (value) {
-      DementiappLogger.infoLog('Creating ended with MEGAHOROSH!');
+      DementiappLogger.infoLog('Creating in BLoC saveCreatedTask ended with MEGAHOROSH!');
       emit(CreatingSuccessState());
     });
   }
