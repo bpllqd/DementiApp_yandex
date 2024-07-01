@@ -31,7 +31,8 @@ class DatabaseHelper {
       'CREATE TABLE tasks(id TEXT, text TEXT, importance TEXT, done INTEGER, deadline TEXT, lastUpdatedBy TEXT, createdAt TEXT, changedAt TEXT)',
     );
     await db.execute(
-        'CREATE TABLE metadata(id INTEGER PRIMARY KEY, revision INTEGER)',);
+      'CREATE TABLE metadata(id INTEGER PRIMARY KEY, revision INTEGER)',
+    );
     await _initializeMetadata(db);
   }
 

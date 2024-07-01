@@ -57,6 +57,9 @@ class TaskLocalModelWithRevision {
   final TaskLocalModel? oneTask;
   final int localRevision;
 
-  TaskLocalModelWithRevision(
-      {this.listTasks, this.oneTask, required this.localRevision,});
+  TaskLocalModelWithRevision({
+    this.listTasks,
+    this.oneTask,
+    required this.localRevision,
+  });
 }

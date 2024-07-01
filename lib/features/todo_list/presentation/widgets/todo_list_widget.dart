@@ -1,8 +1,8 @@
+import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/text_constants.dart';
 import 'package:demetiapp/core/utils/utils.dart';
-import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,7 +17,7 @@ class ToDoListWidget extends StatelessWidget {
     ScrollController scrollController,
     BuildContext context,
   ) async {
-    BlocProvider.of<ToDoListBloc>(context).add(CreateNavigateTaskEvent());
+    BlocProvider.of<ToDoListBloc>(context).add(TaskCreateEvent());
     DementiappLogger.infoLog('Navigating to add_new');
     scrollController.animateTo(
       0,
@@ -34,18 +34,22 @@ class ToDoListWidget extends StatelessWidget {
 
     return BlocListener<ToDoListBloc, ToDoListState>(
       listener: (context, state) {
-        print('$state');
-        if (state is ToDoListEditTaskState) {
-          context.push('/add_new', extra: state.task);
-        } else if (state is ToDoListCreateTaskState) {
+        DementiappLogger.infoLog('Current state: $state');
+        if (state is CreateInProgressState) {
           context.push('/add_new');
+        } else if (state is EditInProgressState) {
+          context.push(
+            '/add_new',
+            extra: state.task,
+          );
+        } else if (state is CreatingSuccessState ||
+            state is EditingSuccessState) {
+          BlocProvider.of<ToDoListBloc>(context).add(GetAllEvent());
         }
       },
       child: BlocBuilder<ToDoListBloc, ToDoListState>(
         builder: (context, state) {
-          if (state is ToDoCreateSuccessState ||
-              state is ToDoEditSuccessState ||
-              state is TodoListSuccessState) {
+          if (state is SuccessState) {
             return Scaffold(
               backgroundColor: Colors.white,
               body: CustomScrollView(
@@ -104,9 +108,19 @@ class ToDoListWidget extends StatelessWidget {
                 ),
               ),
             );
+          } else if (state is ErrorState) {
+            return Scaffold(
+              body: Center(
+                child: Text(state.errorDescription),
+              ),
+            );
           } else {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(
+                  color: Colors.red,
+                ),
+              ),
             );
           }
         },
@@ -161,7 +175,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     return Center(
       child: BlocBuilder<ToDoListBloc, ToDoListState>(
         builder: (context, state) {
-          if (state is TodoListSuccessState) {
+          if (state is SuccessState) {
             return Container(
               height: containerHeight,
               decoration: BoxDecoration(
@@ -200,6 +214,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                               onPressed: () {
                                 bloc.add(
                                   ChangeFilterEvent(
+                                    tasks: state.tasks,
+                                    completedTasks: state.completedTasks,
                                     filter: state.filter == TasksFilter.showAll
                                         ? true
                                         : false,
@@ -240,16 +256,10 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                 ),
               ),
             );
-          } else if (state is ToDoListErrorState) {
-            return Center(
-              child: Text(
-                state.errorDescription,
-                style: const TextStyle(color: Colors.red, fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
-            );
           } else {
-            return const CircularProgressIndicator();
+            return const Center(
+              child: Text('error'),
+            );
           }
         },
       ),

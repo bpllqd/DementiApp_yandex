@@ -57,6 +57,9 @@ class TaskApiModelWithRevision {
   final TaskApiModel? oneTask;
   final int apiRevision;
 
-  TaskApiModelWithRevision(
-      {this.listTasks, this.oneTask, required this.apiRevision,});
+  TaskApiModelWithRevision({
+    this.listTasks,
+    this.oneTask,
+    required this.apiRevision,
+  });
 }

@@ -23,7 +23,9 @@ abstract class TaskLocalDataSource {
   ///
   /// Throws [CacheException] if the errors occured.
   Future<TaskLocalModelWithRevision> updateAllTasksToCache(
-      List<TaskLocalModel> newTaskList, int newRevision,);
+    List<TaskLocalModel> newTaskList,
+    int newRevision,
+  );
 
   /// Gets the last [TaskApiModel] exact task from cache
   /// when the user had internet connection
@@ -36,7 +38,8 @@ abstract class TaskLocalDataSource {
   ///
   /// Throws [CacheException] if the errors occured.
   Future<TaskLocalModelWithRevision> deleteExactTaskFromCache(
-      TaskLocalModel task,);
+    TaskLocalModel task,
+  );
 
   /// Creates the local [TaskApiModel] task if there is
   /// no internet connection.
@@ -49,7 +52,9 @@ abstract class TaskLocalDataSource {
   ///
   /// Throws [CacheException] if the errors occured.
   Future<TaskLocalModelWithRevision> editTaskToCache(
-      TaskLocalModel oldTask, TaskLocalModel editedTask,);
+    TaskLocalModel oldTask,
+    TaskLocalModel editedTask,
+  );
 }
 
 class TaskLocalDatasourceImpl implements TaskLocalDataSource {
@@ -65,9 +70,9 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
     } else if (Platform.isAndroid) {
       var androidDeviceInfo = await deviceInfo.androidInfo;
       id = androidDeviceInfo.id;
+    } else {
+      id = 'Windows phone user lmao';
     }
-    id = 'Windows phone user lmao';
-
     return id;
   }
 
@@ -88,11 +93,16 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
 
   @override
   Future<TaskLocalModelWithRevision> createTaskToCache(
-      TaskLocalModel task,) async {
+    TaskLocalModel task,
+  ) async {
     final db = await _databaseHelper.database;
+    DementiappLogger.infoLog('Подклюились к БД через _createTask: $db');
+    DementiappLogger.infoLog('Таблицы бд: ${_databaseHelper.getTableNames()}');
+
     TaskEntity entity = TaskEntity.fromLocalModel(task);
     entity = entity.copyWith(lastUpdatedBy: await getId());
     task = TaskLocalModel.fromEntity(entity);
+    DementiappLogger.infoLog('Будем записывать: $task');
     final int loading = await db.insert(
       'tasks',
       DBMapConverter.convertTaskForDB(task.toJson()),
@@ -100,9 +110,11 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
 
     if (loading == 0) {
       DementiappLogger.errorLog(
-          'Writing task to cache has been ended with DEADINSIDE',);
+        'Writing task to cache has been ended with DEADINSIDE',
+      );
       throw CacheException(
-          'Error while writing to cache. Please, try again later',);
+        'Error while writing to cache. Please, try again later',
+      );
     }
 
     final int updatedRevision = await getRevision(db);
@@ -111,7 +123,8 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
 
   @override
   Future<TaskLocalModelWithRevision> deleteExactTaskFromCache(
-      TaskLocalModel task,) async {
+    TaskLocalModel task,
+  ) async {
     final db = await _databaseHelper.database;
 
     final int result = await db.transaction((txn) async {
@@ -125,9 +138,11 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
 
     if (result == 0) {
       DementiappLogger.errorLog(
-          'Deleting task from cache has been ended with DEADINSIDE',);
+        'Deleting task from cache has been ended with DEADINSIDE',
+      );
       throw CacheException(
-          'Error while deleting task from cache. Please, try again later',);
+        'Error while deleting task from cache. Please, try again later',
+      );
     }
 
     final int updatedRevision = await getRevision(db);
@@ -136,7 +151,9 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
 
   @override
   Future<TaskLocalModelWithRevision> editTaskToCache(
-      TaskLocalModel oldTask, TaskLocalModel editedTask,) async {
+    TaskLocalModel oldTask,
+    TaskLocalModel editedTask,
+  ) async {
     final db = await _databaseHelper.database;
 
     final int result = await db.transaction((txn) async {
@@ -152,9 +169,11 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
 
     if (result == 0) {
       DementiappLogger.errorLog(
-          'Editing task in cache has been ended with DEADINSIDE',);
+        'Editing task in cache has been ended with DEADINSIDE',
+      );
       throw CacheException(
-          'Error while editing task in cache. Please, try again later',);
+        'Error while editing task in cache. Please, try again later',
+      );
     }
 
     final int updatedRevision = await getRevision(db);
@@ -171,12 +190,15 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
       return TaskLocalModel.fromJson(taskMap);
     });
     return TaskLocalModelWithRevision(
-        listTasks: tasks, localRevision: localRevision,);
+      listTasks: tasks,
+      localRevision: localRevision,
+    );
   }
 
   @override
   Future<TaskLocalModelWithRevision> getExactTaskFromCache(
-      TaskLocalModel task,) async {
+    TaskLocalModel task,
+  ) async {
     final db = await _databaseHelper.database;
     final int localRevision = await getRevision(db);
 
@@ -190,30 +212,41 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
       Map<String, dynamic> taskMap =
           DBMapConverter.convertTaskFromDB(maps.first);
       return TaskLocalModelWithRevision(
-          oneTask: TaskLocalModel.fromJson(taskMap),
-          localRevision: localRevision,);
+        oneTask: TaskLocalModel.fromJson(taskMap),
+        localRevision: localRevision,
+      );
     } else {
       DementiappLogger.errorLog(
-          'Getting task from cache has been ended with DEADINSIDE',);
+        'Getting task from cache has been ended with DEADINSIDE',
+      );
       throw CacheException(
-          'Error while getting task from cache. Please, try again later',);
+        'Error while getting task from cache. Please, try again later',
+      );
     }
   }
 
   @override
   Future<TaskLocalModelWithRevision> updateAllTasksToCache(
-      List<TaskLocalModel> newTaskList, int newRevision,) async {
+    List<TaskLocalModel> newTaskList,
+    int newRevision,
+  ) async {
     final db = await _databaseHelper.database;
 
-    await db.update('metadata', {'revision': newRevision},
-        where: 'id = ?', whereArgs: [1],);
+    await db.update(
+      'metadata',
+      {'revision': newRevision},
+      where: 'id = ?',
+      whereArgs: [1],
+    );
 
     await db.transaction((txn) async {
       await txn.delete('tasks');
       if (newTaskList.isNotEmpty) {
         for (var task in newTaskList) {
           await txn.insert(
-              'tasks', DBMapConverter.convertTaskForDB(task.toJson()),);
+            'tasks',
+            DBMapConverter.convertTaskForDB(task.toJson()),
+          );
         }
       }
     });
@@ -222,6 +255,8 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
     final List<TaskLocalModel> tasks = result.listTasks!;
 
     return TaskLocalModelWithRevision(
-        localRevision: revision, listTasks: tasks,);
+      localRevision: revision,
+      listTasks: tasks,
+    );
   }
 }

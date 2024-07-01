@@ -19,7 +19,9 @@ class EditTask {
   EditTask({required this.toDoListRepository});
 
   Future<Either<Failure, void>> call(
-      TaskEntity oldTask, TaskEntity editedTask,) async {
+    TaskEntity oldTask,
+    TaskEntity editedTask,
+  ) async {
     return await toDoListRepository.editTask(oldTask, editedTask);
   }
 }

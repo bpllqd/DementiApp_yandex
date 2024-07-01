@@ -1,7 +1,6 @@
 import 'package:demetiapp/core/routing/routing.dart';
 import 'package:demetiapp/core/theme/theme.dart';
-import 'package:demetiapp/features/todo_create/presentation/bloc/todo_create_bloc.dart';
-import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
+import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -34,9 +33,6 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => ToDoListBloc()..add(GetTasksEvent()),
-        ),
-        BlocProvider(
-          create: (context) => ToDoCreateBloc(),
         ),
       ],
       child: RoutingWrapper(),

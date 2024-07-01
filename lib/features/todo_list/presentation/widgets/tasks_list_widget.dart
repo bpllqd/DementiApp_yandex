@@ -1,6 +1,5 @@
 import 'package:demetiapp/core/theme/theme.dart';
-import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
-import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
+import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,7 +15,7 @@ class TasksList extends StatelessWidget {
     return BlocBuilder<ToDoListBloc, ToDoListState>(
       bloc: bloc,
       builder: (context, state) {
-        if (state is TodoListSuccessState) {
+        if (state is SuccessState) {
           return ClipRRect(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(8.0),
@@ -35,8 +34,8 @@ class TasksList extends StatelessWidget {
                   confirmDismiss: (direction) =>
                       confirmDismissing(direction, bloc, index, state),
                   onDismissed: (_) => bloc.add(
-                    DeleteTaskEvent(
-                      state.filteredTasks[index],
+                    TaskDeleteEvent(
+                      task: state.filteredTasks[index],
                     ),
                   ),
                   background: Container(
@@ -82,16 +81,12 @@ class TasksList extends StatelessWidget {
               },
             ),
           );
-        } else if (state is ToDoListErrorState) {
-          return Center(
-            child: Text(
-              state.errorDescription,
-              style: const TextStyle(color: Colors.red, fontSize: 18),
-              textAlign: TextAlign.center,
+        } else {
+          return const Scaffold(
+            body: Center(
+              child: Text('Error occured'),
             ),
           );
-        } else {
-          return const CircularProgressIndicator();
         }
       },
     );
@@ -101,16 +96,11 @@ class TasksList extends StatelessWidget {
     DismissDirection direction,
     ToDoListBloc bloc,
     int index,
-    TodoListSuccessState state,
+    SuccessState state,
   ) async {
     if (direction == DismissDirection.startToEnd) {
-      bloc.add(
-        CompleteTaskEvent(
-          state.filteredTasks[index],
-        ),
-      );
+      bloc.add(TaskCompleteEvent(task: state.filteredTasks[index]));
     }
-    DementiappLogger.infoLog('Dissmising has been confirmed');
     return direction == DismissDirection.endToStart;
   }
 }

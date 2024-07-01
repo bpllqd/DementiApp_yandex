@@ -6,7 +6,9 @@ abstract class ToDoListRepository {
   Future<Either<Failure, List<TaskEntity>>> getAllTasks(); //GET $BASEURL/list
 
   Future<Either<Failure, void>> updateAllTasks(
-      List<TaskEntity> tasks, int revision,); //PATCH $BASEURL/list
+    List<TaskEntity> tasks,
+    int revision,
+  ); //PATCH $BASEURL/list
 
   Future<Either<Failure, void>> deleteTask(
     TaskEntity task,

@@ -19,7 +19,9 @@ class UpdateAllTasks {
   UpdateAllTasks({required this.toDoListRepository});
 
   Future<Either<Failure, void>> call(
-      List<TaskEntity> tasks, int revision,) async {
+    List<TaskEntity> tasks,
+    int revision,
+  ) async {
     return await toDoListRepository.updateAllTasks(tasks, revision);
   }
 }

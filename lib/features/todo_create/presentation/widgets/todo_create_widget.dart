@@ -1,9 +1,8 @@
-import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/text_constants.dart';
 import 'package:demetiapp/core/utils/utils.dart';
-import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
+import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,11 +12,8 @@ import 'delete_button.dart';
 import 'textfield_widget.dart';
 
 class ToDoCreateWidget extends StatelessWidget {
-  final TaskEntity? task;
-
   const ToDoCreateWidget({
     super.key,
-    this.task,
   });
 
   @override
@@ -33,191 +29,186 @@ class ToDoCreateWidget extends StatelessWidget {
 
     return BlocListener<ToDoListBloc, ToDoListState>(
       listener: (context, state) {
-        if (state is ToDoCreateSuccessState) {
+        if (state is CreatingSuccessState || state is EditingSuccessState) {
           bloc.add(GetTasksEvent());
           context.pop();
-          DementiappLogger.infoLog(
-            'Navigating back',
-          );
         }
       },
-      child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: BarWidget(
-          bloc: bloc,
-          task: task,
-          textController: textController,
-          importance: importance,
-          isSwitchEnabled: isSwitchEnabled,
-          pickedDate: pickedDate,
-        ),
-        body: BlocBuilder<ToDoListBloc, ToDoListState>(
-          builder: (context, state) {
-            if (state is ToDoListLoadingState) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              return SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 8.0),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: MaterialTextfield(
-                        textController: textController,
-                      ),
+      child: BlocBuilder<ToDoListBloc, ToDoListState>(
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            appBar: BarWidget(
+              bloc: bloc,
+              task: task,
+              textController: textController,
+              importance: importance,
+              isSwitchEnabled: isSwitchEnabled,
+              pickedDate: pickedDate,
+            ),
+            body: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 8.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: MaterialTextfield(
+                      textController: textController,
                     ),
-                    const SizedBox(height: 12.0),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16.0, right: 100),
-                      child: ButtonTheme(
-                        alignedDropdown: true,
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButtonFormField(
-                            value: importance,
-                            onChanged: (newPriority) {
-                              importance = newPriority;
-                            },
-                            style: const TextStyle(
-                              fontSize: AppFontSize.buttonFontSize,
-                              height: 18.0 / AppFontSize.bodyFontSize,
-                              color: AppColors.lightLabelTertiary,
-                            ),
-                            decoration: InputDecoration(
-                              enabled: false,
-                              disabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppColors.lightSupportSeparator,
-                                  width: 0.5,
-                                  style: BorderStyle.solid,
-                                ),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  bottom: 16.0, top: 16.0,),
-                              labelText: TextConstants.importance(),
-                              labelStyle: const TextStyle(
-                                fontSize: 22.0,
-                                color: AppColors.lightLabelPrimary,
-                              ),
-                            ),
-                            iconSize: 0,
-                            hint: Text(
-                              TextConstants.importanceBasicValue(),
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            items: <DropdownMenuItem<String>>[
-                              DropdownMenuItem(
-                                value: TextConstants.importanceBasicValue(),
-                                child: Text(
-                                  TextConstants.importanceLow(),
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ),
-                              DropdownMenuItem(
-                                value: TextConstants.importanceLow(),
-                                child: Text(
-                                  TextConstants.importanceLow(),
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ),
-                              DropdownMenuItem(
-                                value: TextConstants.importanceImportant(),
-                                child: Text(
-                                  TextConstants.importanceImportant(),
-                                  style: const TextStyle(
-                                    fontSize: AppFontSize.bodyFontSize,
-                                    color: AppColors.lightColorRed,
-                                  ),
-                                ),
-                              ),
-                            ],
+                  ),
+                  const SizedBox(height: 12.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 100),
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButtonFormField(
+                          value: importance,
+                          onChanged: (newPriority) {
+                            importance = newPriority;
+                          },
+                          style: const TextStyle(
+                            fontSize: AppFontSize.buttonFontSize,
+                            height: 18.0 / AppFontSize.bodyFontSize,
+                            color: AppColors.lightLabelTertiary,
                           ),
+                          decoration: InputDecoration(
+                            enabled: false,
+                            disabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: AppColors.lightSupportSeparator,
+                                width: 0.5,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                              bottom: 16.0,
+                              top: 16.0,
+                            ),
+                            labelText: TextConstants.importance(),
+                            labelStyle: const TextStyle(
+                              fontSize: 22.0,
+                              color: AppColors.lightLabelPrimary,
+                            ),
+                          ),
+                          iconSize: 0,
+                          hint: Text(
+                            TextConstants.importanceBasicValue(),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          items: <DropdownMenuItem<String>>[
+                            DropdownMenuItem(
+                              value: TextConstants.importanceBasicValue(),
+                              child: Text(
+                                TextConstants.importanceLow(),
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: TextConstants.importanceLow(),
+                              child: Text(
+                                TextConstants.importanceLow(),
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: TextConstants.importanceImportant(),
+                              child: Text(
+                                TextConstants.importanceImportant(),
+                                style: const TextStyle(
+                                  fontSize: AppFontSize.bodyFontSize,
+                                  color: AppColors.lightColorRed,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Divider(
-                        height: 0,
-                        thickness: 0.5,
-                        color: Theme.of(context).dividerTheme.color,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                TextConstants.sdelatD0(),
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              Visibility(
-                                visible: isSwitchEnabled != false,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 4.0),
-                                  child: Text(
-                                    pickedDate != null
-                                        ? FormatDate.toDmmmmyyyy(pickedDate!)
-                                        : '',
-                                    style: const TextStyle(
-                                      fontSize: AppFontSize.buttonFontSize,
-                                      color: AppColors.lightColorRed,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Switch(
-                            value: isSwitchEnabled != false,
-                            onChanged: (bool value) async {
-                              isSwitchEnabled != false
-                                  ? null
-                                  : pickedDate = await pickDate(context);
-                              if (pickedDate != null) {
-                                isSwitchEnabled = !isSwitchEnabled;
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24.0),
-                    Divider(
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Divider(
                       height: 0,
                       thickness: 0.5,
                       color: Theme.of(context).dividerTheme.color,
                     ),
-                    const SizedBox(height: 8.0),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: task != null
-                          ? DeleteButton(
-                              isActive: true,
-                              onTap: () {
-                                bloc.add(DeleteTaskEvent(task!));
-                                Navigator.pop(context);
-                                DementiappLogger.infoLog(
-                                  'Delete button has been pressed',
-                                );
-                              },
-                            )
-                          : const DeleteButton(
-                              isActive: false,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              TextConstants.sdelatD0(),
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
+                            Visibility(
+                              visible: isSwitchEnabled != false,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 4.0),
+                                child: Text(
+                                  pickedDate != null
+                                      ? FormatDate.toDmmmmyyyy(pickedDate)
+                                      : '',
+                                  style: const TextStyle(
+                                    fontSize: AppFontSize.buttonFontSize,
+                                    color: AppColors.lightColorRed,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Switch(
+                          value: isSwitchEnabled != false,
+                          onChanged: (bool value) async {
+                            isSwitchEnabled != false
+                                ? null
+                                : pickedDate = await pickDate(context);
+                            if (pickedDate != null) {
+                              isSwitchEnabled = !isSwitchEnabled;
+                            }
+                          },
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 12.0),
-                  ],
-                ),
-              );
-            }
-          },
-        ),
+                  ),
+                  const SizedBox(height: 24.0),
+                  Divider(
+                    height: 0,
+                    thickness: 0.5,
+                    color: Theme.of(context).dividerTheme.color,
+                  ),
+                  const SizedBox(height: 8.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: task != null
+                        ? DeleteButton(
+                            isActive: true,
+                            onTap: () {
+                              bloc.add(DeleteTaskEvent(task!));
+                              Navigator.pop(context);
+                              DementiappLogger.infoLog(
+                                'Delete button has been pressed',
+                              );
+                            },
+                          )
+                        : const DeleteButton(
+                            isActive: false,
+                          ),
+                  ),
+                  const SizedBox(height: 12.0),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

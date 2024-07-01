@@ -8,6 +8,7 @@ import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/domain/repository/todo_list_repository.dart';
 import 'package:demetiapp/core/error/exception.dart';
 import 'package:demetiapp/core/error/failure.dart';
+import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 class ToDoListRepositoryImpl implements ToDoListRepository {
@@ -15,9 +16,10 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
   final TaskRemoteDataSource _api;
   static String? _id;
 
-  ToDoListRepositoryImpl(
-      {required TaskLocalDataSource db, required TaskRemoteDataSource api,})
-      : _db = db,
+  ToDoListRepositoryImpl({
+    required TaskLocalDataSource db,
+    required TaskRemoteDataSource api,
+  })  : _db = db,
         _api = api;
 
   /// Получает user's id
@@ -36,14 +38,16 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
   @override
   Future<Either<Failure, void>> createTask(TaskEntity task) async {
     task = task.copyWith(lastUpdatedBy: _id);
+    DementiappLogger.infoLog('Задача для добавления: $task');
     try {
       final TaskLocalModel taskToLocal = TaskLocalModel.fromEntity(task);
       final TaskApiModel taskToApi = TaskApiModel.fromEntity(task);
 
       final TaskLocalModelWithRevision resultLocal =
           await _db.createTaskToCache(taskToLocal);
-      print('записали в кэш');
+      DementiappLogger.infoLog('Запись в кэш: $resultLocal');
       final int localRevision = resultLocal.localRevision;
+      DementiappLogger.infoLog('Локальная ревизия: $localRevision');
       await _api.createTask(taskToApi, localRevision);
 
       return const Right(null);
@@ -77,12 +81,18 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
 
   @override
   Future<Either<Failure, void>> editTask(
-      TaskEntity oldTask, TaskEntity editedTask,) async {
+    TaskEntity oldTask,
+    TaskEntity editedTask,
+  ) async {
     try {
-      await _db.editTaskToCache(TaskLocalModel.fromEntity(oldTask),
-          TaskLocalModel.fromEntity(editedTask),);
-      await _api.editTask(TaskApiModel.fromEntity(oldTask),
-          TaskApiModel.fromEntity(editedTask),);
+      await _db.editTaskToCache(
+        TaskLocalModel.fromEntity(oldTask),
+        TaskLocalModel.fromEntity(editedTask),
+      );
+      await _api.editTask(
+        TaskApiModel.fromEntity(oldTask),
+        TaskApiModel.fromEntity(editedTask),
+      );
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(e.toString()));
@@ -117,7 +127,8 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
       }
 
       return Right(
-          localTasks.map((task) => TaskEntity.fromLocalModel(task)).toList(),);
+        localTasks.map((task) => TaskEntity.fromLocalModel(task)).toList(),
+      );
     } on CacheException catch (e) {
       return Left(CacheFailure(e.toString()));
     } on ServerException catch (e) {
@@ -149,7 +160,9 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
 
   @override
   Future<Either<Failure, void>> updateAllTasks(
-      List<TaskEntity> tasks, int revision,) async {
+    List<TaskEntity> tasks,
+    int revision,
+  ) async {
     try {
       final List<TaskLocalModel> tasksToLocal =
           tasks.map((task) => TaskLocalModel.fromEntity(task)).toList();

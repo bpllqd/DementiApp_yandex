@@ -1,6 +1,6 @@
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/text_constants.dart';
-import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
+import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,7 +18,7 @@ class AddNewButton extends StatelessWidget {
     return BlocBuilder<ToDoListBloc, ToDoListState>(
       bloc: bloc,
       builder: (context, state) {
-        if (state is TodoListSuccessState) {
+        if (state is SuccessState) {
           return GestureDetector(
             onTap: onTap,
             child: Container(
