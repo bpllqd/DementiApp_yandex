@@ -29,7 +29,7 @@ abstract class TaskRemoteDataSource {
   /// Calls the https://beta.mrdekk.ru/todo/list/<id> endpoint
   ///
   /// Throws the [ServerException] for all error codes
-  Future<TaskApiModelWithRevision> deleteExactTask(TaskApiModel task);
+  Future<void> deleteExactTask(TaskApiModel task, int revision);
 
   /// Calls the https://beta.mrdekk.ru/todo/list/<id> endpoint
   ///
@@ -102,19 +102,20 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<TaskApiModelWithRevision> deleteExactTask(TaskApiModel task) async {
+  Future<void> deleteExactTask(TaskApiModel task, int revision) async {
     Response<Map<String, dynamic>> response = await dio.delete(
       '/list/${task.id}',
+      options: Options(
+        headers: {
+          'X-Last-Known-Revision': revision,
+        },
+        contentType: 'application/json',
+      ),
     );
-
+    
+    DementiappLogger.infoLog('API:deleteTask - got response');
     if (response.statusCode == 200) {
-      final dataFromApi = json.decode(response.data.toString());
-      final int apiRevision = dataFromApi['revision'] as int;
-      final List<TaskApiModel> tasksFromApi = (dataFromApi['list'] as List)
-          .map((task) => TaskApiModel.fromJson(task as Map<String, dynamic>))
-          .toList();
-      DementiappLogger.infoLog('API:deleteTask - deleted task: $tasksFromApi');
-      return TaskApiModelWithRevision(apiRevision: apiRevision, listTasks: tasksFromApi);
+      DementiappLogger.infoLog('API:deleteTask - deleted task!');
     } else {
       DementiappLogger.errorLog(
         'API:deleteTask, code: ${response.statusCode}',

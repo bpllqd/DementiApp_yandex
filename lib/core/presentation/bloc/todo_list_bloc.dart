@@ -116,7 +116,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     Emitter<ToDoListState> emit,
   ) async {
     emit(LoadingState());
-    DementiappLogger.infoLog('Loading from delete task');
+    DementiappLogger.infoLog('BLoC:deleteTask - Loading from delete task');
 
     final DeleteExactTask deleteTask =
         DeleteExactTask(toDoListRepository: toDoListRepository);
@@ -125,7 +125,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
 
     final Either<Failure, void> result = await deleteTask.call(event.task);
 
-    result.fold((failure) {
+    await result.fold((failure) {
       emit(ErrorState(errorDescription: failure.message));
       DementiappLogger.errorLog(
         'Got error in BLoC _deleteTask - failure 1 ${failure.message}',

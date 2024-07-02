@@ -137,14 +137,12 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   ) async {
     final db = await _databaseHelper.database;
 
-    final int result = await db.transaction((txn) async {
-      int result = await db.delete(
-        'tasks',
-        where: 'id = ?',
-        whereArgs: [task.id],
-      );
-      return result;
-    });
+
+    int result = await db.delete(
+      'tasks',
+      where: 'id = ?',
+      whereArgs: [task.id],
+    );
     DementiappLogger.infoLog('LOCAL:deleteExactTask - task $task has been deleted');
     if (result == 0) {
       DementiappLogger.errorLog(

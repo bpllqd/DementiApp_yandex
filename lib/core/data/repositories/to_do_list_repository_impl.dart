@@ -109,8 +109,14 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
       final TaskLocalModel taskToLocal = TaskLocalModel.fromEntity(task);
       final TaskApiModel taskToApi = TaskApiModel.fromEntity(task);
 
+      final TaskApiModelWithRevision apiAll = await _api.getAllTasks();
+      final int apiRevision = apiAll.apiRevision;
+
+      DementiappLogger.infoLog('REPO: deleteTask - got right revision: $apiRevision');
       await _db.deleteExactTaskFromCache(taskToLocal);
-      await _api.deleteExactTask(taskToApi);
+      DementiappLogger.infoLog('REPO:deleteTask - deleted from local');
+      await _api.deleteExactTask(taskToApi, apiRevision);
+      DementiappLogger.infoLog('REPO:deleteTask - deleted from api');
 
       return const Right(null);
     } on CacheException catch (e) {
