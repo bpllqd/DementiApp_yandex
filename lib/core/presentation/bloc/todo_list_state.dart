@@ -1,6 +1,11 @@
 part of 'todo_list_bloc.dart';
 
-abstract class ToDoListState extends Equatable {}
+abstract class ToDoListState extends Equatable {
+  @override
+  String toString(){
+    return runtimeType.toString();
+  }
+}
 
 class ToDoListInitState extends ToDoListState{
   @override

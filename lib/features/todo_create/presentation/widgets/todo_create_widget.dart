@@ -29,6 +29,8 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
   String? importance;
   bool isCreatingTask = true;
   TaskEntity? taskToDelete;
+  bool isInitialized = false;
+  
 
   @override
   void dispose() {
@@ -49,13 +51,14 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
       },
       child: BlocBuilder<ToDoListBloc, ToDoListState>(
         builder: (context, state) {
-          if (state is EditInProgressState) {
+          if (state is EditInProgressState && !isInitialized) {
             textController.text = state.task.text;
             deadline = state.task.deadline;
             importance = state.task.importance;
             isSwitchDisabled = state.task.deadline != null ? true : false;
             isCreatingTask = false;
             taskToDelete = state.task;
+            isInitialized = true;
           }
           return Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -86,7 +89,9 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                         child: DropdownButtonFormField(
                           value: importance,
                           onChanged: (newPriority) {
-                            importance = newPriority;
+                            setState(() {
+                              importance = newPriority;
+                            });
                           },
                           style: const TextStyle(
                             fontSize: AppFontSize.buttonFontSize,
@@ -121,7 +126,7 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                             DropdownMenuItem(
                               value: TextConstants.importanceBasicValue(),
                               child: Text(
-                                TextConstants.importanceLow(),
+                                TextConstants.importanceBasicValue(),
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ),

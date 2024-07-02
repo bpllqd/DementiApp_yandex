@@ -42,7 +42,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
     try {
 
       final TaskApiModelWithRevision apiResult = await _api.getAllTasks();
-      DementiappLogger.infoLog('REPO:getAllTasks - got tasks from api ${apiResult.listTasks}');
+      DementiappLogger.infoLog('REPO:getAllTasks - got tasks from api');
       final TaskLocalModelWithRevision localResult =
           await _db.getAllTasksFromCache();
 

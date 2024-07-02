@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:demetiapp/core/data/models/task_api_model.dart';
+import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/error/exception.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'dart:io' show Platform;
 
 abstract class TaskRemoteDataSource {
   /// Calls the https://beta.mrdekk.ru/todo/list endpoint
@@ -41,6 +44,22 @@ abstract class TaskRemoteDataSource {
 
 class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   final Dio dio;
+
+  static String id = '';
+
+  static Future<String> getId() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      id = iosDeviceInfo.identifierForVendor ?? '';
+    } else if (Platform.isAndroid) {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      id = androidDeviceInfo.id;
+    } else {
+      id = 'Windows phone user lmao';
+    }
+    return id;
+  }  
 
   TaskRemoteDataSourceImpl({required this.dio});
 
@@ -106,6 +125,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
 
   @override
   Future<void> editTask(TaskApiModel oldTask, TaskApiModel editedTask, int revision) async {
+    final newTask = TaskApiModel.fromEntity(TaskEntity.fromApiModel(editedTask).copyWith(lastUpdatedBy: await getId()));
     Response<Map<String, dynamic>> response = await dio.put(
       '/list/${oldTask.id}',
       options: Options(
@@ -114,7 +134,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
         },
         contentType: 'application/json',
       ),
-      data: json.encode({'element': editedTask.toJson()}),
+      data: json.encode({'element': newTask.toJson()}),
     );
     DementiappLogger.infoLog('API:editTask - made response with status ${response.statusCode}');
     if (response.statusCode == 200) {
@@ -141,9 +161,9 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
       final List<TaskApiModel> tasks = (response.data!['list'] as List)
           .map((task) => TaskApiModel.fromJson(task as Map<String, dynamic>))
           .toList();
-      DementiappLogger.infoLog('API:getAllTasks - made TaskApiModel $tasks');
+      DementiappLogger.infoLog('API:getAllTasks - made List<TaskApiModel>');
       tasksFromApi.addAll(tasks);
-      DementiappLogger.infoLog('API:getAllTasks got tasks - $tasksFromApi with reviion $revisionFromApi');
+      DementiappLogger.infoLog('API:getAllTasks got tasks with reviion $revisionFromApi');
       return TaskApiModelWithRevision(
           apiRevision: revisionFromApi,
           listTasks: tasksFromApi,

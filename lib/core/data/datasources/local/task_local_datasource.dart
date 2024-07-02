@@ -167,6 +167,7 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   ) async {
     final db = await _databaseHelper.database;
     DementiappLogger.infoLog('LOCAL:editTask - editing in local');
+    final newTask = TaskLocalModel.fromEntity(TaskEntity.fromLocalModel(editedTask).copyWith(lastUpdatedBy: await getId()));
     await db.update(
       'metadata',
       {'revision': revision},
@@ -176,11 +177,11 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
     DementiappLogger.infoLog('LOCAL:editTask - updated revision to $revision');
     final int result = await db.update(
         'tasks',
-        DBMapConverter.convertTaskForDB(editedTask.toJson()),
+        DBMapConverter.convertTaskForDB(newTask.toJson()),
         where: 'id = ?',
         whereArgs: [oldTask.id],
       );
-    DementiappLogger.infoLog('LOCAL:editTask - edited $oldTask to $editedTask');
+    DementiappLogger.infoLog('LOCAL:editTask - edited $oldTask to $newTask');
     if (result == 0) {
       throw CacheException(
         'Error while editing task in cache. Please, try again later',
@@ -196,6 +197,9 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
     final db = await _databaseHelper.database;
 
     final List<Map<String, dynamic>> maps = await db.query('tasks');
+    for(var task in maps){
+      print(TaskLocalModel.fromJson(DBMapConverter.convertTaskFromDB(task)));
+    }
     final int localRevision = await getRevision(db);
     DementiappLogger.infoLog('LOCAL:getAllTasks - got all tasks and revision $localRevision');
 
@@ -203,6 +207,7 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
       Map<String, dynamic> taskMap = DBMapConverter.convertTaskFromDB(maps[i]);
       return TaskLocalModel.fromJson(taskMap);
     });
+    DementiappLogger.infoLog('LOCAL:getAll - converted tasks to List');
     return TaskLocalModelWithRevision(
       listTasks: tasks,
       localRevision: localRevision,

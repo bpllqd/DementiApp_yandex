@@ -85,7 +85,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
         await editTask.call(event.task, editedTask);
     DementiappLogger.infoLog('BLoC:completeTask - task marked as completed');
 
-    result.fold((failure) {
+    await result.fold((failure) {
       emit(ErrorState(errorDescription: failure.message));
       DementiappLogger.errorLog(
         'BLoC:completeTask - error 1 - ${failure.message}',
@@ -94,11 +94,12 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
       final Either<Failure, List<TaskEntity>> resultAll =
           await getAllTasks.call();
       resultAll.fold((failure) {
-        emit(ErrorState(errorDescription: failure.message));
         DementiappLogger.errorLog(
           'BLoC:completeTask - error 2 - ${failure.message}',
-        );
+        );        
+        emit(ErrorState(errorDescription: failure.message));
       }, (valueGood) {
+        DementiappLogger.infoLog('BLoC:completeTask - updated tasks in all sources, emitin success');
         emit(
           SuccessState(
             tasks: valueGood,
@@ -179,7 +180,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
         tasks: event.tasks,
         completedTasks: event.completedTasks,
         filter:
-            event.filter == true ? TasksFilter.showAll : TasksFilter.showOnly,
+            event.filter == true ? TasksFilter.showOnly : TasksFilter.showAll,
       ),
     );
 
@@ -200,7 +201,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
 
     result.fold((failure) {
       DementiappLogger.errorLog(
-        'Got error in BLoC _changeFilter 1 ${failure.message}',
+        'Got error in BLoC saveEditedTask 1 ${failure.message}',
       );
       emit(ErrorState(errorDescription: failure.message));
     }, (value) {

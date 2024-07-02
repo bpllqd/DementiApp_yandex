@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 class TaskEntity extends Equatable {
   final String id;
   final String text;
-  final String? importance;
+  final String importance;
   final DateTime? deadline;
   final bool done;
   final String? color;

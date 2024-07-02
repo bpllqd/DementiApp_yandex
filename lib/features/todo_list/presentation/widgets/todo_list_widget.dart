@@ -34,7 +34,7 @@ class ToDoListWidget extends StatelessWidget {
 
     return BlocListener<ToDoListBloc, ToDoListState>(
       listener: (context, state) {
-        DementiappLogger.infoLog('Current state: $state');
+        DementiappLogger.infoLog('ToDoList widget: Current state: ${state.toString()}');
         if (state is CreateInProgressState) {
           context.push('/add_new');
         } else if (state is EditInProgressState) {
