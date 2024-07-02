@@ -31,7 +31,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         splashRadius: 24.0,
         onPressed: () {
-          bloc.add(GetAllEvent());
+          bloc.add(GetTasksEvent());
           context.pop(context);
         },
         icon: const Icon(

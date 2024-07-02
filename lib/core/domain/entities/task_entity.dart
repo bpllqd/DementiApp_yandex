@@ -8,8 +8,9 @@ class TaskEntity extends Equatable {
   final String? importance;
   final DateTime? deadline;
   final bool done;
-  final DateTime? createdAt;
-  final DateTime? changedAt;
+  final String? color;
+  final DateTime createdAt;
+  final DateTime changedAt;
   final String? lastUpdatedBy;
 
   const TaskEntity({
@@ -18,8 +19,9 @@ class TaskEntity extends Equatable {
     this.importance = 'basic',
     this.deadline,
     this.done = false,
-    this.createdAt,
-    this.changedAt,
+    this.color,
+    required this.createdAt,
+    required this.changedAt,
     this.lastUpdatedBy,
   });
 
@@ -30,6 +32,7 @@ class TaskEntity extends Equatable {
         importance,
         deadline,
         done,
+        color,
         createdAt,
         changedAt,
         lastUpdatedBy,
@@ -41,6 +44,7 @@ class TaskEntity extends Equatable {
     String? importance,
     DateTime? deadline,
     bool? done,
+    String? color,
     DateTime? createdAt,
     DateTime? changedAt,
     String? lastUpdatedBy,
@@ -51,6 +55,7 @@ class TaskEntity extends Equatable {
       importance: importance ?? this.importance,
       deadline: deadline ?? this.deadline,
       done: done ?? this.done,
+      color: color ?? this.color,
       createdAt: createdAt ?? this.createdAt,
       changedAt: changedAt ?? this.changedAt,
       lastUpdatedBy: lastUpdatedBy ?? this.lastUpdatedBy,
@@ -64,6 +69,7 @@ class TaskEntity extends Equatable {
       importance: model.importance,
       deadline: model.deadline,
       done: model.done,
+      color: model.color,
       createdAt: model.createdAt,
       changedAt: model.changedAt,
       lastUpdatedBy: model.lastUpdatedBy,
@@ -77,6 +83,7 @@ class TaskEntity extends Equatable {
       importance: model.importance,
       deadline: model.deadline,
       done: model.done,
+      color: model.color,
       createdAt: model.createdAt,
       changedAt: model.changedAt,
       lastUpdatedBy: model.lastUpdatedBy,

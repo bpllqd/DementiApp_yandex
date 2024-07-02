@@ -7,11 +7,6 @@ class GetTasksEvent extends ToDoListEvent {
   List<Object?> get props => [];
 }
 
-class GetAllEvent extends ToDoListEvent {
-  @override
-  List<Object?> get props => [];
-}
-
 class TaskCompleteEvent extends ToDoListEvent {
   final TaskEntity task;
 

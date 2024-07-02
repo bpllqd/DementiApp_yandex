@@ -44,7 +44,7 @@ class ToDoListWidget extends StatelessWidget {
           );
         } else if (state is CreatingSuccessState ||
             state is EditingSuccessState) {
-          BlocProvider.of<ToDoListBloc>(context).add(GetAllEvent());
+          BlocProvider.of<ToDoListBloc>(context).add(GetTasksEvent());
         }
       },
       child: BlocBuilder<ToDoListBloc, ToDoListState>(

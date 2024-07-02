@@ -45,7 +45,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
   ) async {
     emit(LoadingState());
 
-    DementiappLogger.infoLog('Loading in _getTasks');
+    DementiappLogger.infoLog('BLoC:getTasks - loading in _getTasks');
 
     final GetAllTasks getTasks =
         GetAllTasks(toDoListRepository: toDoListRepository);
@@ -79,14 +79,16 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
 
     final editedTask =
         event.task.copyWith(done: !event.task.done, changedAt: DateTime.now());
+    DementiappLogger.infoLog('BLoC:completeTask - completed task $editedTask');
 
     final Either<Failure, void> result =
         await editTask.call(event.task, editedTask);
+    DementiappLogger.infoLog('BLoC:completeTask - task marked as completed');
 
     result.fold((failure) {
       emit(ErrorState(errorDescription: failure.message));
       DementiappLogger.errorLog(
-        'Got error BLoC _completeTask - first failure ${failure.message}',
+        'BLoC:completeTask - error 1 - ${failure.message}',
       );
     }, (value) async {
       final Either<Failure, List<TaskEntity>> resultAll =
@@ -94,7 +96,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
       resultAll.fold((failure) {
         emit(ErrorState(errorDescription: failure.message));
         DementiappLogger.errorLog(
-          'Got error in BLoC _completeTask - second failure ${failure.message}',
+          'BLoC:completeTask - error 2 - ${failure.message}',
         );
       }, (valueGood) {
         emit(
@@ -212,7 +214,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     Emitter<ToDoListState> emit,
   ) async {
     emit(LoadingState());
-    DementiappLogger.infoLog('Loading from _saveEditedTask');
+    DementiappLogger.infoLog('BLoC:_saveCreatedTask - loading');
 
     final CreateTask createTask =
         CreateTask(toDoListRepository: toDoListRepository);

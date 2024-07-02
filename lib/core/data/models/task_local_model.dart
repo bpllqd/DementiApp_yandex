@@ -7,9 +7,10 @@ class TaskLocalModel extends TaskEntity {
     required super.importance,
     required super.done,
     super.deadline,
+    super.color,
     required super.lastUpdatedBy,
-    super.changedAt,
-    super.createdAt,
+    required super.changedAt,
+    required super.createdAt,
   });
 
   factory TaskLocalModel.fromJson(Map<String, dynamic> json) {
@@ -18,7 +19,8 @@ class TaskLocalModel extends TaskEntity {
       text: json['text'] as String,
       importance: json['importance'] as String,
       done: json['done'] as bool,
-      deadline: DateTime.parse(json['deadline'] as String),
+      color: json['color'] != null ? json['color'] as String : null,
+      deadline: json['deadline'] != null ? DateTime.parse(json['deadline'] as String) : null,
       lastUpdatedBy: json['last_updated_by'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       changedAt: DateTime.parse(json['changed_at'] as String),
@@ -31,10 +33,11 @@ class TaskLocalModel extends TaskEntity {
       'text': text,
       'importance': importance,
       'done': done,
+      'color' : color,
       'deadline': deadline?.toIso8601String(),
-      'changedAt': changedAt?.toIso8601String(),
-      'createdAt': createdAt?.toIso8601String(),
-      'lastUpdatedBy': lastUpdatedBy,
+      'changed_at': changedAt.toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
+      'last_updated_by': lastUpdatedBy,
     };
   }
 
@@ -45,6 +48,7 @@ class TaskLocalModel extends TaskEntity {
       importance: entity.importance,
       deadline: entity.deadline,
       done: entity.done,
+      color: entity.color,
       createdAt: entity.createdAt,
       changedAt: entity.changedAt,
       lastUpdatedBy: entity.lastUpdatedBy,
@@ -53,13 +57,11 @@ class TaskLocalModel extends TaskEntity {
 }
 
 class TaskLocalModelWithRevision {
-  final List<TaskLocalModel>? listTasks;
-  final TaskLocalModel? oneTask;
+  final List<TaskLocalModel> listTasks;
   final int localRevision;
 
   TaskLocalModelWithRevision({
-    this.listTasks,
-    this.oneTask,
+    required this.listTasks,
     required this.localRevision,
   });
 }

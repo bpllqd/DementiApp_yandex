@@ -28,7 +28,7 @@ class DatabaseHelper {
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(
-      'CREATE TABLE tasks(id TEXT, text TEXT, importance TEXT, done INTEGER, deadline TEXT, lastUpdatedBy TEXT, createdAt TEXT, changedAt TEXT)',
+      'CREATE TABLE tasks(id TEXT, text TEXT, importance TEXT, done INTEGER, deadline TEXT, last_updated_by TEXT, created_at TEXT, changed_at TEXT, color TEXT)',
     );
     await db.execute(
       'CREATE TABLE metadata(id INTEGER PRIMARY KEY, revision INTEGER)',
@@ -45,5 +45,12 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> tables =
         await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
     return tables.map((table) => table['name'] as String).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> getRev() async{
+    final db = await database;
+
+    final List<Map<String, dynamic>> rev = await db.query('metadata', where: "id = 1");
+    return rev;
   }
 }

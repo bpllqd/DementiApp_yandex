@@ -42,14 +42,14 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
     try {
 
       final TaskApiModelWithRevision apiResult = await _api.getAllTasks();
-      DementiappLogger.infoLog('REPO:getAllTasks - got tasks from api');
+      DementiappLogger.infoLog('REPO:getAllTasks - got tasks from api ${apiResult.listTasks}');
       final TaskLocalModelWithRevision localResult =
           await _db.getAllTasksFromCache();
 
       DementiappLogger.infoLog('REPO:getAllTasks - got tasks from local');
-      // TODO: убрать в меделях с ревизией one task, ввсе делать через listTasks
-      final List<TaskApiModel> apiTasks = apiResult.listTasks!;
-      final List<TaskLocalModel> localTasks = localResult.listTasks!;
+
+      final List<TaskApiModel> apiTasks = apiResult.listTasks;
+      final List<TaskLocalModel> localTasks = localResult.listTasks;
 
       List<TaskEntity> entity =
           apiTasks.map((task) => TaskEntity.fromApiModel(task)).toList();
@@ -60,7 +60,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
         final TaskLocalModelWithRevision localResult =
             await _db.updateAllTasksToCache(toLocal, apiResult.apiRevision);
             DementiappLogger.infoLog('REPO:getAllTasks - updated all tasks and revision in local');
-        final List<TaskEntity> tasksList = localResult.listTasks!
+        final List<TaskEntity> tasksList = localResult.listTasks
             .map((task) => TaskEntity.fromLocalModel(task))
             .toList();
         return Right(tasksList);
@@ -130,9 +130,13 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
 
       final TaskLocalModelWithRevision resultLocal =
           await _db.getExactTaskFromCache(taskToLocal);
-      await _api.getExactTask(taskToApi);
+      final TaskApiModelWithRevision resultApi = await _api.getExactTask(taskToApi);
 
-      return Right(TaskEntity.fromLocalModel(resultLocal.oneTask!));
+      final List<TaskEntity> localTaskEntities = resultLocal.listTasks
+          .map((localModel) => TaskEntity.fromLocalModel(localModel))
+          .toList();      
+
+      return Right(localTaskEntities[0]);
     } on CacheException catch (e) {
       return Left(CacheFailure(e.toString()));
     } on ServerException catch (e) {
@@ -145,7 +149,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
   @override
   Future<Either<Failure, void>> createTask(TaskEntity task) async {
     task = task.copyWith(lastUpdatedBy: await getId());
-    DementiappLogger.infoLog('Задача для добавления: $task');
+    DementiappLogger.infoLog('REPO:createTask - task: $task');
     try {
       final TaskLocalModel taskToLocal = TaskLocalModel.fromEntity(task);
       final TaskApiModel taskToApi = TaskApiModel.fromEntity(task);
@@ -153,11 +157,16 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
       final TaskApiModelWithRevision apiAll = await _api.getAllTasks();
       final int apiRevision = apiAll.apiRevision;
 
+      DementiappLogger.infoLog('REPO: createTask - got right revision: $apiRevision');
+
       final TaskLocalModelWithRevision resultLocal =
           await _db.createTaskToCache(taskToLocal, apiRevision);
-          
+      
+      DementiappLogger.infoLog('REPO:createTask - created to Local: $resultLocal');
+
       final int localRevision = resultLocal.localRevision;
       await _api.createTask(taskToApi, localRevision);
+      DementiappLogger.infoLog('REPO:createTask - created to api');
 
       return const Right(null);
     } on CacheException catch (e) {
@@ -175,14 +184,21 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
     TaskEntity editedTask,
   ) async {
     try {
+      final TaskApiModelWithRevision apiAll = await _api.getAllTasks();
+      final int apiRevision = apiAll.apiRevision;
+
       await _db.editTaskToCache(
         TaskLocalModel.fromEntity(oldTask),
         TaskLocalModel.fromEntity(editedTask),
+        apiRevision,
       );
+      DementiappLogger.infoLog('REPO:editTask to Local - edited $oldTask to $editedTask');
       await _api.editTask(
         TaskApiModel.fromEntity(oldTask),
         TaskApiModel.fromEntity(editedTask),
+        apiRevision,
       );
+      DementiappLogger.infoLog('REPO:editTask to api - edited $oldTask to $editedTask');
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(e.toString()));
