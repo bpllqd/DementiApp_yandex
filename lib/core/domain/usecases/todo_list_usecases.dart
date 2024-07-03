@@ -22,7 +22,7 @@ class UpdateAllTasks {
     List<TaskEntity> tasks,
     int revision,
   ) async {
-    return await toDoListRepository.updateAllTasks(tasks, revision);
+    return await toDoListRepository.updateAllTasks(tasks);
   }
 }
 

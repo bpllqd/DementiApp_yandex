@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,9 +11,16 @@ class FormatDate {
   }
 }
 
+String convertDateTimeToString(DateTime dateTime, Locale locale) {
+  if (locale.languageCode == 'en') {
+    return DateFormat.yMMMMd().format(dateTime);
+  }
+  return DateFormat('d MMMM y', locale.languageCode).format(dateTime);
+}
+
 class SVG extends StatelessWidget {
   final String imagePath;
-  final int? color;
+  final Color? color;
 
   const SVG({
     super.key,
@@ -26,7 +35,7 @@ class SVG extends StatelessWidget {
             imagePath,
             fit: BoxFit.scaleDown,
             colorFilter: ColorFilter.mode(
-              Color(color!),
+              color!,
               BlendMode.srcIn,
             ),
           )
@@ -51,5 +60,14 @@ extension TasksFilterExtension on TasksFilter {
 
   List<TaskEntity> applyFilter(List<TaskEntity> tasks) {
     return tasks.where(filterMode).toList();
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

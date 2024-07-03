@@ -20,7 +20,9 @@ class TaskApiModel extends TaskEntity {
       importance: json['importance'] as String,
       done: json['done'] as bool,
       color: json['color'] as String?,
-      deadline: json['deadline'] != null ? DateTime.fromMillisecondsSinceEpoch(json['deadline'] as int) : null,
+      deadline: json['deadline'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['deadline'] as int)
+          : null,
       lastUpdatedBy: json['last_updated_by'] as String,
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at'] as int),
       changedAt: DateTime.fromMillisecondsSinceEpoch(json['changed_at'] as int),
@@ -33,7 +35,7 @@ class TaskApiModel extends TaskEntity {
       'text': text,
       'importance': importance,
       'done': done,
-      'color' : color,
+      'color': color,
       'deadline': deadline?.millisecondsSinceEpoch,
       'changed_at': changedAt.millisecondsSinceEpoch,
       'created_at': createdAt.millisecondsSinceEpoch,

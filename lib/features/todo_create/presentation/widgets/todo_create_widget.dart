@@ -1,9 +1,9 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
-import 'package:demetiapp/core/utils/text_constants.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
+import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -25,12 +25,37 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
   final TextEditingController textController = TextEditingController();
 
   DateTime? deadline;
-  bool isSwitchDisabled = false;
+  bool isSwitchDisabled = true;
   String? importance;
   bool isCreatingTask = true;
   TaskEntity? taskToDelete;
   bool isInitialized = false;
-  
+
+  void switchChange(bool value) async {
+    if (value) {
+      DateTime? deadlineFromPicker = await showDatePicker(
+        context: context,
+        initialDate: deadline ?? DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2030),
+      );
+      setState(() {
+        deadline = deadlineFromPicker;
+      });
+    }
+  }
+
+  Text? subtitle(DateTime? date) {
+    if (date != null) {
+      return Text(
+        convertDateTimeToString(date, Localizations.localeOf(context)),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+      );
+    }
+    return null;
+  }
 
   @override
   void dispose() {
@@ -111,7 +136,7 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                               bottom: 16.0,
                               top: 16.0,
                             ),
-                            labelText: TextConstants.importance(),
+                            labelText: S.of(context).createScreenDropDownLabel,
                             labelStyle: const TextStyle(
                               fontSize: 22.0,
                               color: AppColors.lightLabelPrimary,
@@ -119,28 +144,28 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                           ),
                           iconSize: 0,
                           hint: Text(
-                            TextConstants.importanceBasicValue(),
+                            S.of(context).createScreenDropdownMenuHint,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           items: <DropdownMenuItem<String>>[
                             DropdownMenuItem(
-                              value: TextConstants.importanceBasicValue(),
+                              value: 'basic',
                               child: Text(
-                                TextConstants.importanceBasicValue(),
+                                S.of(context).createScreenDropdownMenuBasic,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ),
                             DropdownMenuItem(
-                              value: TextConstants.importanceLow(),
+                              value: 'low',
                               child: Text(
-                                TextConstants.importanceLow(),
+                                S.of(context).createScreenDropdownMenuLow,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ),
                             DropdownMenuItem(
-                              value: TextConstants.importanceImportant(),
+                              value: 'important',
                               child: Text(
-                                TextConstants.importanceImportant(),
+                                S.of(context).createScreenDropdownMenuImportant,
                                 style: const TextStyle(
                                   fontSize: AppFontSize.bodyFontSize,
                                   color: AppColors.lightColorRed,
@@ -162,48 +187,15 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              TextConstants.sdelatD0(),
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            Visibility(
-                              visible: isSwitchDisabled != true,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 4.0),
-                                child: Text(
-                                  deadline != null
-                                      ? FormatDate.toDmmmmyyyy(deadline!)
-                                      : '',
-                                  style: const TextStyle(
-                                    fontSize: AppFontSize.buttonFontSize,
-                                    color: AppColors.lightColorRed,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Switch(
-                          value: isSwitchDisabled != true,
-                          onChanged: (bool value) async {
-                            isSwitchDisabled != false
-                                ? null
-                                : deadline = await pickDate(context);
-                            if (deadline != null) {
-                              isSwitchDisabled = !isSwitchDisabled;
-                            }
-                          },
-                        ),
-                      ],
+                    child: SwitchListTile(
+                      title: Text(S.of(context).createScreenSwitchTileTitle),
+                      subtitle: subtitle(deadline),
+                      value: deadline != null,
+                      onChanged: switchChange,
+                      contentPadding: const EdgeInsets.only(left: 16, right: 0),
                     ),
                   ),
-                  const SizedBox(height: 24.0),
+                  const SizedBox(height: 8.0),
                   Divider(
                     height: 0,
                     thickness: 0.5,
@@ -234,30 +226,4 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
       ),
     );
   }
-}
-
-Future<DateTime?> pickDate(BuildContext context) {
-  return showDatePicker(
-    helpText: DateTime.now().year.toString(),
-    confirmText: TextConstants.ready(),
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime(2024),
-    lastDate: DateTime(2080),
-    builder: (context, child) {
-      return Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: AppColors.lightColorRed,
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.lightColorRed,
-            ),
-          ),
-        ),
-        child: child!,
-      );
-    },
-  );
 }

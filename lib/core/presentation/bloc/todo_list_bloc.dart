@@ -54,7 +54,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     result.fold((failure) {
       emit(ErrorState(errorDescription: failure.message));
 
-      DementiappLogger.errorLog('Got error in BLoC _getTasks ${failure.message}');
+      DementiappLogger.errorLog(
+        'Got error in BLoC _getTasks ${failure.message}',
+      );
     }, (value) {
       emit(
         SuccessState(
@@ -70,8 +72,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     TaskCompleteEvent event,
     Emitter<ToDoListState> emit,
   ) async {
-    emit(LoadingState());
-    DementiappLogger.infoLog('Loading from _completeTask');
+    DementiappLogger.infoLog('BLoC:completeTask');
 
     final EditTask editTask = EditTask(toDoListRepository: toDoListRepository);
     final GetAllTasks getAllTasks =
@@ -96,10 +97,12 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
       resultAll.fold((failure) {
         DementiappLogger.errorLog(
           'BLoC:completeTask - error 2 - ${failure.message}',
-        );        
+        );
         emit(ErrorState(errorDescription: failure.message));
       }, (valueGood) {
-        DementiappLogger.infoLog('BLoC:completeTask - updated tasks in all sources, emitin success');
+        DementiappLogger.infoLog(
+          'BLoC:completeTask - updated tasks in all sources, emitin success',
+        );
         emit(
           SuccessState(
             tasks: valueGood,
@@ -107,7 +110,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
           ),
         );
       });
-      DementiappLogger.infoLog('Completing task in BLoC _completeTask ended with MEGAHOROSH!');
+      DementiappLogger.infoLog(
+        'Completing task in BLoC _completeTask ended with MEGAHOROSH!',
+      );
     });
   }
 
@@ -115,8 +120,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     TaskDeleteEvent event,
     Emitter<ToDoListState> emit,
   ) async {
-    emit(LoadingState());
-    DementiappLogger.infoLog('BLoC:deleteTask - Loading from delete task');
+    DementiappLogger.infoLog('BLoC:deleteTask');
 
     final DeleteExactTask deleteTask =
         DeleteExactTask(toDoListRepository: toDoListRepository);
@@ -172,7 +176,6 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     ChangeFilterEvent event,
     Emitter<ToDoListState> emit,
   ) async {
-    emit(LoadingState());
     DementiappLogger.infoLog('Loading from _changeFilter');
 
     emit(
@@ -205,7 +208,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
       );
       emit(ErrorState(errorDescription: failure.message));
     }, (value) {
-      DementiappLogger.infoLog('Editing in BLoC saveEditedTask ended with MEGAHOROSH!');
+      DementiappLogger.infoLog(
+        'Editing in BLoC saveEditedTask ended with MEGAHOROSH!',
+      );
       emit(EditingSuccessState());
     });
   }
@@ -228,7 +233,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
       );
       emit(ErrorState(errorDescription: failure.message));
     }, (value) {
-      DementiappLogger.infoLog('Creating in BLoC saveCreatedTask ended with MEGAHOROSH!');
+      DementiappLogger.infoLog(
+        'Creating in BLoC saveCreatedTask ended with MEGAHOROSH!',
+      );
       emit(CreatingSuccessState());
     });
   }

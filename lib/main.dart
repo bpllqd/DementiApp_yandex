@@ -1,4 +1,5 @@
 import 'package:demetiapp/core/routing/routing.dart';
+import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
@@ -6,16 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:demetiapp/generated/l10n.dart';
 import 'dart:io';
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,12 +48,12 @@ class RoutingWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       localizationsDelegates: const [
+        S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      locale: const Locale('ru'),
-      supportedLocales: const [Locale('ru', 'RU'), Locale('en, US')],
+      supportedLocales: S.delegate.supportedLocales,
       title: 'DementiApp',
       debugShowCheckedModeBanner: false,
       routerConfig: _router,

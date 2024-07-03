@@ -20,7 +20,9 @@ class TaskLocalModel extends TaskEntity {
       importance: json['importance'] as String,
       done: json['done'] as bool,
       color: json['color'] != null ? json['color'] as String : null,
-      deadline: json['deadline'] != null ? DateTime.parse(json['deadline'] as String) : null,
+      deadline: json['deadline'] != null
+          ? DateTime.parse(json['deadline'] as String)
+          : null,
       lastUpdatedBy: json['last_updated_by'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       changedAt: DateTime.parse(json['changed_at'] as String),
@@ -33,7 +35,7 @@ class TaskLocalModel extends TaskEntity {
       'text': text,
       'importance': importance,
       'done': done,
-      'color' : color,
+      'color': color,
       'deadline': deadline?.toIso8601String(),
       'changed_at': changedAt.toIso8601String(),
       'created_at': createdAt.toIso8601String(),

@@ -1,6 +1,6 @@
 import 'package:demetiapp/core/theme/theme.dart';
-import 'package:demetiapp/core/utils/text_constants.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
+import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,7 +38,7 @@ class AddNewButton extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        TextConstants.novoe(),
+                        S.of(context).listScreenAddNewButtonTitle,
                         style: const TextStyle(
                           fontSize: AppFontSize.bodyFontSize,
                           color: AppColors.lightLabelTertiary,

@@ -1,6 +1,6 @@
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:demetiapp/core/theme/theme.dart';
-import 'package:demetiapp/core/utils/text_constants.dart';
+import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,7 +24,7 @@ class MaterialTextfield extends StatelessWidget {
             decoration: InputDecoration(
               floatingLabelBehavior: FloatingLabelBehavior.never,
               contentPadding: const EdgeInsets.all(16.0),
-              labelText: TextConstants.chtoTo(),
+              labelText: S.of(context).createScreenTextfieldLabel,
               alignLabelWithHint: true,
               labelStyle: Theme.of(context).textTheme.bodyMedium,
               filled: true,

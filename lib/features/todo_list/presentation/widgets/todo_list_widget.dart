@@ -1,8 +1,8 @@
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
-import 'package:demetiapp/core/utils/text_constants.dart';
 import 'package:demetiapp/core/utils/utils.dart';
+import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -31,10 +31,13 @@ class ToDoListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
+    final GlobalKey<RefreshIndicatorState> refreshKey = GlobalKey();
 
     return BlocListener<ToDoListBloc, ToDoListState>(
       listener: (context, state) {
-        DementiappLogger.infoLog('ToDoList widget: Current state: ${state.toString()}');
+        DementiappLogger.infoLog(
+          'ToDoList widget: Current state: ${state.toString()}',
+        );
         if (state is CreateInProgressState) {
           context.push('/add_new');
         } else if (state is EditInProgressState) {
@@ -51,49 +54,64 @@ class ToDoListWidget extends StatelessWidget {
         builder: (context, state) {
           if (state is SuccessState) {
             return Scaffold(
-              backgroundColor: Colors.white,
-              body: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
+              backgroundColor: AppColors.lightBackPrimary,
+              body: NestedScrollView(
                 controller: scrollController,
-                slivers: <Widget>[
-                  SliverPersistentHeader(
-                    delegate: _SliverAppBarDelegate(),
-                    pinned: true,
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.only(
-                      left: 4.0,
-                      right: 4.0,
-                      bottom: 3.0,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverPersistentHeader(
+                      delegate: _SliverAppBarDelegate(),
+                      pinned: true,
                     ),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          return Card(
-                            color: Theme.of(context).cardColor,
-                            semanticContainer: false,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                            ),
-                            elevation: 4.0,
-                            child: Column(
-                              children: [
-                                const TasksList(),
-                                AddNewButton(
-                                  onTap: () {
-                                    _addNewTask(scrollController, context);
-                                  },
+                  ];
+                },
+                body: RefreshIndicator(
+                  color: AppColors.lightColorRed,
+                  backgroundColor: AppColors.lightColorWhite,
+                  key: refreshKey,
+                  onRefresh: () async {
+                    BlocProvider.of<ToDoListBloc>(context).add(GetTasksEvent());
+                  },
+                  child: CustomScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.only(
+                          left: 4.0,
+                          right: 4.0,
+                          bottom: 3.0,
+                        ),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              return Card(
+                                color: Theme.of(context).cardColor,
+                                semanticContainer: false,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                        childCount: 1,
+                                elevation: 4.0,
+                                child: Column(
+                                  children: [
+                                    const TasksList(),
+                                    AddNewButton(
+                                      onTap: () {
+                                        _addNewTask(scrollController, context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            childCount: 1,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
@@ -179,7 +197,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
             return Container(
               height: containerHeight,
               decoration: BoxDecoration(
-                color: AppColors.lightColorWhite,
+                color: AppColors.lightBackPrimary,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black45,
@@ -203,9 +221,11 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                             Opacity(
                               opacity: subOpacity,
                               child: Text(
-                                '${TextConstants.done()}${state.completedTasks}',
+                                S.of(context).listScreenAppBarCompletedN(
+                                    state.completedTasks,),
                                 style: TextStyle(
                                   fontSize: subtitleSize,
+                                  color: AppColors.lightColorGray,
                                 ),
                               ),
                             ),
@@ -220,9 +240,6 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                         ? true
                                         : false,
                                   ),
-                                );
-                                DementiappLogger.infoLog(
-                                  'Added ChangeFilterEvent 1',
                                 );
                               },
                               icon: state.filter == TasksFilter.showOnly
@@ -244,7 +261,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                         top: topTitlePadding,
                         left: leftTitlePadding,
                         child: Text(
-                          TextConstants.mainTitle(),
+                          S.of(context).listScreenAppBarTitle,
                           style: TextStyle(
                             fontSize: titleSize,
                             fontWeight: FontWeight.bold,
@@ -257,8 +274,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
               ),
             );
           } else {
-            return const Center(
-              child: Text('error'),
+            return Center(
+              child: Text(S.of(context).listScreenAppBarError),
             );
           }
         },

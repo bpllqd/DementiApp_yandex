@@ -13,18 +13,18 @@ ThemeData darkTheme() {
         titleMedium: TextStyle(
             fontSize: AppFontSize.titleFontSize,
             fontWeight: FontWeight.normal,
-            color: AppColors.darkLabelTertiary),
+            color: AppColors.darkLabelTertiary,),
         bodyMedium: TextStyle(
             fontSize: AppFontSize.bodyFontSize,
             color: AppColors.darkLabelPrimary,
-            height: 20.0 / AppFontSize.bodyFontSize),
+            height: 20.0 / AppFontSize.bodyFontSize,),
         bodySmall: TextStyle(
             fontSize: AppFontSize.subheadFontSize,
-            color: AppColors.darkLabelTertiary),
+            color: AppColors.darkLabelTertiary,),
         labelMedium: TextStyle(
           color: AppColors.darkColorBlue,
           fontSize: AppFontSize.buttonFontSize,
-        )),
+        ),),
   );
 }
 

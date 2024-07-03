@@ -1,0 +1,14 @@
+{
+  "createScreenAppBarSave": "СОХРАНИТЬ",
+  "createScreenDeleteButtonDelete": "Удалить",
+  "createScreenTextfieldLabel": "Что нужно сделать..",
+  "createScreenDropDownLabel": "Важность",
+  "createScreenDropdownMenuHint": "Нет",
+  "createScreenDropdownMenuLow": "Неважная",
+  "createScreenDropdownMenuImportant": "Важная",
+  "createScreenSwitchTileTitle": "Сделать до",
+  "listScreenAddNewButtonTitle": "Новое",
+  "listScreenAppBarCompletedN": "Выполнено - {completedTasks}",
+  "listScreenAppBarTitle": "Мои дела",
+  "listScreenAppBarError": "Ошибка"
+}

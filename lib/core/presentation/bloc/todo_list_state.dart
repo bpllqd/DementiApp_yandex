@@ -2,12 +2,12 @@ part of 'todo_list_bloc.dart';
 
 abstract class ToDoListState extends Equatable {
   @override
-  String toString(){
+  String toString() {
     return runtimeType.toString();
   }
 }
 
-class ToDoListInitState extends ToDoListState{
+class ToDoListInitState extends ToDoListState {
   @override
   List<Object?> get props => [];
 }

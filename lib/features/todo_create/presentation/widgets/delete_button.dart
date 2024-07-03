@@ -1,5 +1,5 @@
 import 'package:demetiapp/core/theme/theme.dart';
-import 'package:demetiapp/core/utils/text_constants.dart';
+import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
 class DeleteButton extends StatelessWidget {
@@ -29,7 +29,7 @@ class DeleteButton extends StatelessWidget {
                 ),
                 const SizedBox(width: 12.0),
                 Text(
-                  TextConstants.delete(),
+                  S.of(context).createScreenDeleteButtonDelete,
                   style: const TextStyle(
                     fontSize: AppFontSize.bodyFontSize,
                     color: AppColors.lightColorRed,
@@ -52,7 +52,7 @@ class DeleteButton extends StatelessWidget {
             ),
             const SizedBox(width: 12.0),
             Text(
-              TextConstants.delete(),
+              S.of(context).createScreenDeleteButtonDelete,
               style: const TextStyle(
                 fontSize: AppFontSize.bodyFontSize,
                 color: AppColors.lightColorGray,

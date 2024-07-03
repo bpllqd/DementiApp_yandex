@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:sqflite/sqflite.dart';
+// path нужен для join в строке 23, подсвечивало синим
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
 class DatabaseHelper {
@@ -47,10 +49,11 @@ class DatabaseHelper {
     return tables.map((table) => table['name'] as String).toList();
   }
 
-  Future<List<Map<String, dynamic>>> getRev() async{
+  Future<List<Map<String, dynamic>>> getRev() async {
     final db = await database;
 
-    final List<Map<String, dynamic>> rev = await db.query('metadata', where: "id = 1");
+    final List<Map<String, dynamic>> rev =
+        await db.query('metadata', where: "id = 1");
     return rev;
   }
 }

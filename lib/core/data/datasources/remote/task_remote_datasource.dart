@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:demetiapp/core/data/models/task_api_model.dart';
-import 'package:demetiapp/core/domain/entities/task_entity.dart';
+import 'package:demetiapp/core/data/models/task_mapper.dart';
 import 'package:demetiapp/core/error/exception.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -39,7 +39,11 @@ abstract class TaskRemoteDataSource {
   /// Calls the https://beta.mrdekk.ru/todo/list<id> endpoint
   ///
   /// Throws the [ServerException] for all error codes
-  Future<void> editTask(TaskApiModel oldTask, TaskApiModel editedTask, int revision);
+  Future<void> editTask(
+    TaskApiModel oldTask,
+    TaskApiModel editedTask,
+    int revision,
+  );
 }
 
 class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
@@ -59,7 +63,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
       id = 'Windows phone user lmao';
     }
     return id;
-  }  
+  }
 
   TaskRemoteDataSourceImpl({required this.dio});
 
@@ -81,18 +85,25 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
 
     final taskToApi = jsonEncode({'element': task.toJson()});
 
-    DementiappLogger.infoLog('API:createTask - task $taskToApi with revision $revision');
+    DementiappLogger.infoLog(
+      'API:createTask - task $taskToApi with revision $revision',
+    );
 
     if (response.statusCode == 200) {
       final int apiRevision = response.data!['revision'] as int;
       DementiappLogger.infoLog('API:createTask - api revision $apiRevision');
-      final task = TaskApiModel.fromJson(response.data!['element'] as Map<String, dynamic>);
+      final task = TaskApiModel.fromJson(
+        response.data!['element'] as Map<String, dynamic>,
+      );
 
       final List<TaskApiModel> tasksFromApi = [];
       tasksFromApi.add(task);
 
       DementiappLogger.infoLog('API:createTask: created task:  $tasksFromApi');
-      return TaskApiModelWithRevision(apiRevision: apiRevision, listTasks: tasksFromApi);
+      return TaskApiModelWithRevision(
+        apiRevision: apiRevision,
+        listTasks: tasksFromApi,
+      );
     } else {
       DementiappLogger.errorLog(
         'API:createTask code: ${response.statusCode}',
@@ -112,7 +123,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
         contentType: 'application/json',
       ),
     );
-    
+
     DementiappLogger.infoLog('API:deleteTask - got response');
     if (response.statusCode == 200) {
       DementiappLogger.infoLog('API:deleteTask - deleted task!');
@@ -125,8 +136,14 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<void> editTask(TaskApiModel oldTask, TaskApiModel editedTask, int revision) async {
-    final newTask = TaskApiModel.fromEntity(TaskEntity.fromApiModel(editedTask).copyWith(lastUpdatedBy: await getId()));
+  Future<void> editTask(
+    TaskApiModel oldTask,
+    TaskApiModel editedTask,
+    int revision,
+  ) async {
+    final newTask = TaskMapper.toApiModel(
+      editedTask.copyWith(lastUpdatedBy: await getId()),
+    );
     Response<Map<String, dynamic>> response = await dio.put(
       '/list/${oldTask.id}',
       options: Options(
@@ -137,7 +154,9 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
       ),
       data: json.encode({'element': newTask.toJson()}),
     );
-    DementiappLogger.infoLog('API:editTask - made response with status ${response.statusCode}');
+    DementiappLogger.infoLog(
+      'API:editTask - made response with status ${response.statusCode}',
+    );
     if (response.statusCode == 200) {
       DementiappLogger.infoLog('API:editTask - edited task');
     } else {
@@ -157,17 +176,21 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     if (response.statusCode == 200) {
       List<TaskApiModel> tasksFromApi = [];
       final int revisionFromApi = response.data!['revision'] as int;
-      DementiappLogger.infoLog('API:getAllTasks - got revision $revisionFromApi');
+      DementiappLogger.infoLog(
+        'API:getAllTasks - got revision $revisionFromApi',
+      );
 
       final List<TaskApiModel> tasks = (response.data!['list'] as List)
           .map((task) => TaskApiModel.fromJson(task as Map<String, dynamic>))
           .toList();
       DementiappLogger.infoLog('API:getAllTasks - made List<TaskApiModel>');
       tasksFromApi.addAll(tasks);
-      DementiappLogger.infoLog('API:getAllTasks got tasks with reviion $revisionFromApi');
+      DementiappLogger.infoLog(
+        'API:getAllTasks got tasks with reviion $revisionFromApi',
+      );
       return TaskApiModelWithRevision(
-          apiRevision: revisionFromApi,
-          listTasks: tasksFromApi,
+        apiRevision: revisionFromApi,
+        listTasks: tasksFromApi,
       );
     } else {
       DementiappLogger.errorLog(
@@ -184,12 +207,16 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     );
 
     if (response.statusCode == 200) {
-      final List<TaskApiModel> tasksFromApi= [];
-      tasksFromApi.add(TaskApiModel.fromJson(
-        response.data!['element'] as Map<String, dynamic>,
-      ),);
+      final List<TaskApiModel> tasksFromApi = [];
+      tasksFromApi.add(
+        TaskApiModel.fromJson(
+          response.data!['element'] as Map<String, dynamic>,
+        ),
+      );
       final int apiRevision = response.data!['revision'] as int;
-      DementiappLogger.infoLog('API:getExactTask - got task $tasksFromApi anf revision $apiRevision');
+      DementiappLogger.infoLog(
+        'API:getExactTask - got task $tasksFromApi anf revision $apiRevision',
+      );
       return TaskApiModelWithRevision(
         apiRevision: apiRevision,
         listTasks: tasksFromApi,
@@ -223,12 +250,13 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     );
 
     if (response.statusCode == 200) {
-      final dataFromApi = json.decode(response.data.toString());
-      final List<TaskApiModel> tasksFromApi = (dataFromApi['list'] as List)
+      final List<TaskApiModel> tasksFromApi = (response.data!['list'] as List)
           .map((task) => TaskApiModel.fromJson(task as Map<String, dynamic>))
           .toList();
-      final int revisionFromApi = dataFromApi['revision'] as int;
-      DementiappLogger.infoLog('API:updateAllTasks - updated tasks $tasksFromApi and revision $revisionFromApi');
+      final int revisionFromApi = response.data!['revision'] as int;
+      DementiappLogger.infoLog(
+        'API:updateAllTasks - updated tasks $tasksFromApi and revision $revisionFromApi',
+      );
       return TaskApiModelWithRevision(
         apiRevision: revisionFromApi,
         listTasks: tasksFromApi,

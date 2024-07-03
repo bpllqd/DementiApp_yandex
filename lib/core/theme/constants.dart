@@ -37,10 +37,6 @@ abstract class AppColors {
 }
 
 /// ==========[IMAGE PATHS]=================
-const String checkboxNo = 'assets/images/checkbox_unchecked_normal.svg';
-const String checkboxHigh = 'assets/images/checkbox_unchecked_high.svg';
-const String checkboxLow = 'assets/images/checkbox_unchecked_low.svg';
-const String checkboxChecked = 'assets/images/checkbox_checked.svg';
 const String priorityHigh = 'assets/images/priority_high.svg';
 const String priorityLow = 'assets/images/priority_low.svg';
 
