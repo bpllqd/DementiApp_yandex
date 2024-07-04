@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:demetiapp/core/data/models/task_api_model.dart';
-import 'package:demetiapp/core/data/models/task_mapper.dart';
+import 'package:demetiapp/core/data/dto/task_api_model.dart';
+import 'package:demetiapp/core/data/dto/task_mapper.dart';
 import 'package:demetiapp/core/error/exception.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -141,7 +141,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     TaskApiModel editedTask,
     int revision,
   ) async {
-    final newTask = TaskMapper.toApiModel(
+    final newTask = TaskMapper.toApiFromEntity(
       editedTask.copyWith(lastUpdatedBy: await getId()),
     );
     Response<Map<String, dynamic>> response = await dio.put(

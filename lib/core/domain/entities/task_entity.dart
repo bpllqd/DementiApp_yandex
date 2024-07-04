@@ -1,5 +1,5 @@
-import 'package:demetiapp/core/data/models/task_local_model.dart';
-import 'package:demetiapp/core/data/models/task_api_model.dart';
+import 'package:demetiapp/core/data/dto/task_local_model.dart';
+import 'package:demetiapp/core/data/dto/task_api_model.dart';
 import 'package:equatable/equatable.dart';
 
 class TaskEntity extends Equatable {
@@ -59,34 +59,6 @@ class TaskEntity extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       changedAt: changedAt ?? this.changedAt,
       lastUpdatedBy: lastUpdatedBy ?? this.lastUpdatedBy,
-    );
-  }
-
-  factory TaskEntity.fromLocalModel(TaskLocalModel model) {
-    return TaskEntity(
-      id: model.id,
-      text: model.text,
-      importance: model.importance,
-      deadline: model.deadline,
-      done: model.done,
-      color: model.color,
-      createdAt: model.createdAt,
-      changedAt: model.changedAt,
-      lastUpdatedBy: model.lastUpdatedBy,
-    );
-  }
-
-  factory TaskEntity.fromApiModel(TaskApiModel model) {
-    return TaskEntity(
-      id: model.id,
-      text: model.text,
-      importance: model.importance,
-      deadline: model.deadline,
-      done: model.done,
-      color: model.color,
-      createdAt: model.createdAt,
-      changedAt: model.changedAt,
-      lastUpdatedBy: model.lastUpdatedBy,
     );
   }
 }

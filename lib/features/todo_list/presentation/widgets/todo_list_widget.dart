@@ -10,8 +10,22 @@ import 'package:go_router/go_router.dart';
 import 'add_new_button_widget.dart';
 import 'tasks_list_widget.dart';
 
-class ToDoListWidget extends StatelessWidget {
+class ToDoListWidget extends StatefulWidget {
   const ToDoListWidget({super.key});
+
+  @override
+  State<ToDoListWidget> createState() => _ToDoListWidgetState();
+}
+
+class _ToDoListWidgetState extends State<ToDoListWidget> {
+  ScrollController scrollController = ScrollController();
+  final GlobalKey<RefreshIndicatorState> refreshKey = GlobalKey();
+
+  @override
+  void dispose(){
+    scrollController.dispose();
+    super.dispose();
+  }
 
   void _addNewTask(
     ScrollController scrollController,
@@ -30,8 +44,6 @@ class ToDoListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScrollController scrollController = ScrollController();
-    final GlobalKey<RefreshIndicatorState> refreshKey = GlobalKey();
 
     return BlocListener<ToDoListBloc, ToDoListState>(
       listener: (context, state) {

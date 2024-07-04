@@ -1,8 +1,8 @@
 import 'package:demetiapp/core/data/datasources/local/database_helper.dart';
 import 'package:demetiapp/core/data/datasources/local/database_mapper.dart';
-import 'package:demetiapp/core/data/models/task_local_model.dart';
-import 'package:demetiapp/core/data/models/task_api_model.dart';
-import 'package:demetiapp/core/data/models/task_mapper.dart';
+import 'package:demetiapp/core/data/dto/task_local_model.dart';
+import 'package:demetiapp/core/data/dto/task_api_model.dart';
+import 'package:demetiapp/core/data/dto/task_mapper.dart';
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/error/exception.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
@@ -104,7 +104,7 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   ) async {
     final db = await _databaseHelper.database;
 
-    TaskEntity entity = TaskEntity.fromLocalModel(task);
+    TaskEntity entity = TaskMapper.fromLocalModel(task);
     entity = entity.copyWith(lastUpdatedBy: await getId());
     task = TaskLocalModel.fromEntity(entity);
 
@@ -154,7 +154,7 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   ) async {
     final db = await _databaseHelper.database;
     DementiappLogger.infoLog('LOCAL:editTask - editing in local');
-    final newTask = TaskMapper.toLocalModel(
+    final newTask = TaskMapper.toLocalFromEntity(
       editedTask.copyWith(lastUpdatedBy: await getId()),
     );
     final int result = await db.update(
