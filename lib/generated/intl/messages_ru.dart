@@ -20,7 +20,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
 
-  static String m0(int completedTasks) => "Выполнено - ${completedTasks}";
+  static String m0(completedTasks) => "Выполнено - ${completedTasks}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -45,6 +45,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "listScreenAppBarCompletedN": m0,
         "listScreenAppBarError": MessageLookupByLibrary.simpleMessage("Ошибка"),
         "listScreenAppBarTitle":
-            MessageLookupByLibrary.simpleMessage("Мои дела"),
+            MessageLookupByLibrary.simpleMessage("Мои дела")
       };
 }
