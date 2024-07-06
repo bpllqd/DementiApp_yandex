@@ -59,6 +59,11 @@ class TaskEditedSaveEvent extends ToDoListEvent {
   List<Object?> get props => [oldTask, newTask];
 }
 
+class SyncDataWithApiEvent extends ToDoListEvent{
+  @override
+  List<Object?> get props => [];
+}
+
 class TaskCreatedSaveEvent extends ToDoListEvent {
   final TaskEntity task;
 

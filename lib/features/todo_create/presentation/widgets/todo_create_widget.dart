@@ -1,6 +1,7 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
+import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:demetiapp/generated/l10n.dart';
@@ -30,6 +31,29 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
   bool isCreatingTask = true;
   TaskEntity? taskToDelete;
   bool isInitialized = false;
+
+  late NetworkStatus networkStatus;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    networkStatus = context.read<NetworkStatus>();
+    networkStatus.addListener(_handleNetworkNotifications);
+  }
+
+  void _handleNetworkNotifications() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: networkStatus.isOnline ? AppColors.lightColorGreen : AppColors.lightColorRed,
+        content: Text(
+          networkStatus.isOnline
+            ? 'Got internet connection!'
+            : 'Lost internet connection :(',
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   void switchChange(bool value) async {
     if (value) {

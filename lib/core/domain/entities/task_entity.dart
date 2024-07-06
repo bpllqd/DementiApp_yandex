@@ -1,5 +1,3 @@
-import 'package:demetiapp/core/data/dto/task_local_model.dart';
-import 'package:demetiapp/core/data/dto/task_api_model.dart';
 import 'package:equatable/equatable.dart';
 
 class TaskEntity extends Equatable {

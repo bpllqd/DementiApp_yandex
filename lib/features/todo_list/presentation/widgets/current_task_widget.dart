@@ -79,8 +79,11 @@ class CurrentTask extends StatelessWidget {
 }
 
 class TaskDeadline extends StatelessWidget {
-  const TaskDeadline(
-      {super.key, required this.deadline, required this.isCompleted,});
+  const TaskDeadline({
+    super.key,
+    required this.deadline,
+    required this.isCompleted,
+  });
 
   final DateTime deadline;
   final bool isCompleted;

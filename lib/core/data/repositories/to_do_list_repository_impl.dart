@@ -2,23 +2,28 @@ import 'dart:io' show Platform;
 import 'package:dartz/dartz.dart';
 import 'package:demetiapp/core/data/datasources/local/task_local_datasource.dart';
 import 'package:demetiapp/core/data/datasources/remote/task_remote_datasource.dart';
-import 'package:demetiapp/core/data/dto/task_api_model.dart';
-import 'package:demetiapp/core/data/dto/task_local_model.dart';
+import 'package:demetiapp/core/data/dto/task_api_dto.dart';
+import 'package:demetiapp/core/data/dto/task_local_dto.dart';
 import 'package:demetiapp/core/data/dto/task_mapper.dart';
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/domain/repository/todo_list_repository.dart';
 import 'package:demetiapp/core/error/exception.dart';
 import 'package:demetiapp/core/error/failure.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
+import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class ToDoListRepositoryImpl implements ToDoListRepository {
   final TaskLocalDataSource _db;
   final TaskRemoteDataSource _api;
+  NetworkStatus networkStatus;
 
   ToDoListRepositoryImpl({
     required TaskLocalDataSource db,
     required TaskRemoteDataSource api,
+    required this.networkStatus,
   })  : _db = db,
         _api = api;
 
@@ -41,6 +46,18 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
   @override
   Future<Either<Failure, List<TaskEntity>>> getAllTasks() async {
     try {
+
+      if(!networkStatus.isOnline){
+        DementiappLogger.infoLog('REPO:getAllTasks - no interet connection');
+        final TaskLocalModelWithRevision localResult =
+          await _db.getAllTasksFromCache();
+        DementiappLogger.infoLog('REPO:getAllTasks - got all tasks from local');
+
+        return Right(
+          TaskMapper.toEntityListFromLocal(localResult.listTasks),
+        );
+      }
+
       final TaskApiModelWithRevision apiResult = await _api.getAllTasks();
       DementiappLogger.infoLog(
         'REPO:getAllTasks - got tasks and revision from api',
@@ -63,9 +80,9 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
         TaskMapper.toEntityListFromLocal(localResult.listTasks),
       );
     } on CacheException catch (e) {
-      return Left(CacheFailure(e.toString()));
+      return Left(CacheFailure(e.message));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -83,7 +100,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
       DementiappLogger.infoLog('REPO:updateAllTasks - updated in local');
       return const Right(null);
     } on CacheException catch (e) {
-      return Left(CacheFailure(e.toString()));
+      return Left(CacheFailure(e.message));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -99,7 +116,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
 
       return const Right(null);
     } on CacheException catch (e) {
-      return Left(CacheFailure(e.toString()));
+      return Left(CacheFailure(e.message));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -118,7 +135,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
 
       return Right(localTaskEntities[0]);
     } on CacheException catch (e) {
-      return Left(CacheFailure(e.toString()));
+      return Left(CacheFailure(e.message));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -137,7 +154,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
       );
       return const Right(null);
     } on CacheException catch (e) {
-      return Left(CacheFailure(e.toString()));
+      return Left(CacheFailure(e.message));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -158,7 +175,7 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
       );
       return const Right(null);
     } on CacheException catch (e) {
-      return Left(CacheFailure(e.toString()));
+      return Left(CacheFailure(e.message));
     } catch (e) {
       return Left(Failure(e.toString()));
     }

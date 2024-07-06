@@ -1,4 +1,6 @@
+import 'package:demetiapp/core/di/di.dart';
 import 'package:demetiapp/core/routing/routing.dart';
+import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
@@ -10,23 +12,27 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:demetiapp/generated/l10n.dart';
 import 'dart:io';
 
+import 'package:provider/provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
   await initializeDateFormatting('ru_RU', null);
   HttpOverrides.global = MyHttpOverrides();
-  runApp(const MyApp());
+  runApp(const MyApp(),);
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key,});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ToDoListBloc()..add(GetTasksEvent()),
+          create: (context) => getIt<ToDoListBloc>()..add(GetTasksEvent()),
         ),
+        ChangeNotifierProvider<NetworkStatus>(create: (context) => getIt<NetworkStatus>()),
       ],
       child: RoutingWrapper(),
     );

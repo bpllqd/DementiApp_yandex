@@ -6,17 +6,27 @@ import 'package:demetiapp/core/data/repositories/to_do_list_repository_impl.dart
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/error/failure.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
+import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/core/domain/usecases/todo_create_usecases.dart';
 import 'package:demetiapp/core/domain/usecases/todo_list_usecases.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'dart:io' show Platform;
+
+import 'package:injectable/injectable.dart';
 
 part 'todo_list_state.dart';
 part 'todo_list_event.dart';
 
+@injectable
 class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
-  ToDoListBloc() : super(ToDoListInitState()) {
+  final NetworkStatus networkStatus;
+  final TaskLocalDatasourceImpl db;
+  final Dio dio;
+
+  ToDoListBloc(this.networkStatus, this.db, this.dio) : super(ToDoListInitState()) {
     on<GetTasksEvent>(_getTasks);
     on<TaskCompleteEvent>(_completeTask);
     on<TaskDeleteEvent>(_deleteTask);
@@ -25,19 +35,63 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     on<ChangeFilterEvent>(_changeFilter);
     on<TaskEditedSaveEvent>(_saveEditedTask);
     on<TaskCreatedSaveEvent>(_saveCreatedTask);
+    on<SyncDataWithApiEvent>(_syncData);
+
+    networkStatus.addListener(_onNetworkStatusChanged);
   }
 
-  final Dio dio = Dio(
-    BaseOptions(
-      baseUrl: 'https://beta.mrdekk.ru/todo',
-      headers: {'Authorization': 'Bearer Gilthoniel'},
-    ),
-  );
+  /// Инстанс Dio
+  // final Dio dio = Dio(
+  //   BaseOptions(
+  //     baseUrl: 'https://beta.mrdekk.ru/todo',
+  //     headers: {'Authorization': 'Bearer Gilthoniel'},
+  //   ),
+  // );
 
-  final TaskLocalDatasourceImpl db = TaskLocalDatasourceImpl();
+  /// Инстансы репозиториев
+  // final TaskLocalDatasourceImpl db = TaskLocalDatasourceImpl();
   late final TaskRemoteDataSourceImpl api = TaskRemoteDataSourceImpl(dio: dio);
   late final ToDoListRepositoryImpl toDoListRepository =
-      ToDoListRepositoryImpl(db: db, api: api);
+      ToDoListRepositoryImpl(db: db, api: api, networkStatus: networkStatus);
+
+  /// Функция для определения id устройства
+  static String id = '';
+  static Future<String> getId() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      id = iosDeviceInfo.identifierForVendor ?? '';
+    } else if (Platform.isAndroid) {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      id = androidDeviceInfo.id;
+    } else {
+      id = 'Windows phone user lmao';
+    }
+    return id;
+  }
+
+  /// Блок, отвечающий за соединение. Каждый метод, работающий только
+  /// с локальным репо (все, кроме getAllTasks) сперва помечает себя
+  /// как itNeedsToBeUpdated. Это говорит о том, что в следующий
+  /// раз при появлении сети апи нужно обновить. Можно было бы
+  /// обойтись без этого, но зачем обновлять апи, если у нас ничего
+  /// не поменялось в локале?
+  bool itNeedsToBeUpdated = false;
+  void _markAsDirty() => itNeedsToBeUpdated = true;
+
+  void _onNetworkStatusChanged() {
+    if (networkStatus.isOnline) {
+      add(SyncDataWithApiEvent());
+    }
+  }
+  
+  /// Синхронизация локалки с апи. Если статус сменился на онлайн
+  /// и есть что обновлять - вызываем update api
+  Future<void> _syncData(SyncDataWithApiEvent event, Emitter<ToDoListState> emit) async{
+    if (networkStatus.isOnline && itNeedsToBeUpdated) {
+      add(GetTasksEvent());
+    }
+  }
 
   Future<void> _getTasks(
     GetTasksEvent event,
@@ -73,13 +127,13 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     Emitter<ToDoListState> emit,
   ) async {
     DementiappLogger.infoLog('BLoC:completeTask');
-
+    _markAsDirty();
     final EditTask editTask = EditTask(toDoListRepository: toDoListRepository);
     final GetAllTasks getAllTasks =
         GetAllTasks(toDoListRepository: toDoListRepository);
 
     final editedTask =
-        event.task.copyWith(done: !event.task.done, changedAt: DateTime.now());
+        event.task.copyWith(done: !event.task.done, changedAt: DateTime.now(), lastUpdatedBy: await getId());
     DementiappLogger.infoLog('BLoC:completeTask - completed task $editedTask');
 
     final Either<Failure, void> result =
@@ -121,7 +175,7 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     Emitter<ToDoListState> emit,
   ) async {
     DementiappLogger.infoLog('BLoC:deleteTask');
-
+    _markAsDirty();
     final DeleteExactTask deleteTask =
         DeleteExactTask(toDoListRepository: toDoListRepository);
     final GetAllTasks getAllTasks =
@@ -196,11 +250,13 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
   ) async {
     emit(LoadingState());
     DementiappLogger.infoLog('Loading from _saveEditedTask');
-
+    _markAsDirty();
     final EditTask editTask = EditTask(toDoListRepository: toDoListRepository);
 
+    final TaskEntity newTask = event.newTask.copyWith(changedAt: DateTime.now(), lastUpdatedBy: await getId());
+
     final Either<Failure, void> result =
-        await editTask.call(event.oldTask, event.newTask);
+        await editTask.call(event.oldTask, newTask);
 
     result.fold((failure) {
       DementiappLogger.errorLog(
@@ -221,11 +277,13 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
   ) async {
     emit(LoadingState());
     DementiappLogger.infoLog('BLoC:_saveCreatedTask - loading');
-
+    _markAsDirty();
     final CreateTask createTask =
         CreateTask(toDoListRepository: toDoListRepository);
 
-    final Either<Failure, void> result = await createTask.call(event.task);
+    final TaskEntity taskToSave = event.task.copyWith(lastUpdatedBy: await getId());
+
+    final Either<Failure, void> result = await createTask.call(taskToSave);
 
     result.fold((failure) {
       DementiappLogger.errorLog(

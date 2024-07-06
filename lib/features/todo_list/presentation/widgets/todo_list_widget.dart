@@ -1,11 +1,13 @@
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
+import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import 'add_new_button_widget.dart';
 import 'tasks_list_widget.dart';
@@ -20,9 +22,31 @@ class ToDoListWidget extends StatefulWidget {
 class _ToDoListWidgetState extends State<ToDoListWidget> {
   ScrollController scrollController = ScrollController();
   final GlobalKey<RefreshIndicatorState> refreshKey = GlobalKey();
+  late NetworkStatus networkStatus;
 
   @override
-  void dispose(){
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    networkStatus = context.read<NetworkStatus>();
+    networkStatus.addListener(_handleNetworkNotifications);
+  }
+
+  void _handleNetworkNotifications() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: networkStatus.isOnline ? AppColors.lightColorGreen : AppColors.lightColorRed,
+        content: Text(
+          networkStatus.isOnline
+            ? 'Got internet connection!'
+            : 'Lost internet connection :(',
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
     scrollController.dispose();
     super.dispose();
   }
@@ -44,22 +68,26 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocListener<ToDoListBloc, ToDoListState>(
       listener: (context, state) {
         DementiappLogger.infoLog(
           'ToDoList widget: Current state: ${state.toString()}',
         );
-        if (state is CreateInProgressState) {
-          context.push('/add_new');
-        } else if (state is EditInProgressState) {
-          context.push(
-            '/add_new',
-            extra: state.task,
-          );
-        } else if (state is CreatingSuccessState ||
-            state is EditingSuccessState) {
-          BlocProvider.of<ToDoListBloc>(context).add(GetTasksEvent());
+        switch (state) {
+          case CreateInProgressState():
+            context.push('/add_new');
+          case EditInProgressState():
+            context.push('/add_new', extra: state.task);
+          case CreatingSuccessState() || EditingSuccessState():
+            BlocProvider.of<ToDoListBloc>(context).add(GetTasksEvent());
+          case ErrorState():
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: const Color.fromARGB(255, 186, 45, 45),
+                content: Text(state.errorDescription),
+                duration: const Duration(seconds: 4),
+              ),
+            );
         }
       },
       child: BlocBuilder<ToDoListBloc, ToDoListState>(
@@ -136,12 +164,6 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                   Icons.add,
                   color: AppColors.lightColorWhite,
                 ),
-              ),
-            );
-          } else if (state is ErrorState) {
-            return Scaffold(
-              body: Center(
-                child: Text(state.errorDescription),
               ),
             );
           } else {
@@ -234,7 +256,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                               opacity: subOpacity,
                               child: Text(
                                 S.of(context).listScreenAppBarCompletedN(
-                                    state.completedTasks,),
+                                      state.completedTasks,
+                                    ),
                                 style: TextStyle(
                                   fontSize: subtitleSize,
                                   color: AppColors.lightColorGray,

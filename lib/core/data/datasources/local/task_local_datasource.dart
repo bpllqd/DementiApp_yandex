@@ -1,14 +1,12 @@
 import 'package:demetiapp/core/data/datasources/local/database_helper.dart';
 import 'package:demetiapp/core/data/datasources/local/database_mapper.dart';
-import 'package:demetiapp/core/data/dto/task_local_model.dart';
-import 'package:demetiapp/core/data/dto/task_api_model.dart';
-import 'package:demetiapp/core/data/dto/task_mapper.dart';
-import 'package:demetiapp/core/domain/entities/task_entity.dart';
+import 'package:demetiapp/core/data/dto/task_local_dto.dart';
+import 'package:demetiapp/core/data/dto/task_api_dto.dart';
 import 'package:demetiapp/core/error/exception.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
-import 'dart:io' show Platform;
+
 
 abstract class TaskLocalDataSource {
   Future<int> getRevision(Database db);
@@ -60,25 +58,9 @@ abstract class TaskLocalDataSource {
 
   void updateLocalRevision(int revision);
 }
-
+@injectable
 class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
-
-  static String id = '';
-
-  static Future<String> getId() async {
-    var deviceInfo = DeviceInfoPlugin();
-    if (Platform.isIOS) {
-      var iosDeviceInfo = await deviceInfo.iosInfo;
-      id = iosDeviceInfo.identifierForVendor ?? '';
-    } else if (Platform.isAndroid) {
-      var androidDeviceInfo = await deviceInfo.androidInfo;
-      id = androidDeviceInfo.id;
-    } else {
-      id = 'Windows phone user lmao';
-    }
-    return id;
-  }
 
   @override
   void updateLocalRevision(int revision) async {
@@ -103,10 +85,6 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
     TaskLocalModel task,
   ) async {
     final db = await _databaseHelper.database;
-
-    TaskEntity entity = TaskMapper.fromLocalModel(task);
-    entity = entity.copyWith(lastUpdatedBy: await getId());
-    task = TaskLocalModel.fromEntity(entity);
 
     final int loading = await db.insert(
       'tasks',
@@ -154,16 +132,14 @@ class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   ) async {
     final db = await _databaseHelper.database;
     DementiappLogger.infoLog('LOCAL:editTask - editing in local');
-    final newTask = TaskMapper.toLocalFromEntity(
-      editedTask.copyWith(lastUpdatedBy: await getId()),
-    );
+
     final int result = await db.update(
       'tasks',
-      DBMapConverter.convertTaskForDB(newTask.toJson()),
+      DBMapConverter.convertTaskForDB(editedTask.toJson()),
       where: 'id = ?',
       whereArgs: [oldTask.id],
     );
-    DementiappLogger.infoLog('LOCAL:editTask - edited $oldTask to $newTask');
+    DementiappLogger.infoLog('LOCAL:editTask - edited $oldTask to $editedTask');
     if (result == 0) {
       throw CacheException(
         'Error while editing task in cache. Please, try again later',

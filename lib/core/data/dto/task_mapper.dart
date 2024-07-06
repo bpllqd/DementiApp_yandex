@@ -1,5 +1,5 @@
-import 'package:demetiapp/core/data/dto/task_api_model.dart';
-import 'package:demetiapp/core/data/dto/task_local_model.dart';
+import 'package:demetiapp/core/data/dto/task_api_dto.dart';
+import 'package:demetiapp/core/data/dto/task_local_dto.dart';
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 
 class TaskMapper {

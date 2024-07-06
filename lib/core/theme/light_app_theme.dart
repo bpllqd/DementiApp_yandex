@@ -14,13 +14,15 @@ ThemeData lightTheme() {
         color: AppColors.lightLabelPrimary,
       ),
       titleMedium: TextStyle(
-          fontSize: AppFontSize.titleFontSize,
-          fontWeight: FontWeight.normal,
-          color: AppColors.lightLabelTertiary,),
+        fontSize: AppFontSize.titleFontSize,
+        fontWeight: FontWeight.normal,
+        color: AppColors.lightLabelTertiary,
+      ),
       bodyMedium: TextStyle(
-          fontSize: AppFontSize.bodyFontSize,
-          color: AppColors.lightLabelPrimary,
-          height: 20.0 / AppFontSize.bodyFontSize,),
+        fontSize: AppFontSize.bodyFontSize,
+        color: AppColors.lightLabelPrimary,
+        height: 20.0 / AppFontSize.bodyFontSize,
+      ),
       bodySmall: TextStyle(
         fontSize: AppFontSize.subheadFontSize,
         color: AppColors.lightLabelTertiary,

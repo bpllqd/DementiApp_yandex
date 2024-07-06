@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
 class FormatDate {
@@ -63,6 +64,7 @@ extension TasksFilterExtension on TasksFilter {
   }
 }
 
+@injectable
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
