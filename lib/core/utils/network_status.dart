@@ -15,8 +15,10 @@ class NetworkStatus extends ChangeNotifier {
     Connectivity().onConnectivityChanged.listen(_checkResult);
   }
 
-  void _checkResult(List<ConnectivityResult> result,
-      {bool checkIdentity = true,}) {
+  void _checkResult(
+    List<ConnectivityResult> result, {
+    bool checkIdentity = true,
+  }) {
     final status = result.contains(ConnectivityResult.mobile) ||
         result.contains(ConnectivityResult.wifi);
     if (checkIdentity && status == _isOnline) return;

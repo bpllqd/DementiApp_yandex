@@ -26,7 +26,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
   final TaskLocalDatasourceImpl db;
   final Dio dio;
 
-  ToDoListBloc(this.networkStatus, this.db, this.dio) : super(ToDoListInitState()) {
+  ToDoListBloc(
+      {required this.networkStatus, required this.db, required this.dio,})
+      : super(ToDoListInitState()) {
     on<GetTasksEvent>(_getTasks);
     on<TaskCompleteEvent>(_completeTask);
     on<TaskDeleteEvent>(_deleteTask);
@@ -84,10 +86,11 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
       add(SyncDataWithApiEvent());
     }
   }
-  
+
   /// Синхронизация локалки с апи. Если статус сменился на онлайн
   /// и есть что обновлять - вызываем update api
-  Future<void> _syncData(SyncDataWithApiEvent event, Emitter<ToDoListState> emit) async{
+  Future<void> _syncData(
+      SyncDataWithApiEvent event, Emitter<ToDoListState> emit,) async {
     if (networkStatus.isOnline && itNeedsToBeUpdated) {
       add(GetTasksEvent());
     }
@@ -132,8 +135,10 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     final GetAllTasks getAllTasks =
         GetAllTasks(toDoListRepository: toDoListRepository);
 
-    final editedTask =
-        event.task.copyWith(done: !event.task.done, changedAt: DateTime.now(), lastUpdatedBy: await getId());
+    final editedTask = event.task.copyWith(
+        done: !event.task.done,
+        changedAt: DateTime.now(),
+        lastUpdatedBy: await getId(),);
     DementiappLogger.infoLog('BLoC:completeTask - completed task $editedTask');
 
     final Either<Failure, void> result =
@@ -253,7 +258,8 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     _markAsDirty();
     final EditTask editTask = EditTask(toDoListRepository: toDoListRepository);
 
-    final TaskEntity newTask = event.newTask.copyWith(changedAt: DateTime.now(), lastUpdatedBy: await getId());
+    final TaskEntity newTask = event.newTask
+        .copyWith(changedAt: DateTime.now(), lastUpdatedBy: await getId());
 
     final Either<Failure, void> result =
         await editTask.call(event.oldTask, newTask);
@@ -281,7 +287,8 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     final CreateTask createTask =
         CreateTask(toDoListRepository: toDoListRepository);
 
-    final TaskEntity taskToSave = event.task.copyWith(lastUpdatedBy: await getId());
+    final TaskEntity taskToSave =
+        event.task.copyWith(lastUpdatedBy: await getId());
 
     final Either<Failure, void> result = await createTask.call(taskToSave);
 

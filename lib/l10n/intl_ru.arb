@@ -10,5 +10,7 @@
   "listScreenAddNewButtonTitle": "Новое",
   "listScreenAppBarCompletedN": "Выполнено - {completedTasks}",
   "listScreenAppBarTitle": "Мои дела",
-  "listScreenAppBarError": "Ошибка"
+  "listScreenAppBarError": "Ошибка",
+  "listScreenListWidgetOnline": "Соединение восстановлено!",
+  "listScreenListWidgetOfline": "Соединение потеряно :("
 }

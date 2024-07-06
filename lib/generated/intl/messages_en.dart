@@ -46,6 +46,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "listScreenAppBarCompletedN": m0,
         "listScreenAppBarError": MessageLookupByLibrary.simpleMessage("Error"),
         "listScreenAppBarTitle":
-            MessageLookupByLibrary.simpleMessage("My tasks")
+            MessageLookupByLibrary.simpleMessage("My tasks"),
+        "listScreenListWidgetOfline":
+            MessageLookupByLibrary.simpleMessage("Lost internet connection :("),
+        "listScreenListWidgetOnline":
+            MessageLookupByLibrary.simpleMessage("Got internet connection!")
       };
 }

@@ -45,6 +45,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "listScreenAppBarCompletedN": m0,
         "listScreenAppBarError": MessageLookupByLibrary.simpleMessage("Ошибка"),
         "listScreenAppBarTitle":
-            MessageLookupByLibrary.simpleMessage("Мои дела")
+            MessageLookupByLibrary.simpleMessage("Мои дела"),
+        "listScreenListWidgetOfline":
+            MessageLookupByLibrary.simpleMessage("Соединение потеряно :("),
+        "listScreenListWidgetOnline":
+            MessageLookupByLibrary.simpleMessage("Соединение восстановлено!")
       };
 }

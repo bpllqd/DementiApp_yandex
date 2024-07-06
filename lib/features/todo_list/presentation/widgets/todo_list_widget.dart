@@ -7,7 +7,6 @@ import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 import 'add_new_button_widget.dart';
 import 'tasks_list_widget.dart';
@@ -34,11 +33,13 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
   void _handleNetworkNotifications() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: networkStatus.isOnline ? AppColors.lightColorGreen : AppColors.lightColorRed,
+        backgroundColor: networkStatus.isOnline
+            ? AppColors.lightColorGreen
+            : AppColors.lightColorRed,
         content: Text(
           networkStatus.isOnline
-            ? 'Got internet connection!'
-            : 'Lost internet connection :(',
+              ? S.of(context).listScreenListWidgetOnline
+              : S.of(context).listScreenListWidgetOfline,
         ),
         duration: const Duration(seconds: 2),
       ),

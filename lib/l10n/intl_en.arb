@@ -11,5 +11,7 @@
   "listScreenAddNewButtonTitle": "New",
   "listScreenAppBarCompletedN": "Completed - {completedTasks}",
   "listScreenAppBarTitle": "My tasks",
-  "listScreenAppBarError": "Error"
+  "listScreenAppBarError": "Error",
+  "listScreenListWidgetOnline": "Got internet connection!",
+  "listScreenListWidgetOfline": "Lost internet connection :("
 }

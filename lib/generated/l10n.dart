@@ -179,6 +179,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Got internet connection!`
+  String get listScreenListWidgetOnline {
+    return Intl.message(
+      'Got internet connection!',
+      name: 'listScreenListWidgetOnline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lost internet connection :(`
+  String get listScreenListWidgetOfline {
+    return Intl.message(
+      'Lost internet connection :(',
+      name: 'listScreenListWidgetOfline',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

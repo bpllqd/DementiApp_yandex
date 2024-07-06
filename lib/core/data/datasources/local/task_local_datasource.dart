@@ -7,7 +7,6 @@ import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 
-
 abstract class TaskLocalDataSource {
   Future<int> getRevision(Database db);
 
@@ -58,6 +57,7 @@ abstract class TaskLocalDataSource {
 
   void updateLocalRevision(int revision);
 }
+
 @injectable
 class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   final DatabaseHelper _databaseHelper = DatabaseHelper();

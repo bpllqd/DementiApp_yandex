@@ -44,13 +44,13 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i4.MyHttpOverrides>(() => _i4.MyHttpOverrides());
     gh.lazySingleton<_i5.NetworkStatus>(() => _i5.NetworkStatus());
     gh.lazySingleton<_i6.Dio>(() => dioModule.provideDio());
-    gh.factory<_i7.ToDoListBloc>(() => _i7.ToDoListBloc(
-          gh<_i5.NetworkStatus>(),
-          gh<_i3.TaskLocalDatasourceImpl>(),
-          gh<_i6.Dio>(),
-        ));
     gh.singleton<_i3.TaskLocalDataSource>(() => registerModule
         .provideTaskLocalDataSource(gh<_i3.TaskLocalDatasourceImpl>()));
+    gh.factory<_i7.ToDoListBloc>(() => _i7.ToDoListBloc(
+          networkStatus: gh<_i5.NetworkStatus>(),
+          db: gh<_i3.TaskLocalDatasourceImpl>(),
+          dio: gh<_i6.Dio>(),
+        ));
     gh.factory<_i8.TaskRemoteDataSourceImpl>(
         () => _i8.TaskRemoteDataSourceImpl(dio: gh<_i6.Dio>()));
     gh.singleton<_i8.TaskRemoteDataSource>(() => registerModule

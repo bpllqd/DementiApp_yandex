@@ -44,11 +44,13 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
   void _handleNetworkNotifications() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: networkStatus.isOnline ? AppColors.lightColorGreen : AppColors.lightColorRed,
+        backgroundColor: networkStatus.isOnline
+            ? AppColors.lightColorGreen
+            : AppColors.lightColorRed,
         content: Text(
           networkStatus.isOnline
-            ? 'Got internet connection!'
-            : 'Lost internet connection :(',
+              ? 'Got internet connection!'
+              : 'Lost internet connection :(',
         ),
         duration: const Duration(seconds: 2),
       ),

@@ -46,11 +46,10 @@ class ToDoListRepositoryImpl implements ToDoListRepository {
   @override
   Future<Either<Failure, List<TaskEntity>>> getAllTasks() async {
     try {
-
-      if(!networkStatus.isOnline){
+      if (!networkStatus.isOnline) {
         DementiappLogger.infoLog('REPO:getAllTasks - no interet connection');
         final TaskLocalModelWithRevision localResult =
-          await _db.getAllTasksFromCache();
+            await _db.getAllTasksFromCache();
         DementiappLogger.infoLog('REPO:getAllTasks - got all tasks from local');
 
         return Right(
