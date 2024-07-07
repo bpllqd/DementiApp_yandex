@@ -18,16 +18,19 @@ Future<void> configureDependencies() async {
 abstract class RegisterModule {
   @singleton
   TaskLocalDataSource provideTaskLocalDataSource(
-          TaskLocalDatasourceImpl dataSource,) =>
+    TaskLocalDatasourceImpl dataSource,
+  ) =>
       dataSource;
 
   @singleton
   TaskRemoteDataSource provideTaskRemoteDataSource(
-          TaskRemoteDataSourceImpl dataSource,) =>
+    TaskRemoteDataSourceImpl dataSource,
+  ) =>
       dataSource;
 
   @singleton
   ToDoListRepository provideToDoListRepository(
-          ToDoListRepositoryImpl repository,) =>
+    ToDoListRepositoryImpl repository,
+  ) =>
       repository;
 }

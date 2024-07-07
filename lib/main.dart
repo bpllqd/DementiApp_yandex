@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
           create: (context) => getIt<ToDoListBloc>()..add(GetTasksEvent()),
         ),
         ChangeNotifierProvider<NetworkStatus>(
-            create: (context) => getIt<NetworkStatus>(),),
+          create: (context) => getIt<NetworkStatus>(),
+        ),
       ],
       child: RoutingWrapper(),
     );

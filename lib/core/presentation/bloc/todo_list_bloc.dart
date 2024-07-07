@@ -26,9 +26,11 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
   final TaskLocalDatasourceImpl db;
   final Dio dio;
 
-  ToDoListBloc(
-      {required this.networkStatus, required this.db, required this.dio,})
-      : super(ToDoListInitState()) {
+  ToDoListBloc({
+    required this.networkStatus,
+    required this.db,
+    required this.dio,
+  }) : super(ToDoListInitState()) {
     on<GetTasksEvent>(_getTasks);
     on<TaskCompleteEvent>(_completeTask);
     on<TaskDeleteEvent>(_deleteTask);
@@ -90,7 +92,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
   /// Синхронизация локалки с апи. Если статус сменился на онлайн
   /// и есть что обновлять - вызываем update api
   Future<void> _syncData(
-      SyncDataWithApiEvent event, Emitter<ToDoListState> emit,) async {
+    SyncDataWithApiEvent event,
+    Emitter<ToDoListState> emit,
+  ) async {
     if (networkStatus.isOnline && itNeedsToBeUpdated) {
       add(GetTasksEvent());
     }
@@ -136,9 +140,10 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
         GetAllTasks(toDoListRepository: toDoListRepository);
 
     final editedTask = event.task.copyWith(
-        done: !event.task.done,
-        changedAt: DateTime.now(),
-        lastUpdatedBy: await getId(),);
+      done: !event.task.done,
+      changedAt: DateTime.now(),
+      lastUpdatedBy: await getId(),
+    );
     DementiappLogger.infoLog('BLoC:completeTask - completed task $editedTask');
 
     final Either<Failure, void> result =
