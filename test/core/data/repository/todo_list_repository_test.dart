@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dartz/dartz.dart';
 import 'package:demetiapp/core/data/datasources/local/task_local_datasource.dart';
 import 'package:demetiapp/core/data/datasources/remote/task_remote_datasource.dart';
@@ -13,6 +11,15 @@ import 'package:demetiapp/core/error/failure.dart';
 import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+///  Моки
+class TaskLocalDataSourceMock extends Mock implements TaskLocalDataSource{}
+class TaskRemoteDataSourceMock extends Mock implements TaskRemoteDataSource{}
+class NetworkStatusMock extends Mock implements NetworkStatus{}
+class ToDoListRepositoryMock extends Mock implements ToDoListRepositoryImpl {}
+
+// Фейки (не лэймы)
+class FallbackTaskLocalModel extends Fake implements TaskLocalModel{}
 
 void main(){
   late TaskLocalDataSourceMock taskLocalDataSourceMock;
@@ -28,7 +35,6 @@ void main(){
 
   setUp((){
     taskLocalDataSourceMock = TaskLocalDataSourceMock();
-    when(()=> taskLocalDataSourceMock.createTaskToCache(any(that: isA<TaskLocalModel>()))).thenAnswer((_) async => 1);
 
     taskRemoteDataSourceMock = TaskRemoteDataSourceMock();
 
@@ -61,6 +67,7 @@ void main(){
         createdAt: DateTime.utc(2023, 01, 01),);
       test('должен выполнять запрос к Local Datasource с правильными параметрами', () async{
         //arange
+        when(()=> taskLocalDataSourceMock.createTaskToCache(any(that: isA<TaskLocalModel>()))).thenAnswer((_) async => 1);
 
         //act
         await toDoListRepository.createTask(expectedTask);
@@ -73,7 +80,8 @@ void main(){
 
       test('должен выполнять запрос к Local Datasource и вносить новую запись', () async{
         //arange
-
+        
+    when(()=> taskLocalDataSourceMock.createTaskToCache(any())).thenAnswer((_) async {});
         //act
         final result = await toDoListRepository.createTask(expectedTask);
 
@@ -283,38 +291,41 @@ void main(){
       });
     });
 
-    group('и его метод createTask', (){
-      test('должен создавать задачу в Local', ()async{
+    group('и его метод editTask', (){
+      test('должен возвращать Right в случае успешного редактировани', ()async{
         //arrange
-        when(() => taskLocalDataSourceMock.createTaskToCache(taskLocalModel.first),).thenAnswer((_) async {});
+        when(()=>taskLocalDataSourceMock.editTaskToCache(any(), any())).thenAnswer((_) async => localResult);
 
         //act
-        final result = await toDoListRepository.createTask(taskEntities.first);
+        final result = await toDoListRepository.editTask(taskEntities.first, taskEntities.first);
 
         //assert
         expect(result, equals(Right(null)));
       });
 
-      test('должен возвращать CacheFailure при ошибке local', () async {
-        // Arrange
-        when(() => taskLocalDataSourceMock.createTaskToCache(taskLocalModel.first))
-          .thenThrow(CacheException('local error'));
+      test('должен возвращать CacheFailure при ошибке в Local', ()async{
+        //arrange
+        when(()=>taskLocalDataSourceMock.editTaskToCache(any(), any())).thenThrow(CacheException('local error'));
 
-        // Act
-        final result = await toDoListRepository.createTask(taskEntities.first);
+        //act
+        final result = await toDoListRepository.editTask(taskEntities.first, taskEntities.first);
 
-        // Assert
-        expect(result, Left(CacheFailure('local error')));
+        //assert
+        expect(result, isA<Left>());
+        expect(result.fold((failure)=>failure, (value) => null), isA<CacheFailure>());
+      });
+
+      test('должен возвращать Failure при ошибке репозитория', ()async{
+        //arrange
+        when(()=>toDoListRepositoryMock.editTask(any(), any())).thenThrow(Exception('repo error'));
+
+        //act
+        final result = await toDoListRepository.editTask(taskEntities.first, taskEntities.first);
+
+        //assert
+        expect(result, isA<Left>());
+        expect(result.fold((failure) => failure, (value)=>null), isA<Failure>());
       });
     });
   });
 }
-
-///  Моки
-class TaskLocalDataSourceMock extends Mock implements TaskLocalDataSource{}
-class TaskRemoteDataSourceMock extends Mock implements TaskRemoteDataSource{}
-class NetworkStatusMock extends Mock implements NetworkStatus{}
-class ToDoListRepositoryMock extends Mock implements ToDoListRepositoryImpl {}
-
-// Фейки (не лэймы)
-class FallbackTaskLocalModel extends Fake implements TaskLocalModel{}

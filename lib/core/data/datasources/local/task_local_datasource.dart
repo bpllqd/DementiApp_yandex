@@ -60,7 +60,9 @@ abstract class TaskLocalDataSource {
 
 @injectable
 class TaskLocalDatasourceImpl implements TaskLocalDataSource {
-  final DatabaseHelper _databaseHelper = DatabaseHelper();
+  final DatabaseHelper _databaseHelper;
+
+  TaskLocalDatasourceImpl({required DatabaseHelper databaseHelper}) : _databaseHelper = databaseHelper;
 
   @override
   void updateLocalRevision(int revision) async {

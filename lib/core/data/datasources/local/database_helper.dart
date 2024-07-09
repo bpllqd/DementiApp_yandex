@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 // path нужен для join в строке 23, подсвечивало синим
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
+@injectable
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
