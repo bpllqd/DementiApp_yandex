@@ -20,7 +20,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
 
-  static String m0(completedTasks) => "Выполнено - ${completedTasks}";
+  static String m0(int completedTasks) => "Выполнено - ${completedTasks}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -49,6 +49,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "listScreenListWidgetOfline":
             MessageLookupByLibrary.simpleMessage("Соединение потеряно :("),
         "listScreenListWidgetOnline":
-            MessageLookupByLibrary.simpleMessage("Соединение восстановлено!")
+            MessageLookupByLibrary.simpleMessage("Соединение восстановлено!"),
       };
 }

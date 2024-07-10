@@ -155,6 +155,7 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                 ),
               ),
               floatingActionButton: FloatingActionButton(
+                key: const ValueKey('FloatingAddNewButton'),
                 onPressed: () {
                   _addNewTask(scrollController, context);
                 },

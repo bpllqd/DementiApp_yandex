@@ -1,6 +1,11 @@
 # <img src="/assets/app_icons/light/app_logo_light.png" width=50 alt="logo"> DementiApp - ToDO-like для тех, кто вечно забывает таски
 
-#### Ссылка на загрузку (Android):  https://disk.yandex.ru/d/vMg7j3Fiep1cIw
+#### Ссылочка на загрузку ->  https://disk.yandex.ru/d/vMg7j3Fiep1cIw
+
+## Inovation
+<br>
+Dementiapp - приложение-второй мозг! С его помощью вы с легкостью освободите голову от ненужных забот,
+достаточно в пару тапов записать дело и вы его не забудете!
 
 ## Features:
 ### Экран "Мои дела"
@@ -17,10 +22,16 @@
 Данный экран предоставляет интерфейс для добавления/редактирования дел. Есть возможность написать задачу, выбрать для нее приоритет (default: no), а также опционально задать deadline. В случае, если происходит редактирование уже существующей задачи, появляется возможность ее удалить.
 
 #### Реализованные фичи:
-* UI
-* State-manager: BLoC
-* Local datasource: SQFlite
-* Remote datasource: Dio
-* Localization: intl
-* File-structure: faeture-first
-* Architechture: clean
+[+] UI
+[+] Offline-first + caching data
+[+] Listen to internet connection (connectivity_plus)
+[+] Repo, Local with unit-test
+[+] 1 integration test (opening create task screen)
+[+] Routing: Navigator 2.0 (go_router)
+[+] DI: Get_it + injectable
+[+] State-manager: BLoC
+[+] Local datasource: SQFlite
+[+] Remote datasource: Dio
+[+] Localization: intl
+[+] File-structure: faeture-first
+[+] Architechture: clean

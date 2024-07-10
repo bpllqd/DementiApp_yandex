@@ -39,6 +39,12 @@ dev_dependencies:
   build_runner: ^2.4.11
   injectable_generator: ^2.6.1
   mocktail: ^1.0.4
+  integration_test:
+    sdk: flutter
+  sqflite_common_ffi: ^2.3.3
+  bloc_test: ^9.1.7
+  mocktail: ^0.1.4
+
 
 flutter_launcher_icons:
   android: "launcher_icon"

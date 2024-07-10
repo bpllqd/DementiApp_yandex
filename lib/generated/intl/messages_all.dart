@@ -40,7 +40,7 @@ MessageLookupByLibrary? _findExact(String localeName) {
 Future<bool> initializeMessages(String localeName) {
   var availableLocale = Intl.verifiedLocale(
       localeName, (locale) => _deferredLibraries[locale] != null,
-      onFailure: (_) => null);
+      onFailure: (_) => null,);
   if (availableLocale == null) {
     return new SynchronousFuture(false);
   }

@@ -47,6 +47,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
               builder: (context, state) {
                 if (state is CreateInProgressState) {
                   return TextButton(
+                    key: const ValueKey('SaveCreated'),
                     onPressed: () {
                       bloc.add(
                         TaskCreatedSaveEvent(
@@ -69,6 +70,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
                   );
                 } else if (state is EditInProgressState) {
                   return TextButton(
+                    key: const ValueKey('SaveEdited'),
                     onPressed: () {
                       bloc.add(
                         TaskEditedSaveEvent(

@@ -62,7 +62,8 @@ abstract class TaskLocalDataSource {
 class TaskLocalDatasourceImpl implements TaskLocalDataSource {
   final DatabaseHelper _databaseHelper;
 
-  TaskLocalDatasourceImpl({required DatabaseHelper databaseHelper}) : _databaseHelper = databaseHelper;
+  TaskLocalDatasourceImpl({required DatabaseHelper databaseHelper})
+      : _databaseHelper = databaseHelper;
 
   @override
   void updateLocalRevision(int revision) async {
