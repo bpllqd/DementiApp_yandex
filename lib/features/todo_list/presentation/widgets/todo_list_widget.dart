@@ -36,10 +36,26 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
         backgroundColor: networkStatus.isOnline
             ? AppColors.lightColorGreen
             : AppColors.lightColorRed,
-        content: Text(
-          networkStatus.isOnline
-              ? S.of(context).listScreenListWidgetOnline
-              : S.of(context).listScreenListWidgetOfline,
+        content: Row(
+          children: [
+            networkStatus.isOnline
+              ? const Icon(Icons.check, color: AppColors.lightColorWhite,)
+              : const Icon(Icons.signal_wifi_connected_no_internet_4_outlined, color: AppColors.lightColorWhite,),
+            const SizedBox(width: 15,),
+            Text(
+              networkStatus.isOnline
+                ? S.of(context).listScreenListWidgetOnline
+                : S.of(context).listScreenListWidgetOfline,
+            ),
+          ],
+          // leading: networkStatus.isOnline
+          // ? const Icon(Icons.fmd_good, color: AppColors.lightColorWhite,)
+          // : const Icon(Icons.offline_bolt_outlined, color: AppColors.lightColorWhite,),
+          // title: Text(
+          //   networkStatus.isOnline
+          //       ? S.of(context).listScreenListWidgetOnline
+          //       : S.of(context).listScreenListWidgetOfline,
+          // ),
         ),
         duration: const Duration(seconds: 2),
       ),

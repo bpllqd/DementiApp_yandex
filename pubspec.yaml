@@ -43,7 +43,6 @@ dev_dependencies:
     sdk: flutter
   sqflite_common_ffi: ^2.3.3
   bloc_test: ^9.1.7
-  mocktail: ^0.1.4
 
 
 flutter_launcher_icons:
