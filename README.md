@@ -1,6 +1,6 @@
 # <img src="/assets/app_icons/light/app_logo_light.png" width=50 alt="logo"> DementiApp - ToDO-like для тех, кто вечно забывает таски
 
-#### Ссылочка на загрузку ->  https://disk.yandex.ru/d/vMg7j3Fiep1cIw
+#### Ссылочка на загрузочку -> https://disk.yandex.ru/d/kdyErSRqjjG2aw
 
 ## Inovation
 <br>
@@ -29,6 +29,8 @@ Dementiapp - приложение-второй мозг! С его помощь�
 [+] 1 integration test (opening create task screen)
 [+] Routing: Navigator 2.0 (go_router)
 [+] DI: Get_it + injectable
+[+] Deeplinks available. Test as:
+cmd: adb shell am start -a android.intent.action.VIEW -d "dementiapp://dementia.pp/add_new" dementia.pp
 [+] State-manager: BLoC
 [+] Local datasource: SQFlite
 [+] Remote datasource: Dio
