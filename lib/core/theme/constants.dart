@@ -17,7 +17,6 @@ abstract class AppColors {
   static const lightBackPrimary = Color(0xFFF7F6F2);
   static const lightBackSecondary = Color(0xFFFFFFFF);
   static const lightBackElevated = Color(0xFFFFFFFF);
-
   /// ==========[DARK COLORS]=================
   static const darkSupportSeparator = Color(0x33FFFFFF);
   static const darkSupportOverlay = Color(0x52000000);
