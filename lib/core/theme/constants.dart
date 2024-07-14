@@ -1,5 +1,6 @@
 part of 'theme.dart';
 
+
 abstract class AppColors {
   /// ==========[LIGHT COLORS]=================
   static const lightSupportSeparator = Color(0x33000000);

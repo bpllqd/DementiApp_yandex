@@ -1,5 +1,6 @@
 part of 'theme.dart';
 
+
 ThemeData lightTheme() {
   return ThemeData(
     appBarTheme: const AppBarTheme(
@@ -60,3 +61,4 @@ ThemeData lightTheme() {
 }
 
 // ДОДЕЛАТЬ ТЕМЫ ДЛЯ ВСЯКИХ ЛИНИЙ, ИКОНОК, ЭКСТЕНШЕНЫ И ПРОЧЕЕ
+

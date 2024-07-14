@@ -1,6 +1,8 @@
 # <img src="/assets/app_icons/light/app_logo_light.png" width=50 alt="logo"> DementiApp - ToDO-like для тех, кто вечно забывает таски
 
+
 #### Ссылка на загрузку (Android):  https://disk.yandex.ru/d/vMg7j3Fiep1cIw
+
 
 ## Features:
 ### Экран "Мои дела"
@@ -24,3 +26,4 @@
 * Localization: intl
 * File-structure: faeture-first
 * Architechture: clean
+

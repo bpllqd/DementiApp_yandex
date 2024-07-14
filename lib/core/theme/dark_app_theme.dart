@@ -1,5 +1,6 @@
 part of 'theme.dart';
 
+
 ThemeData darkTheme() {
   return ThemeData(
     brightness: Brightness.dark,
@@ -29,3 +30,4 @@ ThemeData darkTheme() {
 }
 
 // ДОДЕЛАТЬ ТЕМЫ ДЛЯ ВСЯКИХ ЛИНИЙ, ИКОНОК, ЭКСТЕНШЕНЫ И ПРОЧЕЕ
+
