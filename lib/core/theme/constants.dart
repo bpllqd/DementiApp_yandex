@@ -1,6 +1,7 @@
 part of 'theme.dart';
 
-abstract class AppColors{
+
+abstract class AppColors {
   /// ==========[LIGHT COLORS]=================
   static const lightSupportSeparator = Color(0x33000000);
   static const lightSupportOverlay = Color(0x0F000000);
@@ -17,7 +18,7 @@ abstract class AppColors{
   static const lightBackPrimary = Color(0xFFF7F6F2);
   static const lightBackSecondary = Color(0xFFFFFFFF);
   static const lightBackElevated = Color(0xFFFFFFFF);
-  
+
   /// ==========[DARK COLORS]=================
   static const darkSupportSeparator = Color(0x33FFFFFF);
   static const darkSupportOverlay = Color(0x52000000);
@@ -33,18 +34,14 @@ abstract class AppColors{
   static const darkColorWhite = Color(0xFFFFFFFF);
   static const darkBackPrimary = Color(0xFF161618);
   static const darkBackSecondary = Color(0xFF252528);
-  static const darkBackElevated = Color(0xFF3C3C3F);  
+  static const darkBackElevated = Color(0xFF3C3C3F);
 }
 
 /// ==========[IMAGE PATHS]=================
-const String checkboxNo = 'assets/images/checkbox_unchecked_normal.svg';
-const String checkboxHigh = 'assets/images/checkbox_unchecked_high.svg';
-const String checkboxLow = 'assets/images/checkbox_unchecked_low.svg';
-const String checkboxChecked = 'assets/images/checkbox_checked.svg';
 const String priorityHigh = 'assets/images/priority_high.svg';
 const String priorityLow = 'assets/images/priority_low.svg';
 
-abstract class AppFontSize{
+abstract class AppFontSize {
   /// ==========[FONT SIZES]=================
   static const largeTitleFontSize = 32.0;
   static const titleFontSize = 20.0;
@@ -52,7 +49,6 @@ abstract class AppFontSize{
   static const bodyFontSize = 16.0;
   static const subheadFontSize = 14.0;
 }
-
 
 // const double largeTitleFontHeight = 38 / largeTitleFontSize;
 // const double titleFontHeight = 32 / titleFontSize;

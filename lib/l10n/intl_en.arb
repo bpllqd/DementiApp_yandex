@@ -1,0 +1,15 @@
+{
+  "createScreenAppBarSave": "SAVE",
+  "createScreenDeleteButtonDelete": "Delete",
+  "createScreenTextfieldLabel": "What i need to do...",
+  "createScreenDropDownLabel": "Importance",
+  "createScreenDropdownMenuHint": "No",
+  "createScreenDropdownMenuBasic": "Basic",
+  "createScreenDropdownMenuLow": "Low",
+  "createScreenDropdownMenuImportant": "Important",
+  "createScreenSwitchTileTitle": "Deadline",
+  "listScreenAddNewButtonTitle": "New",
+  "listScreenAppBarCompletedN": "Completed - {completedTasks}",
+  "listScreenAppBarTitle": "My tasks",
+  "listScreenAppBarError": "Error"
+}

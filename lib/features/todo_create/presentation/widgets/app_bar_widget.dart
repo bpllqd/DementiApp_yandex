@@ -1,27 +1,26 @@
+import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/theme/theme.dart';
-import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
-import 'package:demetiapp/features/todo_create/presentation/bloc/todo_create_bloc.dart';
-import 'package:demetiapp/features/todo_list/domain/entities/task_entity.dart';
+import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:demetiapp/generated/l10n.dart';
+import 'package:uuid/uuid.dart';
 
 class BarWidget extends StatelessWidget implements PreferredSizeWidget {
   const BarWidget({
     super.key,
     required this.bloc,
-    required this.task,
     required this.textController,
-    required this.priority,
-    required this.isSwitchEnabled,
-    required this.pickedDate,
+    required this.deadline,
+    required this.importance,
   });
 
-  final ToDoCreateBloc bloc;
-  final TaskEntity? task;
+  final ToDoListBloc bloc;
+  final Uuid uuid = const Uuid();
   final TextEditingController textController;
-  final Priority? priority;
-  final bool isSwitchEnabled;
-  final DateTime? pickedDate;
+  final DateTime? deadline;
+  final String? importance;
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +31,8 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         splashRadius: 24.0,
         onPressed: () {
+          bloc.add(GetTasksEvent());
           context.pop(context);
-          DementiappLogger.infoLog('Navigate back');
         },
         icon: const Icon(
           Icons.close,
@@ -44,28 +43,63 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: Center(
-            child: TextButton(
-              onPressed: () {
-                bloc.add(
-                  ToDoCreateNewEvent(
-                    TaskEntity(
-                      taskID: task?.taskID ?? '',
-                      title: textController.text.isNotEmpty
-                          ? textController.text
-                          : 'Что надо сделать...',
-                      done: false,
-                      priority: priority,
-                      date: isSwitchEnabled ? pickedDate : null,
+            child: BlocBuilder<ToDoListBloc, ToDoListState>(
+              builder: (context, state) {
+                if (state is CreateInProgressState) {
+                  return TextButton(
+                    onPressed: () {
+                      bloc.add(
+                        TaskCreatedSaveEvent(
+                          task: TaskEntity(
+                            id: uuid.v1(),
+                            text: textController.text,
+                            importance: importance ?? 'basic',
+                            deadline: deadline,
+                            createdAt: DateTime.now(),
+                            changedAt: DateTime.now(),
+                          ),
+                        ),
+                      );
+                      context.pop();
+                    },
+                    child: Text(
+                      S.of(context).createScreenAppBarSave,
+                      style: Theme.of(context).textTheme.labelMedium,
                     ),
-                  ),
-                );
-                Navigator.pop(context, true);
-                DementiappLogger.infoLog('Navigating to ToDo List');
+                  );
+                } else if (state is EditInProgressState) {
+                  return TextButton(
+                    onPressed: () {
+                      bloc.add(
+                        TaskEditedSaveEvent(
+                          oldTask: state.task,
+                          newTask: TaskEntity(
+                            id: state.task.id,
+                            text: textController.text,
+                            importance: importance ?? 'basic',
+                            deadline: deadline,
+                            createdAt: state.task.createdAt,
+                            changedAt: DateTime.now(),
+                          ),
+                        ),
+                      );
+                      context.pop();
+                    },
+                    child: Text(
+                      S.of(context).createScreenAppBarSave,
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  );
+                } else {
+                  return TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      S.of(context).createScreenAppBarSave,
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  );
+                }
               },
-              child: Text(
-                'СОХРАНИТЬ',
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
             ),
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:demetiapp/core/theme/theme.dart';
-import 'package:demetiapp/features/todo_list/presentation/bloc/todo_list_bloc.dart';
+import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
+import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +18,7 @@ class AddNewButton extends StatelessWidget {
     return BlocBuilder<ToDoListBloc, ToDoListState>(
       bloc: bloc,
       builder: (context, state) {
-        if (state is TodoListSuccessState) {
+        if (state is SuccessState) {
           return GestureDetector(
             onTap: onTap,
             child: Container(
@@ -30,15 +31,15 @@ class AddNewButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.0),
                 color: AppColors.lightBackSecondary,
               ),
-              child: const Align(
+              child: Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 63.0),
+                  padding: const EdgeInsets.only(left: 63.0),
                   child: Row(
                     children: [
                       Text(
-                        'Новое',
-                        style: TextStyle(
+                        S.of(context).listScreenAddNewButtonTitle,
+                        style: const TextStyle(
                           fontSize: AppFontSize.bodyFontSize,
                           color: AppColors.lightLabelTertiary,
                         ),
