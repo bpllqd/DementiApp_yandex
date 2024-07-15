@@ -55,23 +55,25 @@ void main() {
   group('ToDo repository', () {
     final taskLocalModel = [
       TaskLocalModel(
-          id: '1',
-          text: 'getAll',
-          importance: 'basic',
-          done: false,
-          lastUpdatedBy: 'test',
-          changedAt: DateTime.utc(2023, 01, 02),
-          createdAt: DateTime.utc(2023, 01, 01),),
+        id: '1',
+        text: 'getAll',
+        importance: 'basic',
+        done: false,
+        lastUpdatedBy: 'test',
+        changedAt: DateTime.utc(2023, 01, 02),
+        createdAt: DateTime.utc(2023, 01, 01),
+      ),
     ];
     final taskApiModel = [
       TaskApiModel(
-          id: '1',
-          text: 'getAll',
-          importance: 'basic',
-          done: false,
-          lastUpdatedBy: 'test',
-          changedAt: DateTime.utc(2023, 01, 02),
-          createdAt: DateTime.utc(2023, 01, 01),),
+        id: '1',
+        text: 'getAll',
+        importance: 'basic',
+        done: false,
+        lastUpdatedBy: 'test',
+        changedAt: DateTime.utc(2023, 01, 02),
+        createdAt: DateTime.utc(2023, 01, 01),
+      ),
     ];
     final taskEntities = TaskMapper.toEntityListFromLocal(taskLocalModel);
     final localResult =
@@ -91,16 +93,19 @@ void main() {
           'должен выполнять запрос к Local Datasource с правильными параметрами',
           () async {
         //arange
-        when(() => taskLocalDataSourceMock.createTaskToCache(
-            any(that: isA<TaskLocalModel>()),),).thenAnswer((_) async => 1);
+        when(
+          () => taskLocalDataSourceMock.createTaskToCache(
+            any(that: isA<TaskLocalModel>()),
+          ),
+        ).thenAnswer((_) async => 1);
 
         //act
         await toDoListRepository.createTask(expectedTask);
 
         //assert
         final verification = verify(
-                () => taskLocalDataSourceMock.createTaskToCache(captureAny()),)
-            .captured;
+          () => taskLocalDataSourceMock.createTaskToCache(captureAny()),
+        ).captured;
 
         expect(verification.first.runtimeType, expectedTask.runtimeType);
       });
@@ -122,9 +127,10 @@ void main() {
       test('должен возвращать CacheFailure при ошибке Local Datasource',
           () async {
         //arrange
-        when(() => taskLocalDataSourceMock
-                .createTaskToCache(any(that: isA<TaskLocalModel>())),)
-            .thenThrow(CacheException('Cache Error'));
+        when(
+          () => taskLocalDataSourceMock
+              .createTaskToCache(any(that: isA<TaskLocalModel>())),
+        ).thenThrow(CacheException('Cache Error'));
 
         //act
         final result = await toDoListRepository.createTask(expectedTask);
@@ -136,9 +142,10 @@ void main() {
 
       test('должен возвращать Failure при ошибке репозитория', () async {
         //arrange
-        when(() => taskLocalDataSourceMock
-                .createTaskToCache(any(that: isA<TaskLocalModel>())),)
-            .thenThrow(Exception('Other exception'));
+        when(
+          () => taskLocalDataSourceMock
+              .createTaskToCache(any(that: isA<TaskLocalModel>())),
+        ).thenThrow(Exception('Other exception'));
 
         //act
         final result = await toDoListRepository.createTask(expectedTask);
@@ -183,11 +190,17 @@ void main() {
 
         //assert
         verify(() => taskRemoteDataSourceMock.getAllTasks()).called(1);
-        verify(() => taskLocalDataSourceMock
-            .updateLocalRevision(apiResult.apiRevision),).called(1);
+        verify(
+          () => taskLocalDataSourceMock
+              .updateLocalRevision(apiResult.apiRevision),
+        ).called(1);
         verify(() => taskLocalDataSourceMock.getAllTasksFromCache()).called(1);
-        verify(() => taskRemoteDataSourceMock.updateAllTasks(
-            taskApiModel, apiResult.apiRevision,),).called(1);
+        verify(
+          () => taskRemoteDataSourceMock.updateAllTasks(
+            taskApiModel,
+            apiResult.apiRevision,
+          ),
+        ).called(1);
       });
 
       test('должен возвращать CacheFailure, если случится CacheException',
@@ -238,31 +251,35 @@ void main() {
     group('и его метод updateAllTasks', () {
       final taskLocalModel = [
         TaskLocalModel(
-            id: '1',
-            text: 'updateAll',
-            importance: 'basic',
-            done: false,
-            lastUpdatedBy: 'test',
-            changedAt: DateTime.utc(2023, 01, 02),
-            createdAt: DateTime.utc(2023, 01, 01),),
+          id: '1',
+          text: 'updateAll',
+          importance: 'basic',
+          done: false,
+          lastUpdatedBy: 'test',
+          changedAt: DateTime.utc(2023, 01, 02),
+          createdAt: DateTime.utc(2023, 01, 01),
+        ),
       ];
       final taskLocalResult = TaskLocalModelWithRevision(
-          listTasks: taskLocalModel, localRevision: 1,);
+        listTasks: taskLocalModel,
+        localRevision: 1,
+      );
       final taskEntity = [
         TaskEntity(
-            id: '1',
-            text: 'updateAll',
-            done: false,
-            importance: 'basic',
-            lastUpdatedBy: 'test',
-            changedAt: DateTime.utc(2023, 01, 02),
-            createdAt: DateTime.utc(2023, 01, 01),),
+          id: '1',
+          text: 'updateAll',
+          done: false,
+          importance: 'basic',
+          lastUpdatedBy: 'test',
+          changedAt: DateTime.utc(2023, 01, 02),
+          createdAt: DateTime.utc(2023, 01, 01),
+        ),
       ];
       test('должен обновлять Local задачи на новые', () async {
         //arrange
-        when(() =>
-                taskLocalDataSourceMock.updateAllTasksToCache(taskLocalModel),)
-            .thenAnswer((_) async => taskLocalResult);
+        when(
+          () => taskLocalDataSourceMock.updateAllTasksToCache(taskLocalModel),
+        ).thenAnswer((_) async => taskLocalResult);
 
         //act
         final result = await toDoListRepository.updateAllTasks(taskEntity);
@@ -274,9 +291,9 @@ void main() {
 
       test('должен возвращать CacheFailure при ошибке Local', () async {
         //arrange
-        when(() =>
-                taskLocalDataSourceMock.updateAllTasksToCache(taskLocalModel),)
-            .thenThrow(CacheException('cache exception'));
+        when(
+          () => taskLocalDataSourceMock.updateAllTasksToCache(taskLocalModel),
+        ).thenThrow(CacheException('cache exception'));
 
         //act
         final result = await toDoListRepository.updateAllTasks(taskEntity);
@@ -303,8 +320,11 @@ void main() {
     group('и его метод deleteTask', () {
       test('должен возвращать Right при успешном удалении из Local', () async {
         //arrange
-        when(() => taskLocalDataSourceMock.deleteExactTaskFromCache(
-            taskLocalModel.first,),).thenAnswer((_) async {});
+        when(
+          () => taskLocalDataSourceMock.deleteExactTaskFromCache(
+            taskLocalModel.first,
+          ),
+        ).thenAnswer((_) async {});
         //act
         final result = await toDoListRepository.deleteTask(taskEntities.first);
 
@@ -316,8 +336,11 @@ void main() {
       test('должен возвращать CacheFailure при ошибке удаления в Local',
           () async {
         //arrange
-        when(() => taskLocalDataSourceMock.deleteExactTaskFromCache(
-            taskLocalModel.first,),).thenThrow(CacheException('local error'));
+        when(
+          () => taskLocalDataSourceMock.deleteExactTaskFromCache(
+            taskLocalModel.first,
+          ),
+        ).thenThrow(CacheException('local error'));
 
         //act
         final result = await toDoListRepository.deleteTask(taskEntities.first);
@@ -344,8 +367,11 @@ void main() {
     group('и его метод getExactTaak', () {
       test('должен вернуть запрошенную задачу из Local', () async {
         //arrange
-        when(() => taskLocalDataSourceMock.getExactTaskFromCache(
-            taskLocalModel.first,),).thenAnswer((_) async => localResult);
+        when(
+          () => taskLocalDataSourceMock.getExactTaskFromCache(
+            taskLocalModel.first,
+          ),
+        ).thenAnswer((_) async => localResult);
 
         //act
         final result =
@@ -355,13 +381,18 @@ void main() {
         // ignore: strict_raw_type
         expect(result, isA<Right>());
         expect(
-            result.fold((failure) => null, (task) => task), isA<TaskEntity>(),);
+          result.fold((failure) => null, (task) => task),
+          isA<TaskEntity>(),
+        );
       });
 
       test('должен возвращать CacheFailure при ошибке Local', () async {
         //arrange
-        when(() => taskLocalDataSourceMock.getExactTaskFromCache(
-            taskLocalModel.first,),).thenThrow(CacheException('local error'));
+        when(
+          () => taskLocalDataSourceMock.getExactTaskFromCache(
+            taskLocalModel.first,
+          ),
+        ).thenThrow(CacheException('local error'));
 
         //act
         final result =
@@ -370,8 +401,10 @@ void main() {
         //assert
         // ignore: strict_raw_type
         expect(result, isA<Left>());
-        expect(result.fold((failure) => failure, (value) => null),
-            isA<CacheFailure>(),);
+        expect(
+          result.fold((failure) => failure, (value) => null),
+          isA<CacheFailure>(),
+        );
       });
 
       test('должен возвращать Failure при ошибке репо', () async {
@@ -387,7 +420,9 @@ void main() {
         // ignore: strict_raw_type
         expect(result, isA<Left>());
         expect(
-            result.fold((failure) => failure, (value) => null), isA<Failure>(),);
+          result.fold((failure) => failure, (value) => null),
+          isA<Failure>(),
+        );
       });
     });
 
@@ -400,7 +435,9 @@ void main() {
 
         //act
         final result = await toDoListRepository.editTask(
-            taskEntities.first, taskEntities.first,);
+          taskEntities.first,
+          taskEntities.first,
+        );
 
         //assert
         // ignore: inference_failure_on_instance_creation
@@ -414,13 +451,17 @@ void main() {
 
         //act
         final result = await toDoListRepository.editTask(
-            taskEntities.first, taskEntities.first,);
+          taskEntities.first,
+          taskEntities.first,
+        );
 
         //assert
         // ignore: strict_raw_type
         expect(result, isA<Left>());
-        expect(result.fold((failure) => failure, (value) => null),
-            isA<CacheFailure>(),);
+        expect(
+          result.fold((failure) => failure, (value) => null),
+          isA<CacheFailure>(),
+        );
       });
 
       test('должен возвращать Failure при ошибке репозитория', () async {
@@ -430,13 +471,17 @@ void main() {
 
         //act
         final result = await toDoListRepository.editTask(
-            taskEntities.first, taskEntities.first,);
+          taskEntities.first,
+          taskEntities.first,
+        );
 
         //assert
         // ignore: strict_raw_type
         expect(result, isA<Left>());
         expect(
-            result.fold((failure) => failure, (value) => null), isA<Failure>(),);
+          result.fold((failure) => failure, (value) => null),
+          isA<Failure>(),
+        );
       });
     });
   });

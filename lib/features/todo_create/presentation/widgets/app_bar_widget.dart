@@ -1,5 +1,5 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
-import 'package:demetiapp/core/theme/theme.dart';
+import 'package:demetiapp/core/extensions/context_extensions.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +25,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: context.colors.backPrimary,
       elevation: 0,
       scrolledUnderElevation: 5.0,
       leading: IconButton(
@@ -34,9 +34,9 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
           bloc.add(GetTasksEvent());
           context.pop(context);
         },
-        icon: const Icon(
+        icon: Icon(
           Icons.close,
-          color: AppColors.lightLabelPrimary,
+          color: context.colors.labelPrimary,
         ),
       ),
       actions: [
@@ -65,7 +65,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
                     },
                     child: Text(
                       S.of(context).createScreenAppBarSave,
-                      style: Theme.of(context).textTheme.labelMedium,
+                      style: context.textStyles.body,
                     ),
                   );
                 } else if (state is EditInProgressState) {
@@ -89,7 +89,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
                     },
                     child: Text(
                       S.of(context).createScreenAppBarSave,
-                      style: Theme.of(context).textTheme.labelMedium,
+                      style: context.textStyles.body,
                     ),
                   );
                 } else {
@@ -97,7 +97,7 @@ class BarWidget extends StatelessWidget implements PreferredSizeWidget {
                     onPressed: () {},
                     child: Text(
                       S.of(context).createScreenAppBarSave,
-                      style: Theme.of(context).textTheme.labelMedium,
+                      style: context.textStyles.body,
                     ),
                   );
                 }

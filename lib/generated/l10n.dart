@@ -19,7 +19,7 @@ class S {
 
   static S get current {
     assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',);
     return _current!;
   }
 
@@ -42,7 +42,7 @@ class S {
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
     assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',);
     return instance!;
   }
 
@@ -195,6 +195,36 @@ class S {
     return Intl.message(
       'Lost internet connection :(',
       name: 'listScreenListWidgetOfline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Got internet connection!`
+  String get createToDoCreateConnected {
+    return Intl.message(
+      'Got internet connection!',
+      name: 'createToDoCreateConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No internet? O.o`
+  String get createToDoCreateDisconnected {
+    return Intl.message(
+      'No internet? O.o',
+      name: 'createToDoCreateDisconnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Произошла ошибка... пипец....`
+  String get listTaskListError {
+    return Intl.message(
+      'Произошла ошибка... пипец....',
+      name: 'listTaskListError',
       desc: '',
       args: [],
     );

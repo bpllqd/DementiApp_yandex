@@ -1,4 +1,4 @@
-import 'package:demetiapp/core/theme/theme.dart';
+import 'package:demetiapp/core/extensions/context_extensions.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class AddNewButton extends StatelessWidget {
               height: 48.0,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                color: AppColors.lightBackSecondary,
+                color: context.colors.backSecondary,
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
@@ -39,10 +39,8 @@ class AddNewButton extends StatelessWidget {
                     children: [
                       Text(
                         S.of(context).listScreenAddNewButtonTitle,
-                        style: const TextStyle(
-                          fontSize: AppFontSize.bodyFontSize,
-                          color: AppColors.lightLabelTertiary,
-                        ),
+                        style: context.textStyles.body
+                            .copyWith(color: context.colors.labelTertiary),
                       ),
                     ],
                   ),

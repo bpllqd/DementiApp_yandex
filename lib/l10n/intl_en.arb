@@ -13,5 +13,8 @@
   "listScreenAppBarTitle": "My tasks",
   "listScreenAppBarError": "Error",
   "listScreenListWidgetOnline": "Got internet connection!",
-  "listScreenListWidgetOfline": "Lost internet connection :("
+  "listScreenListWidgetOfline": "Lost internet connection :(",
+  "createToDoCreateConnected": "Got internet connection!",
+  "createToDoCreateDisconnected": "No internet? O.o",
+  "listTaskListError": "Произошла ошибка... пипец...."
 }

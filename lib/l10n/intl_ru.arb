@@ -12,5 +12,8 @@
   "listScreenAppBarTitle": "Мои дела",
   "listScreenAppBarError": "Ошибка",
   "listScreenListWidgetOnline": "Соединение восстановлено!",
-  "listScreenListWidgetOfline": "Соединение потеряно :("
+  "listScreenListWidgetOfline": "Соединение потеряно :(",
+  "createToDoCreateConnected": "Вы снова в сети!",
+  "createToDoCreateDisconnected": "Нет интернета? O.o",
+  "listTaskListError": "Произошла ошибка... пипец...."
 }

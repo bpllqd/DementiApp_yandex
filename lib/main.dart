@@ -1,8 +1,8 @@
 import 'package:demetiapp/core/di/di.dart';
 import 'package:demetiapp/core/routing/routing.dart';
+import 'package:demetiapp/core/theme/app_theme.dart';
 import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:demetiapp/core/utils/utils.dart';
-import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,8 +71,8 @@ class RoutingWrapper extends StatelessWidget {
       title: 'DementiApp',
       debugShowCheckedModeBanner: false,
       routerConfig: _router,
-      theme: lightTheme(),
-      darkTheme: darkTheme(),
+      theme: AppThemes().lightThemeData,
+      darkTheme: AppThemes().darkThemeData,
     );
   }
 }

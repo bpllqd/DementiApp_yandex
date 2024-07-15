@@ -30,13 +30,14 @@ void main() {
 
   group('TaskLocalDatasource', () {
     final taskLocalModel = TaskLocalModel(
-        id: '1',
-        text: 'text',
-        importance: 'basic',
-        done: false,
-        lastUpdatedBy: 'test',
-        changedAt: DateTime.utc(2023, 01, 02),
-        createdAt: DateTime.utc(2023, 01, 01),);
+      id: '1',
+      text: 'text',
+      importance: 'basic',
+      done: false,
+      lastUpdatedBy: 'test',
+      changedAt: DateTime.utc(2023, 01, 02),
+      createdAt: DateTime.utc(2023, 01, 01),
+    );
     // final TaskLocalModelWithRevision localResult = TaskLocalModelWithRevision(
     //     listTasks: [taskLocalModel], localRevision: 1,);
     // const localRevision = 1;
@@ -44,17 +45,23 @@ void main() {
     group('и его метод ceateTaskToCache', () {
       test('должен успешно добавлять новую задачу', () async {
         //arrange
-        when(() => mockDatabase.insert('tasks',
-                DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),),)
-            .thenAnswer((_) async => 1);
+        when(
+          () => mockDatabase.insert(
+            'tasks',
+            DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),
+          ),
+        ).thenAnswer((_) async => 1);
 
         //act
         await localDataSource.createTaskToCache(taskLocalModel);
 
         //assert
-        verify(() => mockDatabase.insert('tasks',
-                DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),),)
-            .called(1);
+        verify(
+          () => mockDatabase.insert(
+            'tasks',
+            DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),
+          ),
+        ).called(1);
         expect(null, isA<void>());
       });
 
@@ -78,24 +85,37 @@ void main() {
     group('и его метод deleteExactTaskFromCache', () {
       test('должен успешно удалять задачу', () async {
         //assert
-        when(() => mockDatabase.delete('tasks',
+        when(
+          () => mockDatabase.delete(
+            'tasks',
             where: 'id = ?',
-            whereArgs: [taskLocalModel.id],),).thenAnswer((_) async => 1);
+            whereArgs: [taskLocalModel.id],
+          ),
+        ).thenAnswer((_) async => 1);
 
         //act
         await localDataSource.deleteExactTaskFromCache(taskLocalModel);
 
         //assert
-        verify(() => mockDatabase.delete('tasks',
-            where: 'id = ?', whereArgs: [taskLocalModel.id],),).called(1);
+        verify(
+          () => mockDatabase.delete(
+            'tasks',
+            where: 'id = ?',
+            whereArgs: [taskLocalModel.id],
+          ),
+        ).called(1);
         expect(null, isA<void>());
       });
 
       test('должен выбрасывать ошибку, если задача не была удалена', () async {
         //assert
-        when(() => mockDatabase.delete('tasks',
+        when(
+          () => mockDatabase.delete(
+            'tasks',
             where: 'id = ?',
-            whereArgs: [taskLocalModel.id],),).thenAnswer((_) async => 0);
+            whereArgs: [taskLocalModel.id],
+          ),
+        ).thenAnswer((_) async => 0);
 
         //act
         try {
@@ -109,28 +129,41 @@ void main() {
     group('и его метод editTaskToCache', () {
       test('должен успешно редактировать задачу', () async {
         //assert
-        when(() => mockDatabase.update(
-            'tasks', DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),
+        when(
+          () => mockDatabase.update(
+            'tasks',
+            DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),
             where: 'id = ?',
-            whereArgs: [taskLocalModel.id],),).thenAnswer((_) async => 1);
+            whereArgs: [taskLocalModel.id],
+          ),
+        ).thenAnswer((_) async => 1);
 
         //act
         await localDataSource.editTaskToCache(taskLocalModel, taskLocalModel);
 
         //assert
-        verify(() => mockDatabase.update(
-            'tasks', DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),
-            where: 'id = ?', whereArgs: [taskLocalModel.id],),).called(1);
+        verify(
+          () => mockDatabase.update(
+            'tasks',
+            DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),
+            where: 'id = ?',
+            whereArgs: [taskLocalModel.id],
+          ),
+        ).called(1);
         expect(null, isA<void>());
       });
 
       test('должен выбрасывать ошибку, если не удалось обновить задачу',
           () async {
         //arrange
-        when(() => mockDatabase.update(
-            'tasks', DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),
+        when(
+          () => mockDatabase.update(
+            'tasks',
+            DBMapConverter.convertTaskForDB(taskLocalModel.toJson()),
             where: 'id = ?',
-            whereArgs: [taskLocalModel.id],),).thenAnswer((_) async => 0);
+            whereArgs: [taskLocalModel.id],
+          ),
+        ).thenAnswer((_) async => 0);
 
         //act
         try {

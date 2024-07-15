@@ -1,10 +1,11 @@
+import 'package:demetiapp/core/extensions/context_extensions.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
-import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,28 +35,36 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: networkStatus.isOnline
-            ? AppColors.lightColorGreen
-            : AppColors.lightColorRed,
+            ? context.colors.colorGreen
+            : context.colors.colorRed,
         content: Row(
           children: [
             networkStatus.isOnline
-              ? const Icon(Icons.check, color: AppColors.lightColorWhite,)
-              : const Icon(Icons.signal_wifi_connected_no_internet_4_outlined, color: AppColors.lightColorWhite,),
-            const SizedBox(width: 15,),
+                ? Icon(
+                    Icons.wifi,
+                    color: context.colors.colorWhite,
+                  )
+                : Icon(
+                    Icons.wifi_off,
+                    color: context.colors.colorWhite,
+                  ),
+            const SizedBox(
+              width: 15,
+            ),
             Text(
               networkStatus.isOnline
-                ? S.of(context).listScreenListWidgetOnline
-                : S.of(context).listScreenListWidgetOfline,
+                  ? S.of(context).listScreenListWidgetOnline
+                  : S.of(context).listScreenListWidgetOfline,
+              style: context.textStyles.subhead
+                  .copyWith(color: context.colors.colorWhite),
             ),
           ],
-          // leading: networkStatus.isOnline
-          // ? const Icon(Icons.fmd_good, color: AppColors.lightColorWhite,)
-          // : const Icon(Icons.offline_bolt_outlined, color: AppColors.lightColorWhite,),
-          // title: Text(
-          //   networkStatus.isOnline
-          //       ? S.of(context).listScreenListWidgetOnline
-          //       : S.of(context).listScreenListWidgetOfline,
-          // ),
+        ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          ),
         ),
         duration: const Duration(seconds: 2),
       ),
@@ -100,9 +109,29 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
           case ErrorState():
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                backgroundColor: const Color.fromARGB(255, 186, 45, 45),
-                content: Text(state.errorDescription),
-                duration: const Duration(seconds: 4),
+                backgroundColor: context.colors.colorRed,
+                content: Row(
+                  children: [
+                    Icon(
+                      Icons.warning,
+                      color: context.colors.colorWhite,
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      state.errorDescription,
+                      style: context.textStyles.subhead
+                          .copyWith(color: context.colors.colorWhite),
+                    ),
+                  ],
+                ),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                margin: const EdgeInsets.all(10.0),
+                duration: const Duration(seconds: 2),
               ),
             );
         }
@@ -111,7 +140,7 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
         builder: (context, state) {
           if (state is SuccessState) {
             return Scaffold(
-              backgroundColor: AppColors.lightBackPrimary,
+              backgroundColor: context.colors.backPrimary,
               body: NestedScrollView(
                 controller: scrollController,
                 headerSliverBuilder:
@@ -124,8 +153,8 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                   ];
                 },
                 body: RefreshIndicator(
-                  color: AppColors.lightColorRed,
-                  backgroundColor: AppColors.lightColorWhite,
+                  color: context.colors.colorRed,
+                  backgroundColor: context.colors.colorWhite,
                   key: refreshKey,
                   onRefresh: () async {
                     BlocProvider.of<ToDoListBloc>(context).add(GetTasksEvent());
@@ -135,15 +164,17 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                     slivers: [
                       SliverPadding(
                         padding: const EdgeInsets.only(
-                          left: 4.0,
-                          right: 4.0,
+                          left: 10.0,
+                          right: 10.0,
                           bottom: 3.0,
                         ),
                         sliver: SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (BuildContext context, int index) {
+                              final tasksNotEmpty =
+                                  state.filteredTasks.isNotEmpty;
                               return Card(
-                                color: Theme.of(context).cardColor,
+                                color: context.colors.backSecondary,
                                 semanticContainer: false,
                                 shape: const RoundedRectangleBorder(
                                   borderRadius:
@@ -152,7 +183,11 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                                 elevation: 4.0,
                                 child: Column(
                                   children: [
-                                    const TasksList(),
+                                    tasksNotEmpty
+                                        ? const TasksList()
+                                        : Container(
+                                            height: 0,
+                                          ),
                                     AddNewButton(
                                       onTap: () {
                                         _addNewTask(scrollController, context);
@@ -176,19 +211,19 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                   _addNewTask(scrollController, context);
                 },
                 elevation: 4,
-                backgroundColor:
-                    Theme.of(context).floatingActionButtonTheme.backgroundColor,
-                child: const Icon(
+                backgroundColor: context.colors.colorRed,
+                child: Icon(
                   Icons.add,
-                  color: AppColors.lightColorWhite,
+                  color: context.colors.colorWhite,
                 ),
               ),
             );
           } else {
-            return const Scaffold(
+            return Scaffold(
+              backgroundColor: context.colors.backPrimary,
               body: Center(
                 child: CircularProgressIndicator(
-                  color: Colors.red,
+                  color: context.colors.colorRed,
                 ),
               ),
             );
@@ -222,8 +257,10 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     double progress = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
     // рассчет всех требуемых размеров для элементов
-    double titleSize = interpolate(45, 30, progress);
-    double subtitleSize = interpolate(23, 10, progress);
+    double titleSize =
+        interpolate(context.textStyles.largeTitle.fontSize!, 30, progress);
+    double subtitleSize =
+        interpolate(context.textStyles.title.fontSize!, 10, progress);
     double topTitlePadding = interpolate(100, 37, progress);
     double leftTitlePadding = interpolate(40, 20, progress);
     double topPositionSubtitle = interpolate(155, 37, progress);
@@ -249,7 +286,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
             return Container(
               height: containerHeight,
               decoration: BoxDecoration(
-                color: AppColors.lightBackPrimary,
+                color: context.colors.backPrimary,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black45,
@@ -278,12 +315,14 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                     ),
                                 style: TextStyle(
                                   fontSize: subtitleSize,
-                                  color: AppColors.lightColorGray,
+                                  color: context.colors.colorGray,
                                 ),
                               ),
                             ),
                             const Spacer(),
                             IconButton(
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
                               onPressed: () {
                                 bloc.add(
                                   ChangeFilterEvent(
@@ -296,15 +335,15 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                 );
                               },
                               icon: state.filter == TasksFilter.showOnly
-                                  ? const Icon(
+                                  ? Icon(
                                       Icons.visibility,
                                       size: 30,
-                                      color: AppColors.lightColorGrayLight,
+                                      color: context.colors.colorGrayLight,
                                     )
-                                  : const Icon(
+                                  : Icon(
                                       Icons.visibility_off,
                                       size: 30,
-                                      color: AppColors.lightColorRed,
+                                      color: context.colors.colorRed,
                                     ),
                             ),
                           ],

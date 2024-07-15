@@ -1,5 +1,5 @@
+import 'package:demetiapp/core/extensions/context_extensions.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
-import 'package:demetiapp/core/theme/theme.dart';
 import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,15 +26,16 @@ class MaterialTextfield extends StatelessWidget {
               contentPadding: const EdgeInsets.all(16.0),
               labelText: S.of(context).createScreenTextfieldLabel,
               alignLabelWithHint: true,
-              labelStyle: Theme.of(context).textTheme.bodyMedium,
+              labelStyle: context.textStyles.body
+                  .copyWith(color: context.colors.colorGray),
               filled: true,
-              fillColor: AppColors.lightBackSecondary,
+              fillColor: context.colors.backSecondary,
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius: BorderRadius.circular(8.0),
               ),
             ),
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: context.textStyles.body,
             maxLines: null,
             minLines: 5,
           ),

@@ -1,4 +1,4 @@
-import 'package:demetiapp/core/theme/theme.dart';
+import 'package:demetiapp/core/extensions/context_extensions.dart';
 import 'package:demetiapp/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -23,17 +23,15 @@ class DeleteButton extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.delete,
-                  color: AppColors.lightColorRed,
+                  color: context.colors.colorRed,
                 ),
                 const SizedBox(width: 12.0),
                 Text(
                   S.of(context).createScreenDeleteButtonDelete,
-                  style: const TextStyle(
-                    fontSize: AppFontSize.bodyFontSize,
-                    color: AppColors.lightColorRed,
-                  ),
+                  style: context.textStyles.body
+                      .copyWith(color: context.colors.colorRed),
                 ),
               ],
             ),
@@ -46,17 +44,15 @@ class DeleteButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.delete,
-              color: AppColors.lightColorGray,
+              color: context.colors.labelDisable,
             ),
             const SizedBox(width: 12.0),
             Text(
               S.of(context).createScreenDeleteButtonDelete,
-              style: const TextStyle(
-                fontSize: AppFontSize.bodyFontSize,
-                color: AppColors.lightColorGray,
-              ),
+              style: context.textStyles.body
+                  .copyWith(color: context.colors.labelDisable),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
-import 'package:demetiapp/core/theme/theme.dart';
+import 'package:demetiapp/core/extensions/context_extensions.dart';
+import 'package:demetiapp/core/theme/constants.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
@@ -27,16 +28,16 @@ class CurrentTask extends StatelessWidget {
                 bloc.add(TaskCompleteEvent(task: task));
               },
               fillColor: WidgetStatePropertyAll(
-                task.done ? AppColors.lightColorGreen : null,
+                task.done ? context.colors.colorGreen : null,
               ),
-              checkColor: AppColors.lightColorWhite,
+              checkColor: context.colors.colorWhite,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(2),
               ),
               side: BorderSide(
                 color: task.importance == 'important'
-                    ? AppColors.lightColorRed
-                    : AppColors.lightColorGrayLight,
+                    ? context.colors.colorRed
+                    : context.colors.labelSecondary,
                 width: 2,
               ),
             ),
@@ -45,12 +46,13 @@ class CurrentTask extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: task.done
-                    ? Theme.of(context).dividerColor
-                    : Theme.of(context).colorScheme.onSurface,
+                    ? context.colors.labelTertiary
+                    : context.colors.labelPrimary,
                 decoration: task.done ? TextDecoration.lineThrough : null,
                 decorationColor: Theme.of(context).dividerColor,
               ),
               textWithImportance(
+                context: context,
                 importance: task.importance,
                 text: task.text,
               ),
@@ -92,11 +94,10 @@ class TaskDeadline extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       convertDateTimeToString(deadline, Localizations.localeOf(context)),
-      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).dividerColor,
-            decoration: isCompleted ? TextDecoration.lineThrough : null,
-            decorationColor: Theme.of(context).dividerColor,
-          ),
+      style: isCompleted
+          ? context.textStyles.subhead
+              .copyWith(decoration: TextDecoration.lineThrough)
+          : context.textStyles.subhead,
     );
   }
 }
@@ -116,7 +117,7 @@ class TaskInfo extends StatelessWidget {
       },
       icon: Icon(
         Icons.info_outline,
-        color: Theme.of(context).colorScheme.tertiary,
+        color: context.colors.labelTertiary,
         size: 24,
       ),
     );
@@ -126,26 +127,29 @@ class TaskInfo extends StatelessWidget {
 TextSpan textWithImportance({
   required String importance,
   required String text,
+  required BuildContext context,
 }) {
   return TextSpan(
     children: [
       if (importance == 'important')
-        const WidgetSpan(
+        WidgetSpan(
           alignment: PlaceholderAlignment.middle,
           child: SVG(
             imagePath: priorityHigh,
-            color: AppColors.lightColorRed,
+            color: context.colors.colorRed,
           ),
         ),
       if (importance == 'low')
-        const WidgetSpan(
+        WidgetSpan(
           alignment: PlaceholderAlignment.middle,
           child: SVG(
             imagePath: priorityLow,
-            color: AppColors.lightColorGray,
+            color: context.colors.colorGrayLight,
           ),
         ),
-      TextSpan(text: text),
+      TextSpan(
+        text: text,
+      ),
     ],
   );
 }

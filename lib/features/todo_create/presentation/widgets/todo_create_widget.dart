@@ -1,5 +1,5 @@
 import 'package:demetiapp/core/domain/entities/task_entity.dart';
-import 'package:demetiapp/core/theme/theme.dart';
+import 'package:demetiapp/core/extensions/context_extensions.dart';
 import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:demetiapp/core/utils/utils.dart';
@@ -45,13 +45,29 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: networkStatus.isOnline
-            ? AppColors.lightColorGreen
-            : AppColors.lightColorRed,
-        content: Text(
-          networkStatus.isOnline
-              ? 'Got internet connection!'
-              : 'Lost internet connection :(',
+            ? context.colors.colorGreen
+            : context.colors.colorRed,
+        content: Row(
+          children: [
+            Icon(
+              networkStatus.isOnline ? Icons.wifi : Icons.wifi_off,
+              color: context.colors.colorWhite,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              networkStatus.isOnline
+                  ? S.of(context).createToDoCreateConnected
+                  : S.of(context).createToDoCreateDisconnected,
+              style: context.textStyles.subhead
+                  .copyWith(color: context.colors.colorWhite),
+            ),
+          ],
         ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        margin: const EdgeInsets.all(10.0),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -75,9 +91,7 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
     if (date != null) {
       return Text(
         convertDateTimeToString(date, Localizations.localeOf(context)),
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+        style: context.textStyles.body,
       );
     }
     return null;
@@ -112,7 +126,7 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
             isInitialized = true;
           }
           return Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: context.colors.backPrimary,
             appBar: BarWidget(
               bloc: bloc,
               textController: textController,
@@ -144,16 +158,11 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                               importance = newPriority;
                             });
                           },
-                          style: const TextStyle(
-                            fontSize: AppFontSize.buttonFontSize,
-                            height: 18.0 / AppFontSize.bodyFontSize,
-                            color: AppColors.lightLabelTertiary,
-                          ),
+                          style: context.textStyles.body,
                           decoration: InputDecoration(
-                            enabled: false,
-                            disabledBorder: const UnderlineInputBorder(
+                            disabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: AppColors.lightSupportSeparator,
+                                color: context.colors.supportSeparator,
                                 width: 0.5,
                                 style: BorderStyle.solid,
                               ),
@@ -162,40 +171,34 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                               bottom: 16.0,
                               top: 16.0,
                             ),
-                            labelText: S.of(context).createScreenDropDownLabel,
-                            labelStyle: const TextStyle(
-                              fontSize: 22.0,
-                              color: AppColors.lightLabelPrimary,
-                            ),
+                            labelStyle: context.textStyles.body,
                           ),
                           iconSize: 0,
                           hint: Text(
                             S.of(context).createScreenDropdownMenuHint,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: context.textStyles.body,
                           ),
                           items: <DropdownMenuItem<String>>[
                             DropdownMenuItem(
                               value: 'basic',
                               child: Text(
                                 S.of(context).createScreenDropdownMenuBasic,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: context.textStyles.body,
                               ),
                             ),
                             DropdownMenuItem(
                               value: 'low',
                               child: Text(
                                 S.of(context).createScreenDropdownMenuLow,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: context.textStyles.body,
                               ),
                             ),
                             DropdownMenuItem(
                               value: 'important',
                               child: Text(
                                 S.of(context).createScreenDropdownMenuImportant,
-                                style: const TextStyle(
-                                  fontSize: AppFontSize.bodyFontSize,
-                                  color: AppColors.lightColorRed,
-                                ),
+                                style: context.textStyles.body
+                                    .copyWith(color: context.colors.colorRed),
                               ),
                             ),
                           ],
@@ -208,7 +211,7 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                     child: Divider(
                       height: 0,
                       thickness: 0.5,
-                      color: Theme.of(context).dividerTheme.color,
+                      color: context.colors.supportSeparator,
                     ),
                   ),
                   Padding(
@@ -225,7 +228,7 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                   Divider(
                     height: 0,
                     thickness: 0.5,
-                    color: Theme.of(context).dividerTheme.color,
+                    color: context.colors.supportSeparator,
                   ),
                   const SizedBox(height: 8.0),
                   Padding(
@@ -236,7 +239,7 @@ class _ToDoCreateWidgetState extends State<ToDoCreateWidget> {
                           ? null
                           : () {
                               bloc.add(TaskDeleteEvent(task: taskToDelete!));
-                              Navigator.pop(context);
+                              context.pop();
                               DementiappLogger.infoLog(
                                 'Delete button has been pressed',
                               );

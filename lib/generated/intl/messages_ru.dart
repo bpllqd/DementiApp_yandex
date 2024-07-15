@@ -40,6 +40,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Сделать до"),
         "createScreenTextfieldLabel":
             MessageLookupByLibrary.simpleMessage("Что нужно сделать.."),
+        "createToDoCreateConnected":
+            MessageLookupByLibrary.simpleMessage("Вы снова в сети!"),
+        "createToDoCreateDisconnected":
+            MessageLookupByLibrary.simpleMessage("Нет интернета? O.o"),
         "listScreenAddNewButtonTitle":
             MessageLookupByLibrary.simpleMessage("Новое"),
         "listScreenAppBarCompletedN": m0,
@@ -49,6 +53,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "listScreenListWidgetOfline":
             MessageLookupByLibrary.simpleMessage("Соединение потеряно :("),
         "listScreenListWidgetOnline":
-            MessageLookupByLibrary.simpleMessage("Соединение восстановлено!")
+            MessageLookupByLibrary.simpleMessage("Соединение восстановлено!"),
+        "listTaskListError": MessageLookupByLibrary.simpleMessage(
+            "Произошла ошибка... пипец....",),
       };
 }
