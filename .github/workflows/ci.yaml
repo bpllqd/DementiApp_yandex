@@ -26,7 +26,7 @@ jobs:
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
 
       - name: Copy keystore file
-        run: cp upload-keystore.jks $GITHUB_WORKSPACE/upload-keystore.jks
+        run: cp android/upload-keystore.jks $GITHUB_WORKSPACE/upload-keystore.jks
 
       - run: flutter pub get
       - run: dart format .
