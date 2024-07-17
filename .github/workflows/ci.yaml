@@ -19,18 +19,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Set up key.properties
-        run: echo "$KEY_PROPERTIES" > "$GITHUB_WORKSPACE/android/key.properties"
-        env:
-          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
-
-      - name: Copy keystore file
-        run: cp $GITHUB_WORKSPACE/android/upload-keystore.jks $GITHUB_WORKSPACE/upload-keystore.jks
-
+          
       - run: flutter pub get
       - run: dart format .
       - run: dart fix --dry-run
       - run: dart fix --apply
       - run: flutter test
-      - run: flutter build apk --release
