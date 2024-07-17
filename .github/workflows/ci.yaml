@@ -19,9 +19,27 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          
+
       - run: flutter pub get
       - run: dart format .
       - run: dart fix --dry-run
       - run: dart fix --apply
       - run: flutter test
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Deploy to Firebase App Distribution
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: testers
+          file: build/app/outputs/flutter-apk/app-release.apk
