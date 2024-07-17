@@ -1,9 +1,8 @@
 name: workflow
 
 on:
-  pull_request:
-    branches:
-    - main
+  push:
+    branches: ['**']
 
 jobs:
   analyze:
