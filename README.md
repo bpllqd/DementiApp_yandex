@@ -21,28 +21,58 @@ Dementiapp - приложение-второй мозг! С его помощь�
 
 Данный экран предоставляет интерфейс для добавления/редактирования дел. Есть возможность написать задачу, выбрать для нее приоритет (default: no), а также опционально задать deadline. В случае, если происходит редактирование уже существующей задачи, появляется возможность ее удалить.
 
+### Crashlytics:
+<img src="/assets/app_samples/crashlytics.png" alt="Crash" width="900"/> 
+<img src="/assets/app_samples/crashlytics2.png" alt="Crash" width="900"/>
+
+### Analytics:
+<img src="/assets/app_samples/analytics1.png" alt="Crash" width="900"/>
+<img src="/assets/app_samples/analytics2.png" alt="Crash" width="900"/>
+
+### Overview gallery:
+<img src="/assets/app_samples/dark1.png" alt="ToDo create" width="400"/> <img src="/assets/app_samples/dark2.png" alt="ToDo create" width="400"/>
+<img src="/assets/app_samples/dark3.png" alt="ToDo create" width="400"/> <img src="/assets/app_samples/dark4.png" alt="ToDo create" width="400"/>
+<img src="/assets/app_samples/dark5.png" alt="ToDo create" width="400"/> <img src="/assets/app_samples/dark6.png" alt="ToDo create" width="400"/>
+<img src="/assets/app_samples/dark7.png" alt="ToDo create" width="400"/> <img src="/assets/app_samples/dark8.png" alt="ToDo create" width="400"/>
+
+### Tablet:
+<img src="/assets/app_samples/tablet1.png" alt="ToDo create" width="400"/>
+<img src="/assets/app_samples/tablet2.png" alt="ToDo create" width="400"/>
+<img src="/assets/app_samples/tablet3.png" alt="ToDo create" width="400"/>
+
+
 #### Реализованные фичи:
 🔥 - новое
 
 - **UI:**
     + Экран со списком дел
     + Экран для добавления/редактирования дела
+    + 🔥 Landscape orientation
+    + 🔥 Tablet support
+    + 🔥 Night theme
+    + 🔥 Floating action button animation
+    + 🔥 Transition animations
 - **Работа с сетью:**
-    + 🔥 Offline-first 
+    + Offline-first 
     + Dio
-    + 🔥 connectivity_plus (для прослушивания соединения)
+    + connectivity_plus (для прослушивания соединения)
 - **Работа с локальным источником:**
     + SQFlite
 - **Тесты:**
-    + 🔥 Unit (для класса репозитория и локального источника)
-    + 🔥 Integrated (сценарий навигирования на экран добавления дела)
+    + Unit (для класса репозитория и локального источника)
+    + Integrated (сценарий навигирования на экран добавления дела)
 - **Навигация:**
     + Navigator 2.0 - Go_router
-    + 🔥 deeplink:
+    + deeplink:
         * cmd: adb shell am start -a android.intent.action.VIEW -d "dementiapp://dementia.pp/add_new" dementia.pp
 - **DI:**
-    + 🔥 Get_it
-    + 🔥 injectable
+    + Get_it
+    + injectable
+- **FIREBASE:**
+    + 🔥 Firebase-crashlytics
+    + 🔥 Firebase-analytics
+- **CI/CD:**
+    + 🔥 GitHub actions
 - **State-manager:**
     + BLoC
 - **Локализация:**
