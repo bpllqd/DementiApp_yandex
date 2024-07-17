@@ -13,6 +13,7 @@ import 'package:demetiapp/core/domain/usecases/todo_list_usecases.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'dart:io' show Platform;
 
 import 'package:injectable/injectable.dart';
@@ -44,16 +45,6 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     networkStatus.addListener(_onNetworkStatusChanged);
   }
 
-  /// Инстанс Dio
-  // final Dio dio = Dio(
-  //   BaseOptions(
-  //     baseUrl: 'https://beta.mrdekk.ru/todo',
-  //     headers: {'Authorization': 'Bearer Gilthoniel'},
-  //   ),
-  // );
-
-  /// Инстансы репозиториев
-  // final TaskLocalDatasourceImpl db = TaskLocalDatasourceImpl();
   late final TaskRemoteDataSourceImpl api = TaskRemoteDataSourceImpl(dio: dio);
   late final ToDoListRepositoryImpl toDoListRepository =
       ToDoListRepositoryImpl(db: db, api: api, networkStatus: networkStatus);
@@ -104,6 +95,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     GetTasksEvent event,
     Emitter<ToDoListState> emit,
   ) async {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'get_all_tasks',
+    );
     emit(LoadingState());
 
     DementiappLogger.infoLog('BLoC:getTasks - loading in _getTasks');
@@ -224,6 +218,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     TaskEditEvent event,
     Emitter<ToDoListState> emit,
   ) async {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'navigating_to_edit_screen',
+    );
     emit(EditInProgressState(task: event.task));
     DementiappLogger.infoLog('Current state: EditInProgressState');
   }
@@ -232,6 +229,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     TaskCreateEvent event,
     Emitter<ToDoListState> emit,
   ) async {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'navigating_to_create_screen',
+    );
     emit(CreateInProgressState());
     DementiappLogger.infoLog('Current state: CreateInProgressState');
   }
@@ -240,6 +240,9 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     ChangeFilterEvent event,
     Emitter<ToDoListState> emit,
   ) async {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'change_filter',
+    );
     DementiappLogger.infoLog('Loading from _changeFilter');
 
     emit(
@@ -258,6 +261,12 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     TaskEditedSaveEvent event,
     Emitter<ToDoListState> emit,
   ) async {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'save_edited_task',
+      parameters: <String, Object>{
+        'task_id': event.newTask.id,
+      },
+    );
     emit(LoadingState());
     DementiappLogger.infoLog('Loading from _saveEditedTask');
     _markAsDirty();
@@ -286,6 +295,12 @@ class ToDoListBloc extends Bloc<ToDoListEvent, ToDoListState> {
     TaskCreatedSaveEvent event,
     Emitter<ToDoListState> emit,
   ) async {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'save_created_task',
+      parameters: <String, Object>{
+        'task_id': event.task.id,
+      },
+    );
     emit(LoadingState());
     DementiappLogger.infoLog('BLoC:_saveCreatedTask - loading');
     _markAsDirty();

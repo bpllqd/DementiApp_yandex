@@ -56,6 +56,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "listScreenListWidgetOnline":
             MessageLookupByLibrary.simpleMessage("Got internet connection!"),
         "listTaskListError": MessageLookupByLibrary.simpleMessage(
-            "Произошла ошибка... пипец....",),
+            "Произошла ошибка... пипец....")
       };
 }

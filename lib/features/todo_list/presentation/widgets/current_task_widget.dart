@@ -3,6 +3,7 @@ import 'package:demetiapp/core/extensions/context_extensions.dart';
 import 'package:demetiapp/core/theme/constants.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,6 +26,9 @@ class CurrentTask extends StatelessWidget {
             leading: Checkbox(
               value: task.done,
               onChanged: (bool? value) {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'complete_task_from_checkbox',
+                );
                 bloc.add(TaskCompleteEvent(task: task));
               },
               fillColor: WidgetStatePropertyAll(

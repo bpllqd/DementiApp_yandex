@@ -4,6 +4,7 @@ import 'package:demetiapp/core/utils/logger/dementiapp_logger.dart';
 import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/generated/l10n.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -81,6 +82,12 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
     ScrollController scrollController,
     BuildContext context,
   ) async {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'pressed_floating_action_button',
+      parameters: <String, Object>{
+        'key': widget,
+      },
+    );
     BlocProvider.of<ToDoListBloc>(context).add(TaskCreateEvent());
     DementiappLogger.infoLog('Navigating to add_new');
     scrollController.animateTo(
@@ -193,6 +200,15 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                                         _addNewTask(scrollController, context);
                                       },
                                     ),
+                                    ElevatedButton(
+                                      child: const Text('generate exception'),
+                                      onPressed: () {
+                                        DementiappLogger.errorLog(
+                                          'Thrown test exception!',
+                                        );
+                                        throw Exception('Thrown Exception');
+                                      },
+                                    ),
                                   ],
                                 ),
                               );
@@ -205,17 +221,13 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
                   ),
                 ),
               ),
-              floatingActionButton: FloatingActionButton(
+              floatingActionButton: AnimatedFAB(
                 key: const ValueKey('FloatingAddNewButton'),
                 onPressed: () {
                   _addNewTask(scrollController, context);
                 },
-                elevation: 4,
                 backgroundColor: context.colors.colorRed,
-                child: Icon(
-                  Icons.add,
-                  color: context.colors.colorWhite,
-                ),
+                iconColor: context.colors.colorWhite,
               ),
             );
           } else {
@@ -228,6 +240,90 @@ class _ToDoListWidgetState extends State<ToDoListWidget> {
               ),
             );
           }
+        },
+      ),
+    );
+  }
+}
+
+class AnimatedFAB extends StatefulWidget {
+  final VoidCallback onPressed;
+  final Color backgroundColor;
+  final Color iconColor;
+
+  const AnimatedFAB({
+    Key? key,
+    required this.onPressed,
+    required this.backgroundColor,
+    required this.iconColor,
+  }) : super(key: key);
+
+  @override
+  _AnimatedFABState createState() => _AnimatedFABState();
+}
+
+class _AnimatedFABState extends State<AnimatedFAB>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+      ),
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _controller.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          widget.onPressed();
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(_) {
+    _controller.forward();
+  }
+
+  void _onTapUp(_) {
+    _controller.reverse();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: () {
+        _controller.reverse();
+      },
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimation.value,
+            child: FloatingActionButton(
+              onPressed: () {},
+              backgroundColor: widget.backgroundColor,
+              child: Icon(
+                Icons.add,
+                color: widget.iconColor,
+              ),
+            ),
+          );
         },
       ),
     );

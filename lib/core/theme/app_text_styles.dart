@@ -29,6 +29,34 @@ class AppDefaultTextStyles extends AppTextStyles {
         );
 }
 
+class AppTabletTextStyles extends AppTextStyles {
+  AppTabletTextStyles({
+    required AppColors colors,
+  }) : super(
+          largeTitle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 55.0,
+            color: colors.labelPrimary,
+          ),
+          title: TextStyle(
+            fontSize: 33.0,
+            color: colors.labelTertiary,
+          ),
+          button: TextStyle(
+            fontSize: 24.0,
+            color: colors.labelSecondary,
+          ),
+          body: TextStyle(
+            fontSize: 26.0,
+            color: colors.labelPrimary,
+          ),
+          subhead: TextStyle(
+            fontSize: 24.0,
+            color: colors.labelPrimary,
+          ),
+        );
+}
+
 class AppTextStyles extends ThemeExtension<AppTextStyles> {
   final TextStyle largeTitle;
   final TextStyle title;

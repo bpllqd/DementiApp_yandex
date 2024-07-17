@@ -2,6 +2,7 @@ import 'package:demetiapp/core/domain/entities/task_entity.dart';
 import 'package:demetiapp/core/extensions/context_extensions.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
 import 'package:demetiapp/generated/l10n.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,6 +32,7 @@ class _TasksListState extends State<TasksList> {
               topRight: Radius.circular(8.0),
             ),
             child: AnimatedList(
+              padding: EdgeInsets.zero,
               key: _listKey,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -78,6 +80,9 @@ class _TasksListState extends State<TasksList> {
         confirmDismiss: (direction) =>
             confirmDismissing(direction, bloc, index, state),
         onDismissed: (_) {
+          FirebaseAnalytics.instance.logEvent(
+            name: 'delete_from_swipe',
+          );
           _removeTaskFromList(index);
           bloc.add(
             TaskDeleteEvent(
@@ -141,6 +146,9 @@ class _TasksListState extends State<TasksList> {
     SuccessState state,
   ) async {
     if (direction == DismissDirection.startToEnd) {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'complete_from_swipe',
+      );
       bloc.add(TaskCompleteEvent(task: state.filteredTasks[index]));
     }
     return direction == DismissDirection.endToStart;

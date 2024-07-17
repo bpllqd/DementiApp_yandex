@@ -6,14 +6,45 @@ import 'package:go_router/go_router.dart';
 List<RouteBase> dementiappRoutes = <RouteBase>[
   GoRoute(
     path: '/',
-    builder: (BuildContext context, GoRouterState state) =>
-        const ToDoListScreen(),
+    pageBuilder: (context, state) {
+      return CustomTransitionPage(
+        transitionDuration: const Duration(seconds: 2),
+        key: state.pageKey,
+        child: const ToDoListScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: CurveTween(
+              curve: Curves.easeInOutCirc,
+            ).animate(animation),
+            child: child,
+          );
+        },
+      );
+    },
+    // builder: (BuildContext context, GoRouterState state) =>
+    //     const ToDoListScreen(),
     routes: <RouteBase>[
       GoRoute(
         path: 'add_new',
-        builder: (BuildContext context, GoRouterState state) {
-          return const ToDoCreateScreen();
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            transitionDuration: const Duration(seconds: 2),
+            key: state.pageKey,
+            child: const ToDoCreateScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: CurveTween(
+                  curve: Curves.easeInOutCirc,
+                ).animate(animation),
+                child: child,
+              );
+            },
+          );
         },
+        // builder: (BuildContext context, GoRouterState state) {
+        //   return const ToDoCreateScreen();
+        // },
       ),
     ],
   ),

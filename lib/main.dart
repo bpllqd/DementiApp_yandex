@@ -1,9 +1,15 @@
+import 'dart:ui';
+
 import 'package:demetiapp/core/di/di.dart';
 import 'package:demetiapp/core/routing/routing.dart';
 import 'package:demetiapp/core/theme/app_theme.dart';
 import 'package:demetiapp/core/utils/network_status.dart';
 import 'package:demetiapp/core/utils/utils.dart';
 import 'package:demetiapp/core/presentation/bloc/todo_list_bloc.dart';
+import 'package:demetiapp/firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -18,6 +24,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
   await initializeDateFormatting('ru_RU', null);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
   final networkStatus = getIt.get<NetworkStatus>();
   await networkStatus.init();
   HttpOverrides.global = MyHttpOverrides();

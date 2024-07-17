@@ -55,6 +55,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "listScreenListWidgetOnline":
             MessageLookupByLibrary.simpleMessage("Соединение восстановлено!"),
         "listTaskListError": MessageLookupByLibrary.simpleMessage(
-            "Произошла ошибка... пипец....",),
+            "Произошла ошибка... пипец....")
       };
 }
