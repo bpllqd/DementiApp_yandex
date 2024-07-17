@@ -16,6 +16,5 @@ jobs:
       - run: dart format .
       - run: dart fix --dry-run
       - run: dart fix --apply
-      - run: dart format .
       - run: flutter test
       - run: flutter build apk --release
