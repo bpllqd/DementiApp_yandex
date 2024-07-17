@@ -24,6 +24,10 @@ jobs:
         run: echo "$KEY_PROPERTIES" > "$GITHUB_WORKSPACE/android/key.properties"
         env:
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+
+      - name: Copy keystore file
+        run: cp path/to/upload-keystore.jks $GITHUB_WORKSPACE/upload-keystore.jks
+        
       - run: flutter pub get
       - run: dart format .
       - run: dart fix --dry-run
